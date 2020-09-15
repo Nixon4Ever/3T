@@ -63,21 +63,21 @@ skill3: {name: "Code: H", icon: "np_gain", target:["target"], effect:["np_gain"]
 },
 ];
 var SERVANTS = [
-{name : "Sieg", attack: 8394,class:"caster",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,np_type:"arts",np_hits:3,np_dmg:[450,600,675,712.5,750],np_effects:[["def_down",3,20]],
+{name : "Sieg", atk: 8394,class:"caster",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,np_type:"arts",np_hits:3,np_dmg:[450,600,675,712.5,750],np_effects:[["def_down",3,20]],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2018-08/208_Sieg_4.png",
                     skills: [["arts",6.5]],
                     skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gen",  target:["self"],        effect:["np_gain"],                turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
                     skill2: {name:"Magecraft C",                icon:"arts",    target:["self"],        effect:["arts"],                  turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
                     skill3: {name:"Dead-Count Shapeshifter EX", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
 },
-{name: "Paracelsus", attack: 6711,class:"caster",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,np_type:"arts",np_hits:3,np_dmg:[400,500,550,575,600],np_effects:[],
+{name: "Paracelsus", atk: 6711,class:"caster",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,np_type:"arts",np_hits:3,np_dmg:[400,500,550,575,600],np_effects:[],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2017-12/0794.jpg",
                     skills: [["arts",10]],
                     skill1: {name:"Rapid Casting A",        icon:"np",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
                     skill2: {name:"Elemental A+",           icon:"arts", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
                     skill3: {name:"Philosopher's Stone A+", icon:"guts", target:["taget"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
-{name:"Waver", attack: 10598,class:"caster",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,np_type:"arts",np_hits:0,np_dmg:[0,0,0,0,0],np_effects:["def_down",3,30],
+{name:"Waver", atk: 10598,class:"caster",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,np_type:"arts",np_hits:0,np_dmg:[0,0,0,0,0],np_effects:["def_down",3,30],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2017-07/037%20Zhuge%20Liang%20%28El-Melloi%20II%29%201.png",
                     skills: [["arts",10]],
                     skill1: {name:"Discerning Eye A",        icon:"crit",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
@@ -280,12 +280,16 @@ var PARTY_CE_LEVEL=[0,0,0,0,0,0];
 // list of all actions taken like skills, nps, fishing or finishing
 var ACTIONS=[];
 
-// UNSAVED DATA
-// ------------
-// current order of party, first three are in battle
-var PARTY_CUR=[0,1,2,3,4,5];
-// 1 for available, 0 for if skills have been used
-var SKILLS_CUR=[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]];
+// CALCULATED DATA
+// ---------------
+//calculated attack of servants /w CE & 1000 fous
+var PARTY_ATTACK=[];
+// order of party servants after this action
+var ACTION_ORDER=[];
+// np gauge of each servant after the last action
+var ACTION_NP=[];
+// buffs on each servant after the last action
+var ACTION_BUFFS=[];
 
 function writeFull() {
 	URL = {str:""};
@@ -444,10 +448,12 @@ function setServant(pos,servant)
 {
 	PARTY[pos]=servant;
 	displayServant(pos,servant);
+	calcFull();
 	writeFull();
 }
 function setNP(pos,level){
 	PARTY_NP[pos]=level;
+	calcFull();
 	writeFull();
 }
 function displaySkill(pos,skill){
@@ -456,6 +462,7 @@ function displaySkill(pos,skill){
 function setSkill(pos,skill,level){
 	SKILLS[pos][skill]=level;
 	displaySkill(pos,skill);
+	calcFull();
 	writeFull();
 }
 function displayCE(pos)
@@ -470,6 +477,7 @@ function displayCE(pos)
 function setCE(pos,ce){
 	PARTY_CES[pos]=ce;
 	displayCE(pos);
+	calcFull();
 	writeFull();
 }
 function displayCELevel(pos){
@@ -489,6 +497,7 @@ function changeCELevel(pos){
 		PARTY_CE_LEVEL[pos]=0;
 	}
 	displayCELevel(pos);
+	calcFull();
 	writeFull();
 }
 function displayMystic(){
@@ -502,11 +511,13 @@ function displayMystic(){
 function setMystic(mystic){
 	MYSTIC_CODE = mystic;
 	displayMystic();
+	calcFull();
 	writeFull();
 }
 function setMysticLevel(level){
 	MYSTIC_CODE_LEVEL = level;
 	displayMystic();
+	calcFull();
 	writeFull();
 }
 function displayEnemy(stage,enemy){
@@ -515,15 +526,74 @@ function displayEnemy(stage,enemy){
 function setEnemy(stage,enemy,value){
 	ENEMIES_CLASS[stage][enemy] = value;
 	displayEnemy(stage,enemy);
+	calcFull();
 	writeFull();
 }
 function setEnemyAttr(stage,enemy,value){
 	ENEMIES_ATTR[stage][enemy] = value;
+	calcFull();
 	writeFull();
 }
 function setEnemyHP(stage,enemy,value){
 	ENEMIES_HP[stage][enemy] = value;
+	calcFull();
 	writeFull();
+}
+function displayAllNP(action){
+	for(var i=0;i<6;i++){
+		displayNP(action,i);
+	}
+}
+function displayNP(action,pos){
+	
+}
+// -1 turns = infinite
+function applyBuff(action,pos,name,value,turns,source)
+{
+	if(name == "np_gauge"){
+		ACTION_NP[action][pos]+=parseInt(value);
+	}
+	else{
+		// buff already exists
+		if(ACTION_BUFFS[action][pos].hasOwnProperty(name)){
+			ACTION_BUFFS[action][pos][name].push([value,turns,source]);
+		}
+		// buff must be created
+		else{
+			ACTION_BUFFS[action][pos][name] = [[value,turns,source]];
+		}
+	}
+}
+function calcFull(){
+	//reset all data
+	ACTION_ORDER=[[0,1,2,3,4,5]];
+	ACTION_NP=[];
+	ACTION_BUFFS=[];
+	//calculate party attack values
+	PARTY_ATTACK=[];
+	for(var p=0;p<6;p++){
+		if(PARTY[p]>=0){
+			PARTY_ATTACK[p]=SERVANTS[PARTY[p]].atk;
+			PARTY_ATTACK[p]+=1000;//add 1000 fous
+			if(PARTY_CES[p]>=0){//if there is a ce, add atk value
+				PARTY_ATTACK[p]+=CES[PARTY_CES[p]].atk[(PARTY_CE_LEVEL[p]==2?1:0)];
+			}
+		}
+		else{
+			PARTY_ATTACK[p]=0;
+		}
+	}
+	//calculate buffs from CES
+	ACTION_NP[0]=[0,0,0,0,0,0];
+	ACTION_BUFFS[0]=[{},{},{},{},{},{}];
+	for(var p=0;p<6;p++){
+		ACTION_BUFFS[0][p]=[];
+		var ce = PARTY_CES[p];
+		if(ce < 0 || ce > CES.length){continue;} // skip if no ce given
+		for(var i=0;i<CES[ce].effect.length;i++){
+			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1],63,CES[ce].name);
+		}
+	}
 }
 $( document ).ready(function (){
 	readFull();
@@ -591,6 +661,7 @@ $( document ).ready(function (){
 			displayEnemy(stage,enemy);
 		}
 	}
+	calcFull();
 });
 
 
