@@ -1,0 +1,100 @@
+#serv_sel_main{
+	display: block;
+    width: 100%;
+    text-align: center;
+}
+#enemy_sel_main{
+	display: block;
+    width: 100%;
+    text-align: center;
+}
+.enemy_stage{
+	display: inline-block;
+	width:33%;
+}
+.stage_header{
+	height: 50px;
+    box-shadow: 0 0 0px 1px #4e4e4e;
+    padding: 5px;
+    background: linear-gradient(#adadad, #bfbfbf);
+    font: caption;
+    font-size: 24;
+    font-weight: bold;
+    line-height: 50px;
+}
+.enemy_div{
+	height: 70px;
+    box-shadow: 0 0 0px 1px #4e4e4e;
+    padding: 5px;
+    background: linear-gradient(#989898, #808080);
+}
+.enemy_img{
+	width: 40px;
+    height: 40px;
+	vertical-align: middle;
+}
+.enemy_hp{
+	width:100px;
+}
+.enemy_sel{
+	
+}
+.enemy_attr_sel{
+	
+}
+.enemy_div:before{
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.ce_sel_div{
+	position:relative;
+	height: 60px;
+    box-shadow: inset 0 0 8px 0px black;
+    background-size: cover!important;
+	background-position-y: -20px!important;
+}
+.divider{
+	height:50px;
+}
+#mystic_sel_div{
+	margin-left: 50px;
+	display: inline-block;
+}
+.party_sel_div{
+	display: inline-block;
+}
+.ce_lvl{
+	position: absolute;
+    height: 17px;
+    width: 17px;
+    display: inline-block;
+    bottom: 5px;
+    right: 5px;
+	cursor: pointer;
+}
+.ce_lvl_1{
+	background-image:url("icons/lvl1.png");
+}
+.ce_mlb{
+	background-image:url("icons/mlb.png");
+}
+.ce_lvl_100{
+	background-image:url("icons/lvl100.png");
+}
+.servant_sel_div{
+	background-size: cover!important;
+	box-shadow: inset 0 0 8px 0px black;
+}
+.servant_portrait{
+	width: 150px;
+    height: 220px;
+}
+.servant_sel{
+	max-width: 90px;
+}
+.slash{
+	display:inline;
+	font-weight:bold;
+}
