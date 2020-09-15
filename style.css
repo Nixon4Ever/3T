@@ -58,9 +58,21 @@
 .divider{
 	height:50px;
 }
-#mystic_sel_div{
+#mystic_div{
 	margin-left: 50px;
-	display: inline-block;
+    display: inline-block;
+    width: 150px;
+}
+#mystic_sel_div{
+	display: block;
+    background-position-x: -50px!important;
+}
+#mystic_portrait{
+	height: 300px;
+}
+#mystic_sel{
+	width:150px;
+	max-width:150px;
 }
 .party_sel_div{
 	display: inline-block;
@@ -97,4 +109,44 @@
 .slash{
 	display:inline;
 	font-weight:bold;
+}
+.np_gauge{
+	height: 20px;
+    background-color: #b9b9b9;
+    box-shadow: inset 0 0 20px 0px #353535;
+	position: relative;
+}
+.np_text{
+	display: inline-block;
+    z-index: 1;
+    position: relative;
+	font: caption;
+	margin: 1 0 0 0;
+}
+.np_value{
+	height: 18px;
+    background: linear-gradient(#45b512, #65e018);
+    border: 1px solid green;
+    position: absolute;
+    top: 0;
+    z-index: 0;
+}
+.skills_div{
+	height: 45px;
+    width: 150px;
+    display: inline-block;
+    background-color: grey;
+}
+.skill{
+	width: 45px;
+    height: 45px;
+    margin: 0 2;
+    display: inline-block;
+    background-repeat: no-repeat!important;
+    background-position-x: center!important;
+    cursor: pointer;
+	background-blend-mode: saturation;
+}
+.skill-used{
+	cursor: default;
 }

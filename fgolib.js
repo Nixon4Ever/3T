@@ -1,17 +1,18 @@
 var VERSION = 1;
-var ICONS = {np:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Startnp.png",
+var SKILL_ICONS = {np:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Startnp.png",
             crit:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Critdmg.png",
             arts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Artsup.png",
             def:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Shieldup.png",
-            atk:"https://gamepress.gg/randorder/sites/grandorder/files/styles/45x45/public/2017-07/Dmg_up.png",
+            atk:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Dmg_up.png",
             guts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Guts.png",
             divinity:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Divinity.png",
-            np_gen:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npacqui.png",
+            np_gain:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npacqui.png",
 			orderchange: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Orderchange.png",
 			stun: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Stun.png",
 			shuffle: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Commandshuffle.png",
 			np_dmg: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npdmg.png",
 			buster_stars: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2019-06/BusterStarGatherUp.png",
+			heal:"https://vignette.wikia.nocookie.net/fategrandorder/images/6/6e/Heal.png/revision/latest/scale-to-width-down/45"
 			}
 var EFFECTS = {
 	np_gain:"NP Gain",
@@ -66,7 +67,7 @@ var SERVANTS = [
 {name : "Sieg", atk: 8394,class:"caster",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,np_type:"arts",np_hits:3,np_dmg:[450,600,675,712.5,750],np_effects:[["def_down",3,20]],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2018-08/208_Sieg_4.png",
                     skills: [["arts",6.5]],
-                    skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gen",  target:["self"],        effect:["np_gain"],                turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
+                    skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target:["self"],        effect:["np_gain"],                turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
                     skill2: {name:"Magecraft C",                icon:"arts",    target:["self"],        effect:["arts"],                  turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
                     skill3: {name:"Dead-Count Shapeshifter EX", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
 },
@@ -88,7 +89,7 @@ var CES = [
 {name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
 pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/8/86/Kaleidoscope.png/revision/latest/scale-to-width-down/292?cb=20180519064310"},
 {name: "Imaginary Element", effect:["np_gauge"], values:[[60],[75]], atk:[200,750],
-pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/8/86/Kaleidoscope.png/revision/latest/scale-to-width-down/292?cb=20180519064310"},
+pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/e/e1/Hollow_magic.png/revision/latest/scale-to-width-down/292?cb=20180519064450"},
 {name: "Black Grail", effect:["np_dmg"], values:[[60],[80]], atk:[600,2400],
 pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/b/bd/Black_grail.png/revision/latest/scale-to-width-down/292?cb=20180519063950"},
 {name: "CKT", effect:["arts","quick","np_dmg"], values:[[10,10,10],[15,15,15]], atk:[250,1000],
@@ -263,7 +264,7 @@ var PARTY= [];
 var PARTY_NP= [];
 // level of the skills each servant has. does not change
 var SKILLS=[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
-// enemies health
+// enemies max health
 var ENEMIES_HP=[[0,0,0],[0,0,0],[0,0,0]];
 // enemies class
 var ENEMIES_CLASS=[[0,0,0],[0,0,0],[0,0,0]];
@@ -290,6 +291,10 @@ var ACTION_ORDER=[];
 var ACTION_NP=[];
 // buffs on each servant after the last action
 var ACTION_BUFFS=[];
+// which skills are currently avaiblible, [6] is mystic code
+var ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
+// current action we are viewing, 0 is beginning, default
+var ACTION_CURRENT=0;
 
 function writeFull() {
 	URL = {str:""};
@@ -426,10 +431,10 @@ function readFull() {
 		}
 	}
 	//read all actions
-	var nextAction = readNum(URL_READ,2);
-	while(!isNaN(nextAction)){
-		
-		nextAction = readNum(URL_READ,2);
+	var nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
+	while(!isNaN(nextAction[1])){
+		ACTIONS.push(nextAction);
+		nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
 	}
 }
 function displayServant(pos)
@@ -457,7 +462,18 @@ function setNP(pos,level){
 	writeFull();
 }
 function displaySkill(pos,skill){
-	//TODO
+	if(PARTY[pos]>=0){
+		if(ACTION_SKILLS[ACTION_CURRENT][pos][skill]==1){
+			$("#skill_"+pos+"_"+skill).css("background","url("+SKILL_ICONS[SERVANTS[PARTY[pos]]["skill"+(skill+1)].icon]+")");
+		}
+		if(ACTION_SKILLS[ACTION_CURRENT][pos][skill]==0){
+			$("#skill_"+pos+"_"+skill).css("background","linear-gradient(black, black),url("+SKILL_ICONS[SERVANTS[PARTY[pos]]["skill"+(skill+1)].icon]+")");
+		}
+	}
+	else{
+		$("#skill_"+pos+"_"+skill).css("background","grey");
+	}
+	
 }
 function setSkill(pos,skill,level){
 	SKILLS[pos][skill]=level;
@@ -500,9 +516,21 @@ function changeCELevel(pos){
 	calcFull();
 	writeFull();
 }
+function displayMysticSkills(action){
+	for(var i=0;i<3;i++){
+		if(ACTION_SKILLS[ACTION_CURRENT][6][i]==1){
+			$("#mystic_skill_"+i).css("background","url("+SKILL_ICONS[MYSTIC_CODES[MYSTIC_CODE]["skill"+(i+1)].icon]+")");
+		}
+		if(ACTION_SKILLS[ACTION_CURRENT][6][i]==0){
+			$("#mystic_skill_"+i).css("background","linear-gradient(black, black),url("+SKILL_ICONS[MYSTIC_CODES[MYSTIC_CODE]["skill"+(i+1)].icon]+")");
+		}
+		
+	}
+}
 function displayMystic(){
 	if(MYSTIC_CODE >= 0){
 		$("#mystic_sel_div").css("background","url("+MYSTIC_CODES[MYSTIC_CODE].pic+")");
+		displayMysticSkills(0);
 	}
 	else{
 		$("#mystic_sel_div").css("background","grey");
@@ -545,7 +573,10 @@ function displayAllNP(action){
 	}
 }
 function displayNP(action,pos){
-	
+	var width = ACTION_NP[action][pos];
+	if(width>100){width=100;}
+	$("#np_value_"+pos).css("width",width+"%");
+	$("#np_text_"+pos).text(ACTION_NP[action][pos]);
 }
 // -1 turns = infinite
 function applyBuff(action,pos,name,value,turns,source)
@@ -569,6 +600,7 @@ function calcFull(){
 	ACTION_ORDER=[[0,1,2,3,4,5]];
 	ACTION_NP=[];
 	ACTION_BUFFS=[];
+	ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 	//calculate party attack values
 	PARTY_ATTACK=[];
 	for(var p=0;p<6;p++){
@@ -594,12 +626,14 @@ function calcFull(){
 			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1],63,CES[ce].name);
 		}
 	}
+	displayAllNP(0);
 }
 $( document ).ready(function (){
 	readFull();
 	// initialize servant displays
 	for(var p=0;p<6;p++)
 	{
+		//servant Portrait / selection
 		var html = `<div id = "part_sel_div_`+p+`" class = "party_sel_div"><div id = "serv_sel_div_`+p+`" class = "servant_sel_div" style="background:`+(PARTY[p]>=0?"url("+SERVANTS[PARTY[p]].pic+")":"grey")+`">
 		<div class ="servant_portrait"></div>`;
 		for(var s =0;s<3;s++){
@@ -612,15 +646,22 @@ $( document ).ready(function (){
 		}
 		
 		html += `<br><select id = "servant_sel_`+p+`" class = "servant_sel" onchange="setServant(`+p+`,this.value)">
-				<option value = -1>empty</option>
+				<option value = -1>Empty</option>
 			</select><select onchange = "setNP(`+p+`,this.value)" id = "servant_np_sel_`+p+` class = "servant_np_sel"">`;
 		for(var i=0;i<5;i++){
 			html+=`<option value="`+i+`"`+(PARTY_NP[p]==i?" selected":"")+`>NP `+(i+1)+`</option>`;
 		}
+		// CE SELECTION
 		html+=`</select>
 		</div><div id = "ce_sel_div_`+p+`" class = "ce_sel_div"><select onchange = "setCE(`+p+`,this.value)" class = "ce_sel" id = "ce_sel_`+p+`"><option value=-1>Empty</option></select>
 		<div class="ce_lvl" id = "ce_lvl_`+p+`" onclick="changeCELevel(`+p+`)"></div>
-		</div></div>`;
+		</div><div class = "np_gauge"><p class = "np_text" id = "np_text_`+p+`"></p><p class = "np_text">%</p><div class = "np_value" id = "np_value_`+p+`"></div></div>
+		<div class = "skills_div" id = "skills_div_`+p+`">`;
+		// SKILLS
+		for(var i=0;i<3;i++){
+			html+=`<div id = "skill_`+p+`_`+i+`" class = "skill"></div>`;
+		}
+		html+=`</div></div>`;
 		$("#serv_sel_main").append(html);
 		for(var i=0;i<SERVANTS.length;i++){
 			$("#servant_sel_"+p).append("<option value = "+i+""+(PARTY[p]==i?" selected":"")+">"+SERVANTS[i].name+"</option>");
@@ -633,8 +674,8 @@ $( document ).ready(function (){
 		displayServant(p);
 	}
 	//initialize mystic code display
-	var html = `<div id = "mystic_sel_div" class = "servant_sel_div" style="background:`+(MYSTIC_CODE>=0?"url("+MYSTIC_CODES[MYSTIC_CODE].pic+")":"grey")+`">
-	<div class ="servant_portrait"></div>`;
+	var html = `<div id = "mystic_div"><div id = "mystic_sel_div" class = "servant_sel_div" style="background:`+(MYSTIC_CODE>=0?"url("+MYSTIC_CODES[MYSTIC_CODE].pic+")":"grey")+`">
+	<div id = "mystic_portrait" class ="servant_portrait"></div>`;
 	html+=`<select id = "mystic_skill_sel" class = "skill_sel" onchange="setMysticLevel(this.value)">`;
 	for(var i=0;i<10;i++){
 		html += `<option `+(i==MYSTIC_CODE_LEVEL?"selected ":"")+`value = `+i+`>`+(i+1)+`</option>`;
@@ -642,12 +683,19 @@ $( document ).ready(function (){
 	html+=`</select>`;
 	
 	html += `<br><select id = "mystic_sel" class = "servant_sel" onchange="setMystic(parseInt(this.value))">
-		</select>
-	</div>`;
+		</select><div class = "skills_div" id = "mystic_skills_div">`;
+	// MYSTIC SKILLS
+	for(var i=0;i<3;i++){
+		html+=`<div id = "mystic_skill_`+i+`" class = "skill"></div>`;
+	}
+	html+=`</div></div></div>`;
 	$("#serv_sel_main").append(html);
 	for(var i=0;i<MYSTIC_CODES.length;i++){
 		$("#mystic_sel").append("<option value = "+i+""+(MYSTIC_CODE==i?" selected":"")+">"+MYSTIC_CODES[i].name+"</option>");
 	}
+	displayMysticSkills();
+	
+	// INITIALIZE ENEMY DISPLAY
 	for(var stage=0;stage<3;stage++){
 		$("#enemy_sel_main").append("<div class = \"enemy_stage\" id = \"enemy_stage_"+stage+"\"><div class = \"stage_header\">Wave "+(stage+1)+"/3</div></div>");
 		for(var enemy=0;enemy<3;enemy++){
@@ -661,6 +709,8 @@ $( document ).ready(function (){
 			displayEnemy(stage,enemy);
 		}
 	}
+	
+	// calculate entire run
 	calcFull();
 });
 
