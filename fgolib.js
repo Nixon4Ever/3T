@@ -1,28 +1,48 @@
 var VERSION = 1;
-var SKILL_ICONS = {np:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Startnp.png",
-            crit:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Critdmg.png",
-            arts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Artsup.png",
-            def:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Shieldup.png",
-            atk:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Dmg_up.png",
-            guts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Guts.png",
-            divinity:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Divinity.png",
-            np_gain:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npacqui.png",
-			orderchange: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Orderchange.png",
-			stun: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Stun.png",
-			shuffle: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Commandshuffle.png",
-			np_dmg: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npdmg.png",
-			buster_stars: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2019-06/BusterStarGatherUp.png",
-			heal:"https://vignette.wikia.nocookie.net/fategrandorder/images/6/6e/Heal.png/revision/latest/scale-to-width-down/45"
-			}
+var SKILL_ICONS = {
+	np:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Startnp.png",
+	crit:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Critdmg.png",
+	arts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Artsup.png",
+	def:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Shieldup.png",
+	atk:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Dmg_up.png",
+	guts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Guts.png",
+	divinity:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Divinity.png",
+	np_gain:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npacqui.png",
+	orderchange: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Orderchange.png",
+	stun: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Stun.png",
+	shuffle: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Commandshuffle.png",
+	np_dmg: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npdmg.png",
+	buster_stars: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2019-06/BusterStarGatherUp.png",
+	heal:"https://vignette.wikia.nocookie.net/fategrandorder/images/6/6e/Heal.png/revision/latest/scale-to-width-down/45"
+}
+var BUFF_ICONS = {
+	atk: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Attackup.png/revision/latest/scale-to-width-down/25?cb=20180105145934",
+	dmg: "https://vignette.wikia.nocookie.net/fategrandorder/images/f/f5/Powerup.png/revision/latest/scale-to-width-down/25?cb=20180105152628",
+	buffchance: "https://vignette.wikia.nocookie.net/fategrandorder/images/9/9a/Statusup.png/revision/latest/scale-to-width-down/25?cb=20180105152952",
+	debuffchance: "https://vignette.wikia.nocookie.net/fategrandorder/images/9/9a/Statusup.png/revision/latest/scale-to-width-down/25?cb=20180105152952",
+	quick: "https://vignette.wikia.nocookie.net/fategrandorder/images/b/b8/Quickupstatus.png/revision/latest/scale-to-width-down/25?cb=20180105152725",
+	arts: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Artsupstatus.png/revision/latest/scale-to-width-down/25?cb=20180105151017",
+	buster: "https://vignette.wikia.nocookie.net/fategrandorder/images/a/ad/Busterupstatus.png/revision/latest/scale-to-width-down/25?cb=20180105151501",
+	np_gain: "https://vignette.wikia.nocookie.net/fategrandorder/images/c/c5/Npchargeup.png/revision/latest/scale-to-width-down/25?cb=20180105152329",
+	np_regen: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Npgainturn.png/revision/latest/scale-to-width-down/25?cb=20180105152353",
+	np_dmg: "https://vignette.wikia.nocookie.net/fategrandorder/images/3/33/Nppowerup.png/revision/latest/scale-to-width-down/25?cb=20180105152443",
+	crit: "https://vignette.wikia.nocookie.net/fategrandorder/images/5/55/Critdmgup.png/revision/latest/scale-to-width-down/25?cb=20180105151924",
+}
 var EFFECTS = {
 	np_gain:"NP Gain",
-	arts:"Arts",
 	np_gauge:"NP Gauge",
+	np_dmg:"NP Damage",
+	np_regen:"NP Regeneration",
+	arts:"Arts",
+	buster:"Buster",
+	quick:"Quick",
 	atk:"Attack",
 	dmg:"Damage +",
 	def_down:"Defense Down",
 	dragon_dmg:"Dragon Damage",
-	heal:"Heal"
+	heal:"Heal",
+	crit:"Crit Damage",
+	buffchance:"Buff Chance Up"
 }
 var CLASSES_ICONS = {
 	saber:"https://gamepress.gg/grandorder/sites/grandorder/files/images/saber.png",
@@ -437,6 +457,29 @@ function readFull() {
 		nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
 	}
 }
+function displayBuffs(){
+	for(var p=0;p<6;p++){
+		var buffs = ACTION_BUFFS[ACTION_CURRENT][p];
+		var str = "";
+		$("#buffs_div_"+p).empty();
+		for(buff in buffs){
+			str += `<div class = "buff tooltip" style= "background-image:url(`+BUFF_ICONS[buff]+`)"><span class = 'tooltiptext'>`;
+			var causes = "";
+			var total = 0;
+			for(const cause of buffs[buff]){
+				total+=parseFloat(cause[0]);
+				if(cause[1]==-1){
+					causes+=`<br>`+cause[0]+`% - `+cause[2];
+				}
+				else{
+					causes+=`<br>`+cause[0]+`% - `+cause[2]+` for `+cause[1]+` turn(s)`;
+				}
+			}
+			str+=EFFECTS[buff]+`: `+total+`%`+causes+`</span></div>`;
+		}
+		$("#buffs_div_"+p).append(str);
+	}
+}
 function displayServant(pos)
 {
 	if(PARTY[pos] >= 0){
@@ -615,17 +658,24 @@ function calcFull(){
 			PARTY_ATTACK[p]=0;
 		}
 	}
-	//calculate buffs from CES
 	ACTION_NP[0]=[0,0,0,0,0,0];
 	ACTION_BUFFS[0]=[{},{},{},{},{},{}];
-	for(var p=0;p<6;p++){
-		ACTION_BUFFS[0][p]=[];
+	for(var p=0;p<6;p++)
+	{
+		// calculate class skill buffs
+		if(PARTY[p]>=0){
+			for(const skill of SERVANTS[PARTY[p]].skills){
+				applyBuff(0,p,skill[0],skill[1],-1,"Class Skill");
+			}
+		}
+		//calculate buffs from CES
 		var ce = PARTY_CES[p];
 		if(ce < 0 || ce > CES.length){continue;} // skip if no ce given
 		for(var i=0;i<CES[ce].effect.length;i++){
-			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1],63,CES[ce].name);
+			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1][i],-1,CES[ce].name);
 		}
 	}
+	displayBuffs();
 	displayAllNP(0);
 }
 $( document ).ready(function (){
@@ -661,7 +711,7 @@ $( document ).ready(function (){
 		for(var i=0;i<3;i++){
 			html+=`<div id = "skill_`+p+`_`+i+`" class = "skill"></div>`;
 		}
-		html+=`</div></div>`;
+		html+=`</div><div id = "buffs_div_`+p+`" class = "buffs_div"></div></div>`;
 		$("#serv_sel_main").append(html);
 		for(var i=0;i<SERVANTS.length;i++){
 			$("#servant_sel_"+p).append("<option value = "+i+""+(PARTY[p]==i?" selected":"")+">"+SERVANTS[i].name+"</option>");

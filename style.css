@@ -1,3 +1,6 @@
+html{
+	font-family:Arial!important;
+}
 #serv_sel_main{
 	display: block;
     width: 100%;
@@ -149,4 +152,46 @@
 }
 .skill-used{
 	cursor: default;
+}
+.buffs_div{
+	width: 150px;
+    position: absolute;
+    display: block;
+}
+.buff{
+	height: 25px;
+    width: 25px;
+    display: inline-block;
+    cursor: pointer;
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+    position: absolute;
+    width: 300px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    z-index: 1;
+	top: 135%;
+    left: 50%;
+    margin-left: -150px;
+	opacity: .95;
+}
+.tooltiptext::after{
+	content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+.tooltip{
+	position: relative;
 }
