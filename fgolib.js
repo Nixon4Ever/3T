@@ -665,7 +665,7 @@ function calcFull(){
 		// calculate class skill buffs
 		if(PARTY[p]>=0){
 			for(const skill of SERVANTS[PARTY[p]].skills){
-				applyBuff(0,p,skill[0],skill[1],-1,"Class Skill");
+				applyBuff(0,p,skill[0],skill[1],-1,"Passive");
 			}
 		}
 		//calculate buffs from CES
