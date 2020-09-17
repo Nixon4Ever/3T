@@ -30,6 +30,7 @@ var BUFF_ICONS = {
 	np_regen: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Npgainturn.png/revision/latest/scale-to-width-down/25?cb=20180105152353",
 	np_dmg: "https://vignette.wikia.nocookie.net/fategrandorder/images/3/33/Nppowerup.png/revision/latest/scale-to-width-down/25?cb=20180105152443",
 	crit: "https://vignette.wikia.nocookie.net/fategrandorder/images/5/55/Critdmgup.png/revision/latest/scale-to-width-down/25?cb=20180105151924",
+	dragon_dmg:"https://vignette.wikia.nocookie.net/fategrandorder/images/f/f5/Powerup.png/revision/latest/scale-to-width-down/25?cb=20180105152628",
 }
 var EFFECTS = {
 	np_gain:"NP Gain",
@@ -106,23 +107,23 @@ var SERVANTS = [
 {name : "Sieg", atk: 8394,class:"caster",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,np_type:"arts",np_hits:3,np_dmg:[450,600,675,712.5,750],np_effects:[["def_down",3,20]],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2018-08/208_Sieg_4.png",
                     skills: [["arts",6.5]],
-                    skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target:["self"],        effect:["np_gain"],                turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
-                    skill2: {name:"Magecraft C",                icon:"arts",    target:["self"],        effect:["arts"],                  turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
-                    skill3: {name:"Dead-Count Shapeshifter EX", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
+                    skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
+                    skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
+                    skill3: {name:"Dead-Count Shapeshifter EX",  target_real:"self", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
 },
 {name: "Paracelsus", atk: 6711,class:"caster",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,np_type:"arts",np_hits:3,np_dmg:[400,500,550,575,600],np_effects:[],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2017-12/0794.jpg",
                     skills: [["arts",10]],
-                    skill1: {name:"Rapid Casting A",        icon:"np",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
-                    skill2: {name:"Elemental A+",           icon:"arts", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
-                    skill3: {name:"Philosopher's Stone A+", icon:"guts", target:["taget"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+                    skill1: {name:"Rapid Casting A",        icon:"np",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
+                    skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
+                    skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {name:"Waver", atk: 10598,class:"caster",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,np_type:"arts",np_hits:0,np_dmg:[0,0,0,0,0],np_effects:["def_down",3,30],
 pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2017-07/037%20Zhuge%20Liang%20%28El-Melloi%20II%29%201.png",
                     skills: [["arts",10]],
-                    skill1: {name:"Discerning Eye A",        icon:"crit",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
-                    skill2: {name:"Tactician's Advice A+",   icon:"def",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
-                    skill3: {name:"Tactician's Command A+",  icon:"atk",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
+                    skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
+                    skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
+                    skill3: {name:"Tactician's Command A+",  icon:"atk",  target_real:"all",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
 }];
 var CES = [
 {name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
@@ -497,6 +498,83 @@ function readFull() {
 		nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
 	}
 }
+function positionPopup(){
+	$("#popup").attr("viewBox","0 0 "+$("body").width()+" "+$("body").height());
+	$("#mask_back").attr("width",$("body").width());
+	$("#mask_back").attr("height",$("body").height());
+	$("#cut_back").attr("width",$("body").width());
+	$("#cut_back").attr("height",$("body").height());
+	
+	for(var p=0;p<6;p++){
+		$("#cut_serv_"+p).attr("x",$("#part_sel_div_"+p).offset().left);
+		$("#cut_serv_"+p).attr("y",$("#part_sel_div_"+p).offset().top);
+		$("#cut_serv_"+p).attr("height",$("#part_sel_div_"+p).height());
+		$("#cut_serv_"+p).attr("width",$("#part_sel_div_"+p).width());
+		
+		$("#serv_btn_"+p).css("left",$("#part_sel_div_"+p).offset().left+"px");
+		$("#serv_btn_"+p).css("top",$("#part_sel_div_"+p).offset().top+"px");
+		$("#serv_btn_"+p).css("height",$("#part_sel_div_"+p).height()+"px");
+		$("#serv_btn_"+p).css("width",$("#part_sel_div_"+p).width()+"px");
+	}
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			$("#cut_enemy_"+w+"_"+e).css("transform","translateX(0)");
+			$("#cut_enemy_"+w+"_"+e).attr("x",$("#enemy_"+w+"_"+e).offset().left);
+			$("#cut_enemy_"+w+"_"+e).attr("y",$("#enemy_"+w+"_"+e).offset().top);
+			$("#cut_enemy_"+w+"_"+e).attr("height",$("#enemy_"+w+"_"+e).height());
+			$("#cut_enemy_"+w+"_"+e).attr("width",$("#enemy_"+w+"_"+e).width());
+			
+			$("#enemy_btn_"+w+"_"+e).css("left",$("#enemy_"+w+"_"+e).offset().left+"px");
+			$("#enemy_btn_"+w+"_"+e).css("top",$("#enemy_"+w+"_"+e).offset().top+"px");
+			$("#enemy_btn_"+w+"_"+e).css("height",$("#enemy_"+w+"_"+e).height()+"px");
+			$("#enemy_btn_"+w+"_"+e).css("width",$("#enemy_"+w+"_"+e).width()+"px");
+		}
+	}
+}
+
+function popupReturn(value,action){
+	// hide popup
+	$("#popup_div").css("display","none");
+	action(value);
+}
+// mode: 
+// 0 = frontline servants
+// 1 = all servants
+// 2 = wave 0
+// 3 = wave 1
+// 4 = wave 2
+function popup(mode,action,text){
+	for(var p=0;p<6;p++){
+		if((p<3&&mode==0 || mode == 1)){
+			$("#serv_btn_"+p).addClass("cut_btn_active");
+			$("#serv_btn_"+p).attr("onclick","popupReturn("+p+","+action+")");
+			$("#cut_serv_"+p).attr("fill","#000");
+		}
+		else{
+			$("#serv_btn_"+p).removeClass("cut_btn_active");
+			$("#serv_btn_"+p).attr("onclick","");
+			$("#cut_serv_"+p).attr("fill","#FFF");
+		}
+	}
+	for(var w=0;w<3;w++){
+		if(w == (mode-2)){
+			for(var e=0;e<3;e++){
+				$("#enemy_btn_"+w+"_"+e).addClass("cut_btn_active");
+				$("#enemy_btn_"+w+"_"+e).attr("onclick","popupReturn("+e+","+action+")");
+				$("#cut_enemy_"+w+"_"+e).attr("fill","#000");
+			}
+		}
+		else{
+			for(var e=0;e<3;e++){
+				$("#enemy_btn_"+w+"_"+e).removeClass("cut_btn_active");
+				$("#enemy_btn_"+w+"_"+e).attr("onclick","");
+				$("#cut_enemy_"+w+"_"+e).attr("fill","#FFF");
+			}
+		}
+	}
+	// enable popup
+	$("#popup_div").css("display","block");
+}
 function displayBuffs(){
 	for(var p=0;p<6;p++){
 		var real_pos = ACTION_ORDER[ACTION_CURRENT][p];
@@ -870,10 +948,49 @@ function calcFull(){
 	viewAction();
 }
 function clickAction(pos,action){
-	//TODO MAKE SURE ITS VALID
-	//TODO TARGET SELECT
-	addAction(pos,action,0,0);
+	//MAKE SURE ITS VALID
+	if(ACTION_SKILLS[ACTION_SKILLS.length-1][pos][action]==0){
+		//NOT VALID
+		// TODO: WARNING DIALOGUE
+		return;
+	}
+	//TARGET SELECT
+	if(pos >= 0 && pos <= 2)				// 			servant action
+	{
+		var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+		if(action >=0 && action <= 2) 			// 		servant skill
+		{
+			var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
+			if(skill.target_real == "aoe" || skill.target_real == "all" || skill.target_real == "self")
+			{
+				// JUST ADD THE ACTION, NO TARGETING POPUP
+				addAction(pos,action,0,0);
+			}
+			else if(skill.target_real == "target")
+			{
+				// need a current servants popup
+				popup(0,"function(tar){addAction("+pos+","+action+",tar,0)}");
+			}
+			else if(skill.target_real == "st")
+			{
+				// need a current servants popup
+				// TODO: ADD OTHER WAVES
+				popup(2,"function(tar){addAction("+pos+","+action+",tar,0)}");
+			}
+		}
+		else if(action == 3)// 				servant NP
+		{
+			console.log("NPS NOT YET ADDED");
+		}
+	}
+	else if(pos == 3){ // 					mystic code action
+		console.log("MYSTIC NOT ADDED");
+	}
+	else{
+		console.log("INVALID ACTION!");
+	}
 }
+
 $( document ).ready(function (){
 	readFull();
 	// initialize servant displays
@@ -957,11 +1074,22 @@ $( document ).ready(function (){
 			displayEnemy(stage,enemy);
 		}
 	}
+	// INITIALIZE POPUP
+	for(var p=0;p<6;p++){
+		$("#popup_div").append(`<div class = "cut_btn serv_btn" id = "serv_btn_`+p+`"></div>`);
+	}
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			$("#popup_div").append(`<div class = "cut_btn enemy_btn" id = "enemy_btn_`+w+`_`+e+`"></div>`);
+		}
+	}
+	positionPopup();
 	// calculate entire run
 	calcFull();
 	viewAction();
 });
 
+window.addEventListener("resize", positionPopup);
 
 
 

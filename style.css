@@ -54,7 +54,7 @@ html{
 	background-position-y: -20px!important;
 }
 .divider{
-	height:50px;
+	height:52px;
 }
 #mystic_div{
 	margin-left: 50px;
@@ -204,9 +204,6 @@ html{
 	border: 2px solid #00000000;
     background-repeat: no-repeat;
 }
-.actions_div{
-	
-}
 #enemy_sel_main{
 	table-layout: fixed;
     width: 100%;
@@ -227,4 +224,40 @@ html{
 .actions{
 	text-align: left;
     vertical-align: top;
+	height: 100px!important;
+}
+#popup{
+	position: fixed;
+    z-index: 3;
+}
+body{
+	margin:0;
+}
+.cut{
+	
+}
+.cut:hover{
+	background-color:"grey";
+}
+.cut_serv{
+	
+}
+#popup_div{
+	width: 100%;
+    height: 100%;
+    position: fixed;
+	z-index: 5;
+	display:none;
+}
+.cut_btn{
+	position:absolute;
+	z-index:10;
+	background-color: #ffffff00;
+    transition: background-color .1s;
+}
+.cut_btn_active{
+	cursor:pointer;
+}
+.cut_btn_active:hover{
+	background-color: #edfffd4a;
 }
