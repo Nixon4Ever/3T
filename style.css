@@ -6,11 +6,6 @@ html{
     width: 100%;
     text-align: center;
 }
-#enemy_sel_main{
-	display: block;
-    width: 100%;
-    text-align: center;
-}
 .enemy_stage{
 	display: inline-block;
 	width:33%;
@@ -167,25 +162,28 @@ html{
 .tooltip .tooltiptext {
 	visibility: hidden;
     position: absolute;
-    width: 300px;
+    width: 350px;
     background-color: #555;
     color: #fff;
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
     z-index: 1;
-	top: 135%;
+    top: 135%;
     left: 50%;
-    margin-left: -150px;
-	opacity: .95;
+    margin-left: -175px;
+    opacity: .95;
+}
+.disabled{
+	cursor:default!important;
 }
 .tooltiptext::after{
 	content: "";
     position: absolute;
     bottom: 100%;
     left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
+    margin-left: -10px;
+    border-width: 10px;
     border-style: solid;
     border-color: transparent transparent #555 transparent;
 }
@@ -194,4 +192,39 @@ html{
 }
 .tooltip{
 	position: relative;
+}
+.action.action-active{
+	border-color: black;
+}
+.action{
+	height: 45px;
+    width: 45px;
+    background-size: cover;
+    display: inline-block;
+	border: 2px solid #00000000;
+    background-repeat: no-repeat;
+}
+.actions_div{
+	
+}
+#enemy_sel_main{
+	table-layout: fixed;
+    width: 100%;
+    text-align: center;
+}
+#enemy_sel_main th {
+	width: 33%;
+    height: 30px;
+    background-color: #f1f1f1;
+    box-shadow: 0px 0px 0px 1px #848484;
+}
+#enemy_sel_main td {
+	width: 33%;
+    height: 80px;
+    background-color: #f1f1f1;
+    box-shadow: 0px 0px 0px 1px #848484;
+}
+.actions{
+	text-align: left;
+    vertical-align: top;
 }

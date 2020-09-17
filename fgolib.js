@@ -40,7 +40,7 @@ var EFFECTS = {
 	buster:"Buster",
 	quick:"Quick",
 	atk:"Attack",
-	dmg:"Damage +",
+	dmg:"Damage+",
 	def_down:"Defense Down",
 	dragon_dmg:"Dragon Damage",
 	heal:"Heal",
@@ -49,6 +49,19 @@ var EFFECTS = {
 	np_arts: "Arts NP",
 	np_buster: "Buster NP",
 	np_quick: "Quick NP",
+}
+var EFFECT_FLAT ={
+	atk: false,
+	dmg: true,
+	buffchance: false,
+	debuffchance: false,
+	quick: false,
+	arts: false,
+	buster: false,
+	np_gain: false,
+	np_regen: false,
+	np_dmg: false,
+	crit: false,
 }
 var CLASSES_ICONS = {
 	saber:"https://gamepress.gg/grandorder/sites/grandorder/files/images/saber.png",
@@ -109,7 +122,7 @@ pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image
                     skills: [["arts",10]],
                     skill1: {name:"Discerning Eye A",        icon:"crit",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
                     skill2: {name:"Tactician's Advice A+",   icon:"def",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
-                    skill3: {name:"Tactician's Command A+",  icon:"atk",    target:["all"],     effect:["np_gain","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
+                    skill3: {name:"Tactician's Command A+",  icon:"atk",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
 }];
 var CES = [
 {name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
@@ -330,6 +343,18 @@ var ACTIONS = [[]];
 // special mode which makes everything ignore input while javascript does its magic
 var MASTER_MODE=false;
 
+// fixes tooltips that might be offscreen
+function fixToolTips(){
+	$("#style_holder").empty();
+	$(".tooltiptext").each(function(i,el){
+		el.id = "tooltiptext_"+i;
+		var xpos = el.getBoundingClientRect().x;
+		if(el.getBoundingClientRect().x < 0){
+			$(el).css("transform","translateX("+(-1*xpos)+"px)");
+			$("#style_holder").append("<style>#tooltiptext_"+i+"::after{transform:translateX("+xpos+"px);}</style>")
+		}
+	});
+}
 function writeFull() {
 	URL = {str:""};
 	//write version
@@ -482,16 +507,17 @@ function displayBuffs(){
 			str += `<div class = "buff tooltip" style= "background-image:url(`+BUFF_ICONS[buff]+`)"><span class = 'tooltiptext'>`;
 			var causes = "";
 			var total = 0;
+			var suf = EFFECT_FLAT[buff]?"":"%";
 			for(const cause of buffs[buff]){
 				total+=parseFloat(cause[0]);
 				if(cause[1]==-1){
-					causes+=`<br>`+cause[0]+`% - `+cause[2];
+					causes+=`<br>`+cause[0]+suf+` - `+cause[2];
 				}
 				else{
-					causes+=`<br>`+cause[0]+`% - `+cause[2]+` for `+cause[1]+` turn(s)`;
+					causes+=`<br>`+cause[0]+suf+` - `+cause[2]+` for `+cause[1]+` turn(s)`;
 				}
 			}
-			str+=EFFECTS[buff]+`: `+total+`%`+causes+`</span></div>`;
+			str+=EFFECTS[buff]+`: `+total+suf+causes+`</span></div>`;
 		}
 		$("#buffs_div_"+p).append(str);
 	}
@@ -528,13 +554,16 @@ function displaySkill(pos,skill){
 	if(PARTY[real_pos]>=0){
 		if(ACTION_SKILLS[ACTION_CURRENT][real_pos][skill]==1){
 			$("#skill_"+pos+"_"+skill).css("background","url("+SKILL_ICONS[SERVANTS[PARTY[real_pos]]["skill"+(skill+1)].icon]+")");
+			$("#skill_"+pos+"_"+skill).removeClass("disabled");
 		}
 		else{
 			$("#skill_"+pos+"_"+skill).css("background","linear-gradient(black, black),url("+SKILL_ICONS[SERVANTS[PARTY[real_pos]]["skill"+(skill+1)].icon]+")");
+			$("#skill_"+pos+"_"+skill).addClass("disabled");
 		}
 	}
 	else{
 		$("#skill_"+pos+"_"+skill).css("background","grey");
+		$("#skill_"+pos+"_"+skill).addClass("disabled");
 	}
 	
 }
@@ -655,6 +684,7 @@ function displayNP(pos){
 // -1 turns = infinite, assumes pos is the "real" pos
 function applyBuff(action,pos,name,value,turns,source)
 {
+	//console.log("[action: \""+action+"\", pos: \""+pos+"\", name: \""+name+"\", value: \""+value+"\", turns: \""+turns+"\", source: \""+source+"\"]");
 	if(name == "np_gauge"){
 		ACTION_NP[action][pos]+=parseInt(value);
 	}
@@ -699,9 +729,27 @@ function viewAction(){
 	displayBuffs();
 	displayMysticSkills();
 	
-	
-	
+	// actions viewer
+	$(".actions").empty();
+	var cur_wave=0;
+	for(var a =1;a<ACTIONS.length;a++){
+		var servant = PARTY[ACTION_ORDER[a][ACTIONS[a][0]]];
+		var skill = SERVANTS[servant]["skill"+(1+ACTIONS[a][1])];
+		$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+ACTION_ORDER[a][ACTIONS[a][0]]+`)</span></div>`);
+	}
+	fixToolTips();
 	MASTER_MODE=false;
+}
+function setViewAction(action){
+	ACTION_CURRENT = action;
+	viewAction();
+}
+function printArray(array){
+	console.log("[");
+	for(var i=0;i<array.length;i++){
+		console.log(array[i]);
+	}
+	console.log("]");
 }
 // targets/pos assumed to be current_pos NOT real_pos
 // old is if the action already exists and we are recalculating
@@ -724,10 +772,10 @@ function addAction(pos,action,target1,target2,old){
 		ACTION_CURRENT+=1;
 	}
 	// duplicate previous records
-	ACTION_BUFFS.push(ACTION_BUFFS[last]);
-	ACTION_NP.push(ACTION_NP[last]);
-	ACTION_ORDER.push(ACTION_ORDER[last]);
-	ACTION_SKILLS.push(ACTION_SKILLS[last]);
+	ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[last])));
+	ACTION_NP.push(ACTION_NP[last].slice());
+	ACTION_ORDER.push(ACTION_ORDER[last].slice());
+	ACTION_SKILLS.push(ACTION_SKILLS[last].slice());
 	// calculate new values:
 	if(pos >= 0 && pos <= 2)				// 			servant action
 	{
@@ -735,6 +783,8 @@ function addAction(pos,action,target1,target2,old){
 		var real_pos = ACTION_ORDER[last][pos];
 		if(action >=0 && action <= 2) 			// 		servant skill
 		{
+			//console.log("BEFORE");
+			//printArray(ACTION_NP);
 			// APPLY THE ACTUAL BUFFS/DEBUFFS
 			var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
 			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
@@ -744,12 +794,14 @@ function addAction(pos,action,target1,target2,old){
 					}
 				}
 				else if(skill.target[e] == "target"){
-					applyBuff(ACTION_CURRENT,ACTION_ORDER[target1],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+					applyBuff(ACTION_CURRENT,ACTION_ORDER[ACTION_CURRENT][target1],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
 				}
 				else if(skill.target[e] == "self"){
 					applyBuff(ACTION_CURRENT,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
 				}
 			}
+			//console.log("AFTER");
+			//printArray(ACTION_NP);
 			// disable the skill
 			ACTION_SKILLS[ACTION_CURRENT][real_pos][action]=0;
 		}
@@ -817,6 +869,11 @@ function calcFull(){
 	}
 	viewAction();
 }
+function clickAction(pos,action){
+	//TODO MAKE SURE ITS VALID
+	//TODO TARGET SELECT
+	addAction(pos,action,0,0);
+}
 $( document ).ready(function (){
 	readFull();
 	// initialize servant displays
@@ -848,7 +905,12 @@ $( document ).ready(function (){
 		<div class = "skills_div" id = "skills_div_`+p+`">`;
 		// SKILLS
 		for(var i=0;i<3;i++){
-			html+=`<div id = "skill_`+p+`_`+i+`" class = "skill"></div>`;
+			if(p < 3){ // is frontline member
+				html+=`<div onclick="clickAction(`+p+`,`+i+`)" id = "skill_`+p+`_`+i+`" class = "skill"></div>`;
+			}
+			else{
+				html+=`<div style = "cursor:default!important" id = "skill_`+p+`_`+i+`" class = "skill"></div>`;
+			}
 		}
 		html+=`</div><div id = "buffs_div_`+p+`" class = "buffs_div"></div></div>`;
 		$("#serv_sel_main").append(html);
@@ -883,9 +945,9 @@ $( document ).ready(function (){
 	
 	// INITIALIZE ENEMY DISPLAY
 	for(var stage=0;stage<3;stage++){
-		$("#enemy_sel_main").append("<div class = \"enemy_stage\" id = \"enemy_stage_"+stage+"\"><div class = \"stage_header\">Wave "+(stage+1)+"/3</div></div>");
 		for(var enemy=0;enemy<3;enemy++){
-			$("#enemy_stage_"+stage).append("<div class = \"enemy_div\" id = \"enemy_div_"+stage+"_"+enemy+"\"><img class = \"enemy_img\" id =\"enemy_img_"+stage+"_"+enemy+"\"><select class = \"enemy_sel\" id = \"enemy_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemy("+stage+","+enemy+",this.value)\"></select><select class = \"enemy_attr_sel\" id = \"enemy_attr_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemyAttr("+stage+","+enemy+",this.value)\"></select><input class = \"enemy_hp\" type = \"number\" step = \"1\" value = \""+ENEMIES_HP[stage][enemy]+"\" onchange=\"setEnemyHP("+stage+","+enemy+",this.value)\"/></div>");
+			
+			$("#enemy_"+stage+"_"+enemy).append("<img class = \"enemy_img\" id =\"enemy_img_"+stage+"_"+enemy+"\"><select class = \"enemy_sel\" id = \"enemy_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemy("+stage+","+enemy+",this.value)\"></select><select class = \"enemy_attr_sel\" id = \"enemy_attr_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemyAttr("+stage+","+enemy+",this.value)\"></select><input class = \"enemy_hp\" type = \"number\" step = \"1\" value = \""+ENEMIES_HP[stage][enemy]+"\" onchange=\"setEnemyHP("+stage+","+enemy+",this.value)\"/>");
 			for(var i=0;i<NUM_CLASS.length;i++){
 				$("#enemy_sel_"+stage+"_"+enemy).append("<option value="+i+(ENEMIES_CLASS[stage][enemy]==i?" selected":"")+">"+NUM_CLASS[i]+"</option>");
 			}
@@ -894,7 +956,6 @@ $( document ).ready(function (){
 			}
 			displayEnemy(stage,enemy);
 		}
-		$("#enemy_stage_"+stage).append(`<div class = "actions_div" id ="actions_`+stage+`"></div>`);
 	}
 	// calculate entire run
 	calcFull();
