@@ -13,7 +13,10 @@ var SKILL_ICONS = {
 	shuffle: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Commandshuffle.png",
 	np_dmg: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npdmg.png",
 	buster_stars: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2019-06/BusterStarGatherUp.png",
-	heal:"https://vignette.wikia.nocookie.net/fategrandorder/images/6/6e/Heal.png/revision/latest/scale-to-width-down/45"
+	heal:"https://vignette.wikia.nocookie.net/fategrandorder/images/6/6e/Heal.png/revision/latest/scale-to-width-down/45",
+	np_arts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/width50px/public/2017-07/Command_Card_Arts_0.png",
+	np_quick:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/width50px/public/2017-07/Command_Card_Quick.png",
+	np_buster:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/width50px/public/2017-07/Command_Card_Buster.png"
 }
 var BUFF_ICONS = {
 	atk: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Attackup.png/revision/latest/scale-to-width-down/25?cb=20180105145934",
@@ -42,7 +45,10 @@ var EFFECTS = {
 	dragon_dmg:"Dragon Damage",
 	heal:"Heal",
 	crit:"Crit Damage",
-	buffchance:"Buff Chance Up"
+	buffchance:"Buff Chance Up",
+	np_arts: "Arts NP",
+	np_buster: "Buster NP",
+	np_quick: "Quick NP",
 }
 var CLASSES_ICONS = {
 	saber:"https://gamepress.gg/grandorder/sites/grandorder/files/images/saber.png",
@@ -299,22 +305,30 @@ var PARTY_CES = [-1,-1,-1,-1,-1,-1];
 // level of ces, 0=lvl1, 1 = mlb, 2= lvl MAX
 var PARTY_CE_LEVEL=[0,0,0,0,0,0];
 // list of all actions taken like skills, nps, fishing or finishing
-var ACTIONS=[];
+var ACTIONS_RAW=[[]];
 
 // CALCULATED DATA
 // ---------------
 //calculated attack of servants /w CE & 1000 fous
 var PARTY_ATTACK=[];
 // order of party servants after this action
-var ACTION_ORDER=[];
+// example: [0,1,2,3,4,5] is default
+// 			[1,0,2,3,4,5] means 0 and 1 are swapped
+//			ACTION_ORDER[0..2] are frontline, [3..5] are backline
+var ACTION_ORDER=[0,1,2,3,4,5];
 // np gauge of each servant after the last action
-var ACTION_NP=[];
+var ACTION_NP=[0,0,0,0,0,0];
 // buffs on each servant after the last action
-var ACTION_BUFFS=[];
+var ACTION_BUFFS=[{}];
 // which skills are currently avaiblible, [6] is mystic code
 var ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 // current action we are viewing, 0 is beginning, default
 var ACTION_CURRENT=0;
+// all actions taken, in more readable format
+var ACTIONS = [[]];
+
+// special mode which makes everything ignore input while javascript does its magic
+var MASTER_MODE=false;
 
 function writeFull() {
 	URL = {str:""};
@@ -419,7 +433,7 @@ function readFull() {
 		for(var j=0;j<3;j++){
 			var skill = readNum(URL_READ,1);
 			if(!isNaN(skill)){
-				SKILLS[i][j]=skill;
+				SKILLS[i][j]=parseInt(skill);
 			} else{ SKILLS[i][j]=0; }
 		}
 	}
@@ -451,15 +465,17 @@ function readFull() {
 		}
 	}
 	//read all actions
+	ACTIONS_RAW = [[]];
 	var nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
 	while(!isNaN(nextAction[1])){
-		ACTIONS.push(nextAction);
+		ACTIONS_RAW.push(nextAction);
 		nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
 	}
 }
 function displayBuffs(){
 	for(var p=0;p<6;p++){
-		var buffs = ACTION_BUFFS[ACTION_CURRENT][p];
+		var real_pos = ACTION_ORDER[ACTION_CURRENT][p];
+		var buffs = ACTION_BUFFS[ACTION_CURRENT][real_pos];
 		var str = "";
 		$("#buffs_div_"+p).empty();
 		for(buff in buffs){
@@ -482,8 +498,9 @@ function displayBuffs(){
 }
 function displayServant(pos)
 {
-	if(PARTY[pos] >= 0){
-		$("#serv_sel_div_"+pos).css("background","url("+SERVANTS[PARTY[pos]].pic+")");
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	if(PARTY[real_pos] >= 0){
+		$("#serv_sel_div_"+pos).css("background","url("+SERVANTS[PARTY[real_pos]].pic+")");
 	}
 	else{
 		$("#serv_sel_div_"+pos).css("background","grey");
@@ -494,23 +511,26 @@ function displayServant(pos)
 }
 function setServant(pos,servant)
 {
+	if(MASTER_MODE){return;}
 	PARTY[pos]=servant;
 	displayServant(pos,servant);
 	calcFull();
 	writeFull();
 }
 function setNP(pos,level){
+	if(MASTER_MODE){return;}
 	PARTY_NP[pos]=level;
 	calcFull();
 	writeFull();
 }
 function displaySkill(pos,skill){
-	if(PARTY[pos]>=0){
-		if(ACTION_SKILLS[ACTION_CURRENT][pos][skill]==1){
-			$("#skill_"+pos+"_"+skill).css("background","url("+SKILL_ICONS[SERVANTS[PARTY[pos]]["skill"+(skill+1)].icon]+")");
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	if(PARTY[real_pos]>=0){
+		if(ACTION_SKILLS[ACTION_CURRENT][real_pos][skill]==1){
+			$("#skill_"+pos+"_"+skill).css("background","url("+SKILL_ICONS[SERVANTS[PARTY[real_pos]]["skill"+(skill+1)].icon]+")");
 		}
-		if(ACTION_SKILLS[ACTION_CURRENT][pos][skill]==0){
-			$("#skill_"+pos+"_"+skill).css("background","linear-gradient(black, black),url("+SKILL_ICONS[SERVANTS[PARTY[pos]]["skill"+(skill+1)].icon]+")");
+		else{
+			$("#skill_"+pos+"_"+skill).css("background","linear-gradient(black, black),url("+SKILL_ICONS[SERVANTS[PARTY[real_pos]]["skill"+(skill+1)].icon]+")");
 		}
 	}
 	else{
@@ -519,31 +539,36 @@ function displaySkill(pos,skill){
 	
 }
 function setSkill(pos,skill,level){
-	SKILLS[pos][skill]=level;
+	if(MASTER_MODE){return;}
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	SKILLS[real_pos][skill]=parseInt(level);
 	displaySkill(pos,skill);
 	calcFull();
 	writeFull();
 }
 function displayCE(pos)
 {
-	if(PARTY_CES[pos] >= 0){
-		$("#ce_sel_div_"+pos).css("background","url("+CES[PARTY_CES[pos]].pic+")");
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	if(PARTY_CES[real_pos] >= 0){
+		$("#ce_sel_div_"+pos).css("background","url("+CES[PARTY_CES[real_pos]].pic+")");
 	}
 	else{
 		$("#ce_sel_div_"+pos).css("background","grey");
 	}
 }
 function setCE(pos,ce){
+	if(MASTER_MODE){return;}
 	PARTY_CES[pos]=ce;
 	displayCE(pos);
 	calcFull();
 	writeFull();
 }
 function displayCELevel(pos){
-	if(PARTY_CE_LEVEL[pos]==0){
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	if(PARTY_CE_LEVEL[real_pos]==0){
 		$("#ce_lvl_"+pos).attr("class","ce_lvl ce_lvl_1");
 	}
-	else if(PARTY_CE_LEVEL[pos]==1){
+	else if(PARTY_CE_LEVEL[real_pos]==1){
 		$("#ce_lvl_"+pos).attr("class","ce_lvl ce_mlb");
 	}
 	else{
@@ -551,6 +576,7 @@ function displayCELevel(pos){
 	}
 }
 function changeCELevel(pos){
+	if(MASTER_MODE){return;}
 	PARTY_CE_LEVEL[pos]=PARTY_CE_LEVEL[pos]+1;
 	if(PARTY_CE_LEVEL[pos]>2){
 		PARTY_CE_LEVEL[pos]=0;
@@ -564,7 +590,7 @@ function displayMysticSkills(action){
 		if(ACTION_SKILLS[ACTION_CURRENT][6][i]==1){
 			$("#mystic_skill_"+i).css("background","url("+SKILL_ICONS[MYSTIC_CODES[MYSTIC_CODE]["skill"+(i+1)].icon]+")");
 		}
-		if(ACTION_SKILLS[ACTION_CURRENT][6][i]==0){
+		else{
 			$("#mystic_skill_"+i).css("background","linear-gradient(black, black),url("+SKILL_ICONS[MYSTIC_CODES[MYSTIC_CODE]["skill"+(i+1)].icon]+")");
 		}
 		
@@ -580,12 +606,14 @@ function displayMystic(){
 	}
 }
 function setMystic(mystic){
+	if(MASTER_MODE){return;}
 	MYSTIC_CODE = mystic;
 	displayMystic();
 	calcFull();
 	writeFull();
 }
 function setMysticLevel(level){
+	if(MASTER_MODE){return;}
 	MYSTIC_CODE_LEVEL = level;
 	displayMystic();
 	calcFull();
@@ -595,33 +623,36 @@ function displayEnemy(stage,enemy){
 	$("#enemy_img_"+stage+"_"+enemy).attr("src",CLASSES_ICONS[NUM_CLASS[ENEMIES_CLASS[stage][enemy]]]);
 }
 function setEnemy(stage,enemy,value){
+	if(MASTER_MODE){return;}
 	ENEMIES_CLASS[stage][enemy] = value;
 	displayEnemy(stage,enemy);
 	calcFull();
 	writeFull();
 }
 function setEnemyAttr(stage,enemy,value){
+	if(MASTER_MODE){return;}
 	ENEMIES_ATTR[stage][enemy] = value;
 	calcFull();
 	writeFull();
 }
 function setEnemyHP(stage,enemy,value){
+	if(MASTER_MODE){return;}
 	ENEMIES_HP[stage][enemy] = value;
 	calcFull();
 	writeFull();
 }
-function displayAllNP(action){
+function displayAllNP(){
 	for(var i=0;i<6;i++){
-		displayNP(action,i);
+		displayNP(i);
 	}
 }
-function displayNP(action,pos){
-	var width = ACTION_NP[action][pos];
+function displayNP(pos){
+	var width = ACTION_NP[ACTION_CURRENT][pos];
 	if(width>100){width=100;}
 	$("#np_value_"+pos).css("width",width+"%");
-	$("#np_text_"+pos).text(ACTION_NP[action][pos]);
+	$("#np_text_"+pos).text(ACTION_NP[ACTION_CURRENT][pos]);
 }
-// -1 turns = infinite
+// -1 turns = infinite, assumes pos is the "real" pos
 function applyBuff(action,pos,name,value,turns,source)
 {
 	if(name == "np_gauge"){
@@ -638,11 +669,117 @@ function applyBuff(action,pos,name,value,turns,source)
 		}
 	}
 }
+// function to display everything happening on ACTION_CURRENT
+function viewAction(){
+	MASTER_MODE=true;
+	//display servants/ces in correct order for the action
+	for(var p=0;p<6;p++)
+	{
+		var real_pos = ACTION_ORDER[ACTION_CURRENT][p];
+		// change icons
+		// ------------
+		displayServant(p);
+		displayNP(p);
+		displayCE(p);
+		displayCELevel(p);
+		
+		// change select options
+		// ---------------------
+		// SERVANT SELECT
+		$("#servant_sel_"+p).val(PARTY[real_pos]);
+		// CE SELECT
+		$("#ce_sel_"+p).val(PARTY_CES[real_pos]);
+		// NP LEVEL SELECT
+		$("#np_sel_"+p).val(PARTY_NP[real_pos]);
+		// SKILL LEVEL SELECTS
+		for(var s =0;s<3;s++){
+			$("#skill_sel_"+p+"_"+s).val(SKILLS[real_pos][s]);
+		}
+	}
+	displayBuffs();
+	displayMysticSkills();
+	
+	
+	
+	MASTER_MODE=false;
+}
+// targets/pos assumed to be current_pos NOT real_pos
+// old is if the action already exists and we are recalculating
+function addAction(pos,action,target1,target2,old){
+	var last = ACTIONS.length-1;
+	if(!old){ // adding a fresh action onto the stack
+		// NOT PUSHING DIRECTLY INTO 
+		if(last != ACTION_CURRENT){
+			console.log("CANNOT ADD ACTIONS IN BETWEEN OTHER ACTIONS!");
+			ACTION_CURRENT=last;
+			//viewAction();
+		}
+		// push onto stack
+		
+		ACTIONS.push([pos,action,target1,target2]);
+		ACTION_CURRENT = ACTIONS.length-1;
+	}
+	else{ // the stack already exists, we are just recalculating
+		last = ACTION_CURRENT;
+		ACTION_CURRENT+=1;
+	}
+	// duplicate previous records
+	ACTION_BUFFS.push(ACTION_BUFFS[last]);
+	ACTION_NP.push(ACTION_NP[last]);
+	ACTION_ORDER.push(ACTION_ORDER[last]);
+	ACTION_SKILLS.push(ACTION_SKILLS[last]);
+	// calculate new values:
+	if(pos >= 0 && pos <= 2)				// 			servant action
+	{
+		// servant's real pos in PARTY[]
+		var real_pos = ACTION_ORDER[last][pos];
+		if(action >=0 && action <= 2) 			// 		servant skill
+		{
+			// APPLY THE ACTUAL BUFFS/DEBUFFS
+			var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
+			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
+				if(skill.target[e] == "all"){
+					for(var i=0;i<3;i++){
+						applyBuff(ACTION_CURRENT,ACTION_ORDER[ACTION_CURRENT][i],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+					}
+				}
+				else if(skill.target[e] == "target"){
+					applyBuff(ACTION_CURRENT,ACTION_ORDER[target1],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+				}
+				else if(skill.target[e] == "self"){
+					applyBuff(ACTION_CURRENT,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+				}
+			}
+			// disable the skill
+			ACTION_SKILLS[ACTION_CURRENT][real_pos][action]=0;
+		}
+		else if(action == 3)// 				servant NP
+		{	
+			console.log("NPS NOT YET ADDED");
+		}
+		else if(action == 4)//				fishing for NP
+		{
+			console.log("FISHING NOT YET ADDED");
+		}
+		else{
+			console.log("ACTION ERROR");
+		}
+	}
+	else if(pos == 3){ // 					mystic code action
+		console.log("MYSTIC NOT ADDED");
+	}
+	else{
+		console.log("INVALID ACTION!");
+	}
+	if(!old){//view it if its fresh
+		viewAction();
+	}
+}
 function calcFull(){
 	//reset all data
 	ACTION_ORDER=[[0,1,2,3,4,5]];
-	ACTION_NP=[];
-	ACTION_BUFFS=[];
+	ACTION_NP=[[0,0,0,0,0,0]];
+	ACTION_BUFFS=[[{},{},{},{},{},{}]];
 	ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 	//calculate party attack values
 	PARTY_ATTACK=[];
@@ -658,8 +795,6 @@ function calcFull(){
 			PARTY_ATTACK[p]=0;
 		}
 	}
-	ACTION_NP[0]=[0,0,0,0,0,0];
-	ACTION_BUFFS[0]=[{},{},{},{},{},{}];
 	for(var p=0;p<6;p++)
 	{
 		// calculate class skill buffs
@@ -675,8 +810,12 @@ function calcFull(){
 			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1][i],-1,CES[ce].name);
 		}
 	}
-	displayBuffs();
-	displayAllNP(0);
+	// recalculate all actions, skipping action 0, its filler
+	ACTION_CURRENT=0;
+	for(var a =1;a<ACTIONS.length;a++){
+		addAction(ACTIONS[a][0],ACTIONS[a][1],ACTIONS[a][2],ACTIONS[a][3],true);
+	}
+	viewAction();
 }
 $( document ).ready(function (){
 	readFull();
@@ -719,9 +858,6 @@ $( document ).ready(function (){
 		for(var i=0;i<CES.length;i++){
 			$("#ce_sel_"+p).append("<option value = "+i+""+(PARTY_CES[p]==i?" selected":"")+">"+CES[i].name+"</option>");
 		}
-		displayCE(p);
-		displayCELevel(p);
-		displayServant(p);
 	}
 	//initialize mystic code display
 	var html = `<div id = "mystic_div"><div id = "mystic_sel_div" class = "servant_sel_div" style="background:`+(MYSTIC_CODE>=0?"url("+MYSTIC_CODES[MYSTIC_CODE].pic+")":"grey")+`">
@@ -758,10 +894,11 @@ $( document ).ready(function (){
 			}
 			displayEnemy(stage,enemy);
 		}
+		$("#enemy_stage_"+stage).append(`<div class = "actions_div" id ="actions_`+stage+`"></div>`);
 	}
-	
 	// calculate entire run
 	calcFull();
+	viewAction();
 });
 
 
