@@ -746,6 +746,7 @@ function displaySkill(pos,skill){
 	}
 	else{
 		$("#skill_"+pos+"_"+skill).removeClass("tooltip");
+		$("#skill_"+pos+"_"+skill+" > .tooltiptext").html("");
 		$("#skill_"+pos+"_"+skill).css("background","grey");
 		$("#skill_"+pos+"_"+skill).addClass("disabled");
 	}
@@ -1128,6 +1129,9 @@ function clickAction(pos,action){
 	{
 		//MAKE SURE ITS VALID
 		var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+		if(PARTY[real_pos]<0){
+			return;
+		}
 		if(ACTION_SKILLS[ACTION_SKILLS.length-1][real_pos][action]==0){
 			// TODO: WARNING DIALOGUE
 			return;
@@ -1251,7 +1255,7 @@ $( document ).ready(function (){
 				html+=`<div onclick="clickAction(`+p+`,`+i+`)" id = "skill_`+p+`_`+i+`" class = "skill tooltip"><span class = "tooltiptext" id = "skill_tip_`+p+`_`+i+`"></span></div>`;
 			}
 			else{
-				html+=`<div style = "cursor:default!important" id = "skill_`+p+`_`+i+`" class = "skill"></div>`;
+				html+=`<div style = "cursor:default!important" id = "skill_`+p+`_`+i+`" class = "skill tooltip disabled"><span class = "tooltiptext" id = "skill_tip_`+p+`_`+i+`"></span></div>`;
 			}
 		}
 		html+=`</div><div id = "buffs_div_`+p+`" class = "buffs_div"></div></div>`;
