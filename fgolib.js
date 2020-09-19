@@ -1,36 +1,36 @@
 var VERSION = 1;
 var SKILL_ICONS = {
-	np:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Startnp.png",
-	crit:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Critdmg.png",
-	arts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Artsup.png",
-	def:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Shieldup.png",
-	atk:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Dmg_up.png",
-	guts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Guts.png",
-	divinity:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Divinity.png",
-	np_gain:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npacqui.png",
-	orderchange: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Orderchange.png",
-	stun: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Stun.png",
-	shuffle: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-12/Commandshuffle.png",
-	np_dmg: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2017-07/Npdmg.png",
-	buster_stars: "https://gamepress.gg/grandorder/sites/grandorder/files/styles/45x45/public/2019-06/BusterStarGatherUp.png",
-	heal:"https://vignette.wikia.nocookie.net/fategrandorder/images/6/6e/Heal.png/revision/latest/scale-to-width-down/45",
-	np_arts:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/width50px/public/2017-07/Command_Card_Arts_0.png",
-	np_quick:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/width50px/public/2017-07/Command_Card_Quick.png",
-	np_buster:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/width50px/public/2017-07/Command_Card_Buster.png"
+	np:"icons/skills/np.png",
+	crit:"icons/skills/Critdmg.png",
+	arts:"icons/skills/Artsup.png",
+	def:"icons/skills/Shieldup.png",
+	atk:"icons/skills/Dmg_up.png",
+	guts:"icons/skills/Guts.png",
+	divinity:"icons/skills/Divinity.png",
+	np_gain:"icons/skills/Npacqui.png",
+	orderchange: "icons/skills/Orderchange.png",
+	stun: "icons/skills/Stun.png",
+	shuffle: "icons/skills/Commandshuffle.png",
+	np_dmg: "icons/skills/Npdmg.png",
+	buster_stars: "icons/skills/BusterStarGatherUp.png",
+	heal:"icons/skills/Heal.png",
+	np_arts:"icons/skills/Command_Card_Arts_0.png",
+	np_quick:"icons/skills/Command_Card_Quick.png",
+	np_buster:"icons/skills/Command_Card_Buster.png"
 }
 var BUFF_ICONS = {
-	atk: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Attackup.png/revision/latest/scale-to-width-down/25?cb=20180105145934",
-	dmg: "https://vignette.wikia.nocookie.net/fategrandorder/images/f/f5/Powerup.png/revision/latest/scale-to-width-down/25?cb=20180105152628",
-	buffchance: "https://vignette.wikia.nocookie.net/fategrandorder/images/9/9a/Statusup.png/revision/latest/scale-to-width-down/25?cb=20180105152952",
-	debuffchance: "https://vignette.wikia.nocookie.net/fategrandorder/images/9/9a/Statusup.png/revision/latest/scale-to-width-down/25?cb=20180105152952",
-	quick: "https://vignette.wikia.nocookie.net/fategrandorder/images/b/b8/Quickupstatus.png/revision/latest/scale-to-width-down/25?cb=20180105152725",
-	arts: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Artsupstatus.png/revision/latest/scale-to-width-down/25?cb=20180105151017",
-	buster: "https://vignette.wikia.nocookie.net/fategrandorder/images/a/ad/Busterupstatus.png/revision/latest/scale-to-width-down/25?cb=20180105151501",
-	np_gain: "https://vignette.wikia.nocookie.net/fategrandorder/images/c/c5/Npchargeup.png/revision/latest/scale-to-width-down/25?cb=20180105152329",
-	np_regen: "https://vignette.wikia.nocookie.net/fategrandorder/images/d/d7/Npgainturn.png/revision/latest/scale-to-width-down/25?cb=20180105152353",
-	np_dmg: "https://vignette.wikia.nocookie.net/fategrandorder/images/3/33/Nppowerup.png/revision/latest/scale-to-width-down/25?cb=20180105152443",
-	crit: "https://vignette.wikia.nocookie.net/fategrandorder/images/5/55/Critdmgup.png/revision/latest/scale-to-width-down/25?cb=20180105151924",
-	dragon_dmg:"https://vignette.wikia.nocookie.net/fategrandorder/images/f/f5/Powerup.png/revision/latest/scale-to-width-down/25?cb=20180105152628",
+	atk: "icons/effects/Attackup.png",
+	dmg: "icons/effects/Powerup.png",
+	buffchance: "icons/effects/Statusup.png",
+	debuffchance: "icons/effects/Statusup.png",
+	quick: "icons/effects/Quickupstatus.png",
+	arts: "icons/effects/Artsupstatus.png",
+	buster: "icons/effects/Busterupstatus.png",
+	np_gain: "icons/effects/Npchargeup.png",
+	np_regen: "icons/effects/Npgainturn.png",
+	np_dmg: "icons/effects/Nppowerup.png",
+	crit: "icons/effects/Critdmgup.png",
+	dragon_dmg:"icons/effects/Powerup.png",
 }
 var EFFECTS = {
 	np_gain:"NP Gain",
@@ -65,18 +65,18 @@ var EFFECT_FLAT ={
 	crit: false,
 }
 var CLASSES_ICONS = {
-	saber:"https://gamepress.gg/grandorder/sites/grandorder/files/images/saber.png",
-	archer:"https://gamepress.gg/grandorder/sites/grandorder/files/images/archer.png",
-	lancer:"https://gamepress.gg/grandorder/sites/grandorder/files/images/lancer.png",
-	rider:"https://gamepress.gg/grandorder/sites/grandorder/files/images/rider.png",
-	caster:"https://gamepress.gg/grandorder/sites/grandorder/files/images/caster.png",
-	assassin:"https://gamepress.gg/grandorder/sites/grandorder/files/images/assassin.png",
-	berserker:"https://gamepress.gg/grandorder/sites/grandorder/files/images/berserker.png",
-	ruler:"https://gamepress.gg/grandorder/sites/grandorder/files/images/ruler.png",
-	avenger:"https://gamepress.gg/grandorder/sites/grandorder/files/images/avenger.png?v3",
-	alter_ego:"https://gamepress.gg/grandorder/sites/grandorder/files/2019-02/alter-ego.png",
-	moon_cancer:"https://gamepress.gg/grandorder/sites/grandorder/files/2018-08/mooncancer.png",
-	foreigner:"https://gamepress.gg/grandorder/sites/grandorder/files/2019-06/Class-Foreigner-Gold.png",
+	saber:"icons/classes/saber.png",
+	archer:"icons/classes/archer.png",
+	lancer:"icons/classes/lancer.png",
+	rider:"icons/classes/rider.png",
+	caster:"icons/classes/caster.png",
+	assassin:"icons/classes/assassin.png",
+	berserker:"icons/classes/berserker.png",
+	ruler:"icons/classes/ruler.png",
+	avenger:"icons/classes/avenger.png",
+	alter_ego:"icons/classes/alter-ego.png",
+	moon_cancer:"icons/classes/mooncancer.png",
+	foreigner:"icons/classes/Class-Foreigner-Gold.png",
 	empty:"//:0"
 }
 
@@ -87,17 +87,17 @@ var ATTR_NUM = {beast:0, earth:1, man:2, sky:3, star:4};
 var NUM_ATTR = ["beast", "earth", "man", "sky", "star"];
 
 var MYSTIC_CODES = [
-{name : "Chaldea Combat Uniform", pic:"https://gamepress.gg/grandorder/sites/grandorder/files/2017-12/Chaldeacombat2.png",
+{name : "Chaldea Combat Uniform", pic:"icons/mystic/Chaldeacombat2.png",
 skill1: {name: "Reinforce All", icon: "atk", target:["all"], effect:["atk"], turns:[1],values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
 skill2: {name: "Gandr", icon: "stun", target:["single"], effect:["stun"], turns:[1],values:[[500],[500],[500],[500],[500],[500],[500],[500],[500],[500]]},
 skill3: {name: "Order Change", icon: "orderchange", target:["orderchange"], effect:["orderchange"], turns:[0],values:[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]},
 },
-{name : "Mage's Association Uniform", pic:"https://gamepress.gg/grandorder/sites/grandorder/files/2017-12/Mage2.png",
+{name : "Mage's Association Uniform", pic:"icons/mystic/Mage2.png",
 skill1: {name: "Cure-All", icon: "heal", target:["all"], effect:["heal"], turns:[0],values:[[800],[1000],[1200],[1400],[1600],[1800],[2000],[2200],[2400],[2800]]},
 skill2: {name: "Spiritron Transfer", icon: "np", target:["target"], effect:["np_gauge"], turns:[0],values:[[20],[20],[20],[20],[20],[20],[20],[20],[20],[20]]},
 skill3: {name: "Command Shuffle", icon: "shuffle", target:["shuffle"], effect:["shuffle"], turns:[0],values:[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]},
 },
-{name : "A Fragment of 2004", pic:"https://gamepress.gg/grandorder/sites/grandorder/files/2019-10/Fragment2004F.png",
+{name : "A Fragment of 2004", pic:"icons/mystic/Fragment2004F.png",
 skill1: {name: "Code: F", icon: "np_dmg", target:["target"], effect:["np_dmg"], turns:[1],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 skill2: {name: "Code: U", icon: "buster_stars", target:["target"], effect:["buster_stars"], turns:[1],values:[[5000],[5500],[6000],[6500],[7000],[7500],[8000],[8500],[9000],[10000]]},
 skill3: {name: "Code: H", icon: "np_gain", target:["target"], effect:["np_gain"], turns:[1],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
@@ -105,21 +105,21 @@ skill3: {name: "Code: H", icon: "np_gain", target:["target"], effect:["np_gain"]
 ];
 var SERVANTS = [
 {name : "Sieg", atk: 8394,class:"caster",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,np_type:"arts",np_hits:3,np_dmg:[450,600,675,712.5,750],np_effects:[["def_down",3,20]],
-pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2018-08/208_Sieg_4.png",
+pic:"icons/servants/cardboard.png",
                     skills: [["arts",6.5]],
                     skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
                     skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
                     skill3: {name:"Dead-Count Shapeshifter EX",  target_real:"self", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
 },
 {name: "Paracelsus", atk: 6711,class:"caster",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,np_type:"arts",np_hits:3,np_dmg:[400,500,550,575,600],np_effects:[],
-pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2017-12/0794.jpg",
+pic:"icons/servants/para.jpg",
                     skills: [["arts",10]],
                     skill1: {name:"Rapid Casting A",        icon:"np",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
                     skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
                     skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {name:"Waver", atk: 10598,class:"caster",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,np_type:"arts",np_hits:0,np_dmg:[0,0,0,0,0],np_effects:["def_down",3,30],
-pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image/public/2017-07/037%20Zhuge%20Liang%20%28El-Melloi%20II%29%201.png",
+pic:"icons/servants/waver.png",
                     skills: [["arts",10]],
                     skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
                     skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
@@ -127,15 +127,15 @@ pic:"https://gamepress.gg/grandorder/sites/grandorder/files/styles/servant_image
 }];
 var CES = [
 {name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
-pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/8/86/Kaleidoscope.png/revision/latest/scale-to-width-down/292?cb=20180519064310"},
+pic: "icons/ces/Kaleidoscope.png"},
 {name: "Imaginary Element", effect:["np_gauge"], values:[[60],[75]], atk:[200,750],
-pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/e/e1/Hollow_magic.png/revision/latest/scale-to-width-down/292?cb=20180519064450"},
+pic: "icons/ces/Hollow_magic.png"},
 {name: "Black Grail", effect:["np_dmg"], values:[[60],[80]], atk:[600,2400],
-pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/b/bd/Black_grail.png/revision/latest/scale-to-width-down/292?cb=20180519063950"},
+pic: "icons/ces/Black_grail.png"},
 {name: "CKT", effect:["arts","quick","np_dmg"], values:[[10,10,10],[15,15,15]], atk:[250,1000],
-pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/3/30/CE900.png/revision/latest/scale-to-width-down/292?cb=20180919135715"},
+pic: "icons/ces/CE900.png"},
 {name: "Return Match", effect:["atk"], values:[[100],[200]], atk:[500,2000],
-pic: "https://vignette.wikia.nocookie.net/fategrandorder/images/5/5b/CE899.png/revision/latest/scale-to-width-down/292?cb=20180919135816"},
+pic: "icons/ces/CE899.png"},
 ];
 // 63, 4095
 function writeNum(num,size,str){
@@ -1088,13 +1088,4 @@ $( document ).ready(function (){
 	calcFull();
 	viewAction();
 });
-
 window.addEventListener("resize", positionPopup);
-
-
-
-
-
-
-
-
