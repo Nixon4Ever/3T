@@ -177,7 +177,7 @@ skill3: {name: "Code: H", icon: "np_gain",target_real:"target", target:["target"
 var SERVANTS = [
 {
 	name : "Sieg", atk: 8394,class:"caster",attr:"man",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
-	np: {type:"np_arts", name:"", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"], effect:["def_down"], turns:[3],values:[20,20,20,20,20]},
+	np: {type:"np_arts", name:"Dragon Boi", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"], effect:["def_down"], turns:[3],values:[20,20,20,20,20]},
 	skills: [["arts",6.5]],
 	skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
 	skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
@@ -185,7 +185,7 @@ var SERVANTS = [
 },
 {
 	name: "Paracelsus", atk: 6711,class:"caster",attr:"man",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
-	np:{type:"np_arts", name:"", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[], effect:[], turns:[],values:[]},
+	np:{type:"np_arts", name:"Sword of Paracelsus", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[], effect:[], turns:[],values:[]},
 	skills: [["arts",10]],
 	skill1: {name:"Rapid Casting A",        icon:"np",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
 	skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
@@ -193,7 +193,7 @@ var SERVANTS = [
 },
 {
 	name:"Waver", atk: 10598,class:"caster",attr:"man",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
-	np:{type:"np_arts", name:"", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"], effect:[["def_down"]], turns:[[3]],values:[[30],[40],[45],[47.5],[50]]},
+	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"], effect:[["def_down"]], turns:[[3]],values:[[30],[40],[45],[47.5],[50]]},
 	skills: [["arts",10]],
 	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
 	skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
@@ -662,15 +662,17 @@ function popup(mode,action,text,extraValue){
 	$("#popup_div").css("display","block");
 }
 //remove action but do not calculate/view
-function removeAction(){
-	if(ACTION_CURRENT>0){
+function removeAction(action){
+	if(action>0){
 		//scoot them all down
-		for(var i=ACTION_CURRENT;i<ACTIONS.length-1;i++){
+		for(var i=action;i<ACTIONS.length-1;i++){
 			ACTIONS[i]=ACTIONS[i+1];
 		}
 		//get rid of the duplicate last element
 		ACTIONS.pop();
-		ACTION_CURRENT-=1;
+		if(ACTION_CURRENT>=action){
+			ACTION_CURRENT--;
+		}
 	}
 }
 
@@ -969,11 +971,16 @@ function viewAction(){
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete">Delete</div></span></div>`);
 			}
 		}
-		if(ACTIONS[a][0] == 3){	//mystic code
+		else if(ACTIONS[a][0] == 3){	//mystic code
 			if(ACTIONS[a][1]<3){ // skill
 				var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(1+ACTIONS[a][1])];
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`<br><div class = "action_delete">Delete</div></span></div>`);
 			}
+		}
+		else if(ACTIONS[a][0] == 7){
+			cur_wave++;
+			if(cur_wave>2){break;}
+			continue;
 		}
 		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
 	}
@@ -993,99 +1000,22 @@ function printArray(array){
 	console.log("]");
 }
 // targets/pos assumed to be current_pos NOT real_pos
-// old is if the action already exists and we are recalculating
-function addAction(pos,action,target1,target2,old){
-	console.log(pos+","+action+","+target1+","+target2+","+old);
-	var last = ACTIONS.length-1;
-	if(!old){ // adding a fresh action onto the stack
-		// NOT PUSHING DIRECTLY INTO 
-		if(last != ACTION_CURRENT){
-			console.log("CANNOT ADD ACTIONS IN BETWEEN OTHER ACTIONS!");
-			ACTION_CURRENT=last;
-			//viewAction();
-		}
-		// push onto stack
-		
+function addAction(where,pos,action,target1,target2,nocalc){
+	if(where == ACTIONS.length-1){
 		ACTIONS.push([pos,action,target1,target2]);
-		ACTION_CURRENT = ACTIONS.length-1;
-	}
-	else{ // the stack already exists, we are just recalculating
-		last = ACTION_CURRENT;
-		ACTION_CURRENT+=1;
-	}
-	// duplicate previous records
-	ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[last])));
-	ACTION_NP.push(ACTION_NP[last].slice());
-	ACTION_ORDER.push(ACTION_ORDER[last].slice());
-	ACTION_SKILLS.push(ACTION_SKILLS[last].slice());
-	// calculate new values:
-	if(pos >= 0 && pos <= 2)				// 			servant action
-	{
-		// servant's real pos in PARTY[]
-		var real_pos = ACTION_ORDER[last][pos];
-		if(action >=0 && action <= 2) 			// 		servant skill
-		{
-			// console.log("BEFORE");
-			// printArray(ACTION_NP);
-			// APPLY THE ACTUAL BUFFS/DEBUFFS
-			var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
-			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
-				if(skill.target[e] == "all"){
-					for(var i=0;i<3;i++){
-						applyBuff(ACTION_CURRENT,ACTION_ORDER[ACTION_CURRENT][i],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
-					}
-				}
-				else if(skill.target[e] == "target"){
-					applyBuff(ACTION_CURRENT,ACTION_ORDER[ACTION_CURRENT][target1],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
-				}
-				else if(skill.target[e] == "self"){
-					applyBuff(ACTION_CURRENT,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
-				}
-			}
-			// console.log("AFTER");
-			// printArray(ACTION_NP);
-			// disable the skill
-			ACTION_SKILLS[ACTION_CURRENT][real_pos][action]=0;
-		}
-		else if(action == 3)// 				servant NP
-		{	
-			console.log("NPS NOT YET ADDED");
-		}
-		else if(action == 4)//				fishing for NP
-		{
-			console.log("FISHING NOT YET ADDED");
-		}
-		else{
-			console.log("ACTION ERROR");
-		}
-	}
-	else if(pos == 3){ // 					mystic code action
-		var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(action+1)];
-		for(var e=0;e<skill.target.length;e++){// loop over each skill effect
-			if(skill.target[e] == "all"){
-				for(var i=0;i<3;i++){
-					applyBuff(ACTION_CURRENT,ACTION_ORDER[ACTION_CURRENT][i],skill.effect[e],skill.values[MYSTIC_CODE_LEVEL][e],skill.turns[e],skill.name);
-				}
-			}
-			else if(skill.target[e] == "target"){
-				applyBuff(ACTION_CURRENT,ACTION_ORDER[ACTION_CURRENT][target1],skill.effect[e],skill.values[MYSTIC_CODE_LEVEL][e],skill.turns[e],skill.name);
-			}
-			else if(skill.target[e] == "orderchange"){
-				var tar1 = ACTION_ORDER[ACTION_CURRENT][target1];
-				ACTION_ORDER[ACTION_CURRENT][target1] = ACTION_ORDER[ACTION_CURRENT][target2];
-				ACTION_ORDER[ACTION_CURRENT][target2] = tar1;
-			}
-		}
-		//console.log("AFTER");
-		//printArray(ACTION_NP);
-			// disable the skill
-		ACTION_SKILLS[ACTION_CURRENT][6][action]=0;
+		where+=1;
 	}
 	else{
-		console.log("INVALID ACTION!");
+		ACTIONS.push([pos,action,target1,target2]);
+		for(var i=ACTIONS.length-2;i>where;i--){
+			ACTIONS[i+1] = ACTIONS[i];
+		}
+		ACTIONS[where+1]=[pos,action,target1,target2];
 	}
-	if(!old){//view it if its fresh
-		viewAction();
+	if(nocalc){return;}
+	else{
+		ACTION_CURRENT+=1;
+		calcFull();
 	}
 }
 function calcFull(noview){
@@ -1132,14 +1062,148 @@ function calcFull(noview){
 			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1][i],-1,CES[ce].name);
 		}
 	}
-	// recalculate all actions, skipping action 0, its filler
-	ACTION_CURRENT=0;
-	for(var a =1;a<ACTIONS.length;a++){
-		addAction(ACTIONS[a][0],ACTIONS[a][1],ACTIONS[a][2],ACTIONS[a][3],true);
+	var wave=0;
+	// how many previous actions have been nps in a row
+	var lastNP = 0;
+	// recalculate all actions, skipping action 0
+	for(var a =1;a<ACTIONS.length;a++)
+	{
+		var pos = ACTIONS[a][0];
+		var action = ACTIONS[a][1];
+		var target1 = ACTIONS[a][2];
+		var target2 = ACTIONS[a][3];
+		// make sure it's valid before pushing
+		var out = "[";
+		for(var i = 1; i<ACTIONS.length;i++){
+			out+= "("+ACTIONS[i][0]+","+ACTIONS[i][1]+"),";
+		}
+		console.log(out+"]");
+		console.log("BEFORE: a:"+a+",  l:"+lastNP);
+		if(lastNP > 0)					// last was an np
+		{
+			if(pos <= 2 && action == 3) // followed by another np
+			{
+				console.log("another np");
+				lastNP++;
+				if(lastNP>3){			// too many nps in a row, remove this one
+					console.log("removing np");
+					removeAction(a);
+					// need to re-check a, so decrement then loop again to get a back to a
+					a--;
+					continue;
+				}
+			}
+			else if(pos != 7) {			// followed by a regular action instead of a wave switch
+				//insert wave switch
+				console.log("inserting switch!");
+				a--;
+				addAction(a,7,0,0,0,true);
+				//move ACTION_CURRENT if it was on the wave switch
+				if(ACTION_CURRENT==a+1){ACTION_CURRENT+=1;}
+				wave+=1;
+				continue;
+			}
+			else{						// followed correctly by a wave switch
+				console.log("correct switch");
+				lastNP=0;
+				wave+=1;
+			}
+		}
+		else{// last action was not an np
+			if(pos <= 2 && action == 3) // followed by np
+			{
+				lastNP=1;
+				console.log("lastnp start");
+			}
+			else if(pos == 7) {			// wave switch not led by an np
+				console.log("incorrect switch");
+				//remove wave switch
+				removeAction(a);
+				a--;
+				continue;
+			}
+			else{
+				console.log("reg skill");
+			}
+		}
+		console.log(" AFTER: a:"+a+",  l:"+lastNP);
+		// duplicate previous records
+		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
+		ACTION_NP.push(ACTION_NP[a-1].slice());
+		ACTION_ORDER.push(ACTION_ORDER[a-1].slice());
+		ACTION_SKILLS.push(ACTION_SKILLS[a-1].slice());
+		
+		// calculate new values:
+		if(pos >= 0 && pos <= 2)				// 			servant action
+		{
+			// servant's real pos in PARTY[]
+			var real_pos = ACTION_ORDER[a][pos];
+			if(action >=0 && action <= 2) 			// 		servant skill
+			{
+				// APPLY THE ACTUAL BUFFS/DEBUFFS
+				var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
+				for(var e=0;e<skill.target.length;e++){// loop over each skill effect
+					if(skill.target[e] == "all"){
+						for(var i=0;i<3;i++){
+							applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+						}
+					}
+					else if(skill.target[e] == "target"){
+						applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+					}
+					else if(skill.target[e] == "self"){
+						applyBuff(a,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+					}
+				}
+				// disable the skill
+				ACTION_SKILLS[a][real_pos][action]=0;
+			}
+			else if(action == 3)// 				servant NP
+			{	
+				console.log("NPS NOT YET ADDED");
+			}
+			else{
+				console.log("ACTION ERROR");
+			}
+		}
+		else if(pos == 3){ // 					mystic code action
+			var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(action+1)];
+			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
+				if(skill.target[e] == "all"){
+					for(var i=0;i<3;i++){
+						applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[MYSTIC_CODE_LEVEL][e],skill.turns[e],skill.name);
+					}
+				}
+				else if(skill.target[e] == "target"){
+					applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[MYSTIC_CODE_LEVEL][e],skill.turns[e],skill.name);
+				}
+				else if(skill.target[e] == "orderchange"){
+					var tar1 = ACTION_ORDER[a][target1];
+					ACTION_ORDER[a][target1] = ACTION_ORDER[a][target2];
+					ACTION_ORDER[a][target2] = tar1;
+				}
+			}
+			//console.log("AFTER");
+			//printArray(ACTION_NP);
+				// disable the skill
+			ACTION_SKILLS[a][6][action]=0;
+		}
+		else if(pos == 7){
+			console.log("WAVE SWITCH!");
+		}
+		else{
+			console.log("INVALID ACTION!");
+		}
+		console.log("----------------");
 	}
-	if(noview){
-		return;
+	console.log("end:"+lastNP);
+	if(lastNP>0){//ended on an np, need a wave switch
+		console.log("inserting switch at the end!");
+		addAction(ACTIONS.length-1,7,0,0,0,true);
+		//move ACTION_CURRENT if it was on the wave switch
+		if(ACTION_CURRENT==a+1){ACTION_CURRENT+=1;}
 	}
+	if(noview){ return; }
 	viewAction();
 }
 function clickAction(pos,action){
@@ -1162,18 +1226,18 @@ function clickAction(pos,action){
 			if(skill.target_real == "aoe" || skill.target_real == "all" || skill.target_real == "self")
 			{
 				// JUST ADD THE ACTION, NO TARGETING POPUP
-				addAction(pos,action,0,0);
+				addAction(ACTION_CURRENT,pos,action,0,0);
 			}
 			else if(skill.target_real == "target")
 			{
 				// need a current servants popup
-				popup(0,"function(tar){addAction("+pos+","+action+",tar,0)}","Select target for "+skill.name);
+				popup(0,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 			}
 			else if(skill.target_real == "st")
 			{
 				// need a current servants popup
 				// TODO: ADD OTHER WAVES
-				popup(2,"function(tar){addAction("+pos+","+action+",tar,0)}","Select target for "+skill.name);
+				popup(2,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 			}
 		}
 		else if(action == 3)// 				servant NP
@@ -1182,18 +1246,18 @@ function clickAction(pos,action){
 			if(np.target_dmg == "aoe" || np.target_dmg == "all" || np.target_dmg == "self" || np.target_dmg == "none")
 			{
 				// JUST ADD THE ACTION, NO TARGETING POPUP
-				addAction(pos,action,0,0);
+				addAction(ACTION_CURRENT,pos,action,0,0);
 			}
 			else if(skill.target_real == "target")
 			{
 				// need a current servants popup
-				popup(0,"function(tar){addAction("+pos+","+action+",tar,0)}","Select target for "+np.name);
+				popup(0,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+np.name);
 			}
 			else if(skill.target_real == "st")
 			{
 				// need a current servants popup
 				// TODO: ADD OTHER WAVES
-				popup(2,"function(tar){addAction("+pos+","+action+",tar,0)}","Select target for "+np.name);
+				popup(2,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+np.name);
 			}
 		}
 	}
@@ -1206,18 +1270,18 @@ function clickAction(pos,action){
 		if(skill.target_real == "aoe" || skill.target_real == "all" || skill.target_real == "self" || skill.target_real == "none")
 		{
 			// JUST ADD THE ACTION, NO TARGETING POPUP
-			addAction(pos,action,0,0);
+			addAction(ACTION_CURRENT,pos,action,0,0);
 		}
 		else if(skill.target_real == "target")
 		{
 			// need a current servants popup
-			popup(0,"function(tar){addAction("+pos+","+action+",tar,0)}","Select target for "+skill.name);
+			popup(0,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 		}
 		else if(skill.target_real == "single")
 		{
 			// need a current servants popup
 			// TODO: CURRENT WAVE
-			popup(2,"function(tar){addAction("+pos+","+action+",tar,0)}","Select target for "+skill.name);
+			popup(2,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 		}
 		else if(skill.target_real == "orderchange")
 		{
@@ -1226,7 +1290,7 @@ function clickAction(pos,action){
 			function(tar1){
 				popup(1,
 					function(tar2,tar1){
-						addAction(`+pos+`,`+action+`,tar1,tar2,false)
+						addAction(ACTION_CURRENT,`+pos+`,`+action+`,tar1,tar2,false)
 					},
 					"Select second servant for order change",
 					tar1
@@ -1247,10 +1311,8 @@ function resetActions(){
 function clickRemoveAction(){
 	if(ACTION_CURRENT>0)
 	{
-		removeAction();
-		ACTION_PREV=ACTION_CURRENT;
+		removeAction(ACTION_CURRENT);
 		calcFull(true);
-		ACTION_CURRENT=ACTION_PREV;
 		viewAction();
 	}
 }
