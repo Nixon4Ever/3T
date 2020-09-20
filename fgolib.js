@@ -412,6 +412,8 @@ var ACTION_BUFFS=[{}];
 var ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 // current action we are viewing, 0 is beginning, default
 var ACTION_CURRENT=0;
+// used to store ACTION_CURRENT for recalculation
+var ACTION_PREV=0;
 // all actions taken, in more readable format
 var ACTIONS = [[]];
 // represents if a servant is able to np yet in a given wave
@@ -659,6 +661,19 @@ function popup(mode,action,text,extraValue){
 	$("#popup_text").css("display","block");
 	$("#popup_div").css("display","block");
 }
+//remove action but do not calculate/view
+function removeAction(){
+	if(ACTION_CURRENT>0){
+		//scoot them all down
+		for(var i=ACTION_CURRENT;i<ACTIONS.length-1;i++){
+			ACTIONS[i]=ACTIONS[i+1];
+		}
+		//get rid of the duplicate last element
+		ACTIONS.pop();
+		ACTION_CURRENT-=1;
+	}
+}
+
 function displayAttack(){
 	// fake pos
 	for(var p=0;p<6;p++)
@@ -947,20 +962,22 @@ function viewAction(){
 			var servant = PARTY[ACTION_ORDER[a][ACTIONS[a][0]]];
 			if(ACTIONS[a][1]<3){ // skill
 				var skill = SERVANTS[servant]["skill"+(1+ACTIONS[a][1])];
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)</span></div>`);
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete">Delete</div></span></div>`);
 			}
 			else if(ACTIONS[a][1] == 3){ // np
 				var np = SERVANTS[servant].np;
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)</span></div>`);
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete">Delete</div></span></div>`);
 			}
 		}
 		if(ACTIONS[a][0] == 3){	//mystic code
 			if(ACTIONS[a][1]<3){ // skill
 				var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(1+ACTIONS[a][1])];
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`</span></div>`);
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`<br><div class = "action_delete">Delete</div></span></div>`);
 			}
 		}
+		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
 	}
+	$(".action_delete").click(clickRemoveAction);
 	fixToolTips();
 	MASTER_MODE=false;
 }
@@ -1008,8 +1025,8 @@ function addAction(pos,action,target1,target2,old){
 		var real_pos = ACTION_ORDER[last][pos];
 		if(action >=0 && action <= 2) 			// 		servant skill
 		{
-			//console.log("BEFORE");
-			//printArray(ACTION_NP);
+			// console.log("BEFORE");
+			// printArray(ACTION_NP);
 			// APPLY THE ACTUAL BUFFS/DEBUFFS
 			var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
 			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
@@ -1025,8 +1042,8 @@ function addAction(pos,action,target1,target2,old){
 					applyBuff(ACTION_CURRENT,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
 				}
 			}
-			//console.log("AFTER");
-			//printArray(ACTION_NP);
+			// console.log("AFTER");
+			// printArray(ACTION_NP);
 			// disable the skill
 			ACTION_SKILLS[ACTION_CURRENT][real_pos][action]=0;
 		}
@@ -1071,7 +1088,7 @@ function addAction(pos,action,target1,target2,old){
 		viewAction();
 	}
 }
-function calcFull(){
+function calcFull(noview){
 	//reset all data
 	ACTION_ORDER=[[0,1,2,3,4,5]];
 	ACTION_NP=[[0,0,0,0,0,0]];
@@ -1119,6 +1136,9 @@ function calcFull(){
 	ACTION_CURRENT=0;
 	for(var a =1;a<ACTIONS.length;a++){
 		addAction(ACTIONS[a][0],ACTIONS[a][1],ACTIONS[a][2],ACTIONS[a][3],true);
+	}
+	if(noview){
+		return;
 	}
 	viewAction();
 }
@@ -1216,6 +1236,22 @@ function clickAction(pos,action){
 	}
 	else{
 		console.log("INVALID ACTION!");
+	}
+}
+// resets all actions
+function resetActions(){
+	ACTIONS=[[]];
+	calcFull();
+}
+// removes ACTION_CURRENT
+function clickRemoveAction(){
+	if(ACTION_CURRENT>0)
+	{
+		removeAction();
+		ACTION_PREV=ACTION_CURRENT;
+		calcFull(true);
+		ACTION_CURRENT=ACTION_PREV;
+		viewAction();
 	}
 }
 

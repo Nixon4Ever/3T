@@ -66,7 +66,7 @@ html{
     background-position-x: -50px!important;
 }
 #mystic_portrait{
-	height: 300px;
+	height: 320px;
 }
 #mystic_sel{
 	width:150px;
@@ -308,4 +308,13 @@ body{
     top: -5px;
     margin-left: 8px;
     margin-right: 8;
+}
+.action_delete{
+	cursor:pointer;
+	color:red;
+	
+}
+.action_delete:hover{
+	color:red;
+	font-weight:bold;
 }
