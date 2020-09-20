@@ -1,8 +1,10 @@
 var VERSION = 1;
 var SKILL_ICONS = {
-	np:"icons/skills/np.png",
+	np_gauge:"icons/skills/np.png",
 	crit:"icons/skills/Critdmg.png",
 	arts:"icons/skills/Artsup.png",
+	quick:"icons/skills/Quickup.png",
+	buster:"icons/skills/Busterup.png",
 	def:"icons/skills/Shieldup.png",
 	atk:"icons/skills/Dmg_up.png",
 	guts:"icons/skills/Guts.png",
@@ -16,7 +18,11 @@ var SKILL_ICONS = {
 	heal:"icons/skills/Heal.png",
 	np_arts:"icons/skills/Command_Card_Arts_0.png",
 	np_quick:"icons/skills/Command_Card_Quick.png",
-	np_buster:"icons/skills/Command_Card_Buster.png"
+	np_buster:"icons/skills/Command_Card_Buster.png",
+	np_drain:"icons/skills/NPDrain.png",
+	ignore_invinc:"icons/skills/Shieldbreak.png",
+	invinc:"icons/skills/Invishield.png",
+	def_down:"icons/skills/Shielddown.png"
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -187,7 +193,7 @@ var SERVANTS = [
 	name: "Paracelsus", atk: 6711,class:"caster",attr:"man",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
 	np:{type:"np_arts", name:"Sword of Paracelsus", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[], effect:[], turns:[],values:[]},
 	skills: [["arts",10]],
-	skill1: {name:"Rapid Casting A",        icon:"np",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
+	skill1: {name:"Rapid Casting A",        icon:"np_gauge",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
 	skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
 	skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
@@ -198,6 +204,30 @@ var SERVANTS = [
 	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
 	skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
 	skill3: {name:"Tactician's Command A+",  icon:"atk",  target_real:"all",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
+},
+{
+	name:"Scathach-Skadi", atk: 10753,class:"caster",attr:"sky",tier:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
+	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[], effect:[], turns:[],values:[[],[],[],[],[]]},
+	skills: [["arts",12],["dmg",250]],
+	skill1: {name:"Primordial Rune",        icon:"quick",  target_real:"target",   target:["target"],  effect:["quick"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill2: {name:"Shivering Blizzard B",   icon:"def_down",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
+	skill3: {name:"Allfather's Wisdom B+",  icon:"np_gauge",  target_real:"target",    target:["target"],     effect:["np_gauge"],turns:[0],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+},
+{
+	name:"Merlin", atk: 10546,class:"caster",attr:"earth",tier:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
+	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
+	skills: [["arts",6],["np_regen",5]],
+	skill1: {name:"Dreamlike Charisma A",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,20],[12,20],[13,20],[14,20],[15,20],[16,20],[17,20],[18,20],[20,20]]},
+	skill2: {name:"Illusion A",   icon:"invinc",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Hero Creation EX",  icon:"buster",  target_real:"target",    target:["target"],     effect:["buster"], turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+},
+{
+	name:"Edmond Dantes", atk: 12641,class:"avenger",attr:"man",tier:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
+	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"], effect:["def_down"], turns:[3],values:[[20],[20],[20],[20],[20]]},
+	skills: [["np_regen",3]],
+	skill1: {name:"Iron Determination EX",   icon:"ignore_invinc",  target_real:"self",   target:["self"],  effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill2: {name:"Golden Rule A",   icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill3: {name:"Wisdom of Crisis A",  icon:"np_drain",  target_real:"none",    target:["none"],     effect:[], turns:[],values:[[],[],[],[],[],[],[],[],[],[]]}
 }];
 var CES = [
 {name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
@@ -928,6 +958,37 @@ function applyBuff(action,pos,name,value,turns,source)
 // function to display everything happening on ACTION_CURRENT
 function viewAction(){
 	MASTER_MODE=true;
+	// actions viewer
+	$(".actions").empty();
+	var cur_wave=0;
+	for(var a =1;a<ACTIONS.length;a++){
+		if(a==ACTION_CURRENT){
+			WAVE_CURRENT=cur_wave;
+		}
+		if(ACTIONS[a][0] < 3){	//servant
+			var servant = PARTY[ACTION_ORDER[a][ACTIONS[a][0]]];
+			if(ACTIONS[a][1]<3){ // skill
+				var skill = SERVANTS[servant]["skill"+(1+ACTIONS[a][1])];
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
+			}
+			else if(ACTIONS[a][1] == 3){ // np
+				var np = SERVANTS[servant].np;
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
+			}
+		}
+		else if(ACTIONS[a][0] == 3){	//mystic code
+			if(ACTIONS[a][1]<3){ // skill
+				var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(1+ACTIONS[a][1])];
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
+			}
+		}
+		else if(ACTIONS[a][0] == 7){
+			cur_wave++;
+			if(cur_wave>2){break;}
+			continue;
+		}
+		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
+	}
 	//display servants/ces in correct order for the action
 	for(var p=0;p<6;p++)
 	{
@@ -955,36 +1016,6 @@ function viewAction(){
 	displayBuffs();
 	displayAttack();
 	displayMysticSkills();
-	
-	// actions viewer
-	$(".actions").empty();
-	var cur_wave=0;
-	for(var a =1;a<ACTIONS.length;a++){
-		if(ACTIONS[a][0] < 3){	//servant
-			var servant = PARTY[ACTION_ORDER[a][ACTIONS[a][0]]];
-			if(ACTIONS[a][1]<3){ // skill
-				var skill = SERVANTS[servant]["skill"+(1+ACTIONS[a][1])];
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete">Delete</div></span></div>`);
-			}
-			else if(ACTIONS[a][1] == 3){ // np
-				var np = SERVANTS[servant].np;
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete">Delete</div></span></div>`);
-			}
-		}
-		else if(ACTIONS[a][0] == 3){	//mystic code
-			if(ACTIONS[a][1]<3){ // skill
-				var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(1+ACTIONS[a][1])];
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`<br><div class = "action_delete">Delete</div></span></div>`);
-			}
-		}
-		else if(ACTIONS[a][0] == 7){
-			cur_wave++;
-			if(cur_wave>2){break;}
-			continue;
-		}
-		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
-	}
-	$(".action_delete").click(clickRemoveAction);
 	fixToolTips();
 	MASTER_MODE=false;
 }
@@ -1159,8 +1190,10 @@ function calcFull(noview){
 				ACTION_SKILLS[a][real_pos][action]=0;
 			}
 			else if(action == 3)// 				servant NP
-			{	
-				console.log("NPS NOT YET ADDED");
+			{
+				ACTION_NP[a][real_pos]=0;
+				WAVE_NP[wave][real_pos]=0;
+				console.log("NPS NOT FINISHED");
 			}
 			else{
 				console.log("ACTION ERROR");
@@ -1189,10 +1222,16 @@ function calcFull(noview){
 			ACTION_SKILLS[a][6][action]=0;
 		}
 		else if(pos == 7){
+			// activate per turn effects
+			
+			// tick down the remaining turns of effects
 			console.log("WAVE SWITCH!");
 		}
 		else{
 			console.log("INVALID ACTION!");
+		}
+		if(a == ACTION_CURRENT){
+			WAVE_CURRENT=wave;
 		}
 		console.log("----------------");
 	}
