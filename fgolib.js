@@ -22,7 +22,8 @@ var SKILL_ICONS = {
 	np_drain:"icons/skills/NPDrain.png",
 	ignore_invinc:"icons/skills/Shieldbreak.png",
 	invinc:"icons/skills/Invishield.png",
-	def_down:"icons/skills/Shielddown.png"
+	def_down:"icons/skills/Shielddown.png",
+	start:"icons/skills/start.png"
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -90,7 +91,7 @@ var CLASSES_ICONS = {
 	alter_ego:"icons/classes/alter-ego.png",
 	moon_cancer:"icons/classes/mooncancer.png",
 	foreigner:"icons/classes/Class-Foreigner-Gold.png",
-	empty:"//:0"
+	empty:"icons/empty.png"
 }
 var CLASSES_NP_GEN = {
 	saber:1,
@@ -445,14 +446,18 @@ var ACTION_CURRENT=0;
 // used to store ACTION_CURRENT for recalculation
 var ACTION_PREV=0;
 // all actions taken, in more readable format
-var ACTIONS = [[]];
+var ACTIONS = [[-1,-1,-1,-1]];
 // represents if a servant is able to np yet in a given wave
 // 1= NP possible, 0 = NP Already used
 // NOTE: Even if value is 1, NP GAUGE must still be > 100 to actually NP
 var WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
+// hp of all enemies currently, NaN if doesnt exist
+var WAVE_HP = [[NaN,NaN,NaN],[NaN,NaN,NaN],[NaN,NaN,NaN]];
 
 var WAVE_CURRENT = 0;
 var WAVE_MAX = 0;
+// Global RNG Multiplier to use
+var RNG = 1;
 
 // special mode which makes everything ignore input while javascript does its magic
 var MASTER_MODE=false;
@@ -460,14 +465,17 @@ var MASTER_MODE=false;
 // fixes tooltips that might be offscreen
 function fixToolTips(){
 	$("#style_holder").empty();
+	var styles="";
 	$(".tooltiptext").each(function(i,el){
 		el.id = "tooltiptext_"+i;
+		$(el).css("transform","translateX(0px)");
 		var xpos = el.getBoundingClientRect().x;
-		if(el.getBoundingClientRect().x < 0){
+		if(xpos < 0){
 			$(el).css("transform","translateX("+(-1*xpos)+"px)");
-			$("#style_holder").append("<style>#tooltiptext_"+i+"::after{transform:translateX("+xpos+"px);}</style>")
+			styles+="<style>#tooltiptext_"+i+"::after{transform:translateX("+xpos+"px);}</style>";
 		}
 	});
+	$("#style_holder").html(styles);
 }
 function writeFull() {
 	URL = {str:""};
@@ -644,6 +652,20 @@ function positionPopup(){
 		}
 	}
 }
+function getHitNPGen(type,np_rate,card_up,np_gain,enemyClass,overkill){
+	var cardNpValue =0;
+	if(type == "np_quick"){cardNpValue=1;}
+	else if(type == "np_arts"){cardNpValue=3;}
+	return Math.floor(Math.floor(np_rate * (cardNpValue * (1 + card_up)) * CLASSES_NP_GEN[enemyClass] * (1 + np_gain)) * (overkill?1.5:1));
+}
+function getHitNPDamage(base_atk,np_dmg_base,type,cardMod,srv_class,enemy_class,srv_attr,enemy_attr,atkMod,defMod,npDamageMod,powerMod,dmgPlusAdd,superMod,isSuper,rng)
+{
+	var cardDamageValue=1.5;
+	if(type == "np_quick"){cardDamageValue=.8;}
+	else if(type == "np_arts"){cardDamageValue=1;}
+	return Math.floor((base_atk * (np_dmg_base*.01) * (cardDamageValue * (1 + (cardMod*.01))) * CLASSES_ATTACK[srv_class] * CLASSES_TRIANGLE[srv_class][enemy_class] * ATTR_DMG[srv_attr][enemy_attr] * rng * 0.23 * (1 + (atkMod*.01) - (defMod*.01)) * (1 + (powerMod*.01) + (npDamageMod*.01)) * (1 + (((superMod*.01) - 1) * isSuper))) + dmgPlusAdd);
+}
+//function calcNPRefund(np_total_damage,)
 
 function popupReturn(value,action,extraValue){
 	// hide popup
@@ -961,11 +983,14 @@ function viewAction(){
 	// actions viewer
 	$(".actions").empty();
 	var cur_wave=0;
-	for(var a =1;a<ACTIONS.length;a++){
+	for(var a =0;a<ACTIONS.length;a++){
 		if(a==ACTION_CURRENT){
 			WAVE_CURRENT=cur_wave;
 		}
-		if(ACTIONS[a][0] < 3){	//servant
+		if(ACTIONS[a][0] == -1){ // ACTION 0
+			$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS["start"]+`)"><span class = "tooltiptext">Start of Wave 1</span></div>`);
+		}
+		else if(ACTIONS[a][0] < 3){	//servant
 			var servant = PARTY[ACTION_ORDER[a][ACTIONS[a][0]]];
 			if(ACTIONS[a][1]<3){ // skill
 				var skill = SERVANTS[servant]["skill"+(1+ACTIONS[a][1])];
@@ -982,9 +1007,11 @@ function viewAction(){
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
 			}
 		}
-		else if(ACTIONS[a][0] == 7){
+		else if(ACTIONS[a][0] == 7){//wave boundary
 			cur_wave++;
 			if(cur_wave>2){break;}
+			//insert wave break
+			$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS["start"]+`)"><span class = "tooltiptext">Start of Wave `+(cur_wave+1)+`</span></div>`);
 			continue;
 		}
 		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
@@ -1056,6 +1083,15 @@ function calcFull(noview){
 	ACTION_BUFFS=[[{},{},{},{},{},{}]];
 	ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 	WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
+	WAVE_HP = [[NaN,NaN,NaN],[NaN,NaN,NaN],[NaN,NaN,NaN]];
+	// set enemy HP
+	for(var w =0;w<3;w++){
+		for(var e =0;e<3;e++){
+			if(ENEMIES_CLASS[w][e]!=CLASSES_NUM["empty"]){ // enemy exists
+				WAVE_HP[w][e]=ENEMIES_HP[w][e];
+			}
+		}
+	}
 	//calculate party attack values
 	PARTY_ATTACK=[];
 	for(var p=0;p<6;p++){
@@ -1158,7 +1194,7 @@ function calcFull(noview){
 			}
 		}
 		console.log(" AFTER: a:"+a+",  l:"+lastNP);
-		// duplicate previous records
+		// duplicate previous action's data
 		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
 		ACTION_ORDER.push(ACTION_ORDER[a-1].slice());
@@ -1191,9 +1227,31 @@ function calcFull(noview){
 			}
 			else if(action == 3)// 				servant NP
 			{
+				var fakeNp=false;//servant cannot actually NP, but we will do it anyway, it will just do 0 damage and get 0 refund
+				if(ACTION_NP[a][real_pos] < 100){
+					console.log("FAKE NP");
+					fakeNp=true;
+				}
+				//apply effects that trigger before NP
+				//TODO
+				
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
-				console.log("NPS NOT FINISHED");
+				var totalRefund=0;
+				
+				//deal damage to all enemies
+				if(SERVANTS[PARTY[real_pos]].np.target_dmg == "aoe")
+				{
+					for(var e = 0;e<3;e++){
+						if(!isNaN(WAVE_HP[wave])){//if enemy was alive before this NP
+							
+						}
+						var enemyDamage = 0;
+						var hitRefund = 0;
+						
+					}
+				}
+				//apply effects after NP
 			}
 			else{
 				console.log("ACTION ERROR");
@@ -1223,8 +1281,34 @@ function calcFull(noview){
 		}
 		else if(pos == 7){
 			// activate per turn effects
-			
+			for(var p=0;p<6;p++){
+				var real_pos = ACTION_ORDER[a][p];
+				var np_regen_total=0;
+				if(ACTION_BUFFS[a][real_pos].np_regen != undefined){
+					for(effect of ACTION_BUFFS[a][real_pos].np_regen){
+						np_regen_total+=effect[0];
+					}
+				}
+				ACTION_NP[a][real_pos]+=np_regen_total;
+			}
 			// tick down the remaining turns of effects
+			for(var p=0;p<6;p++){
+				var real_pos = ACTION_ORDER[a][p];
+				for(buff in ACTION_BUFFS[a][real_pos]){
+					var buffs = ACTION_BUFFS[a][real_pos][buff];
+					for(var i=0;i<buffs.length;i++){
+						if(buffs[i][1]!=-1 && buffs[i][1]!=63){//effect is not infinte turns
+							buffs[i][1]--;
+							if(buffs[i][1]<=0){//this was the last turn, remove effect
+								buffs = buffs.filter(function(effect,effect_pos){return effect_pos!=i;});
+							}
+						}
+					}
+					if(buffs.length == 0){//if buff no longer applies to servant at all, remove it
+						delete ACTION_BUFFS[a][real_pos][buff];
+					}
+				}
+			}
 			console.log("WAVE SWITCH!");
 		}
 		else{
@@ -1234,13 +1318,11 @@ function calcFull(noview){
 			WAVE_CURRENT=wave;
 		}
 		console.log("----------------");
-	}
-	console.log("end:"+lastNP);
-	if(lastNP>0){//ended on an np, need a wave switch
-		console.log("inserting switch at the end!");
-		addAction(ACTIONS.length-1,7,0,0,0,true);
-		//move ACTION_CURRENT if it was on the wave switch
-		if(ACTION_CURRENT==a+1){ACTION_CURRENT+=1;}
+		// insert a wave break if actions ends on an np
+		if(wave != 2 && lastNP > 0 && a ==ACTIONS.length-1){
+			console.log("inserting switch at the end!");
+			addAction(ACTIONS.length-1,7,0,0,0,true);
+		}
 	}
 	if(noview){ return; }
 	viewAction();
@@ -1346,11 +1428,11 @@ function resetActions(){
 	ACTIONS=[[]];
 	calcFull();
 }
-// removes ACTION_CURRENT
-function clickRemoveAction(){
-	if(ACTION_CURRENT>0)
+// removes action
+function clickRemoveAction(action){
+	if(action>0)
 	{
-		removeAction(ACTION_CURRENT);
+		removeAction(action);
 		calcFull(true);
 		viewAction();
 	}
