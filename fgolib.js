@@ -959,6 +959,7 @@ function displayNP(pos){
 	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
 	var width = ACTION_NP[ACTION_CURRENT][real_pos];
 	if(width>100){width=100;}
+	console.log("A"+ACTION_CURRENT+"W"+WAVE_CURRENT);
 	$("#np_value_"+pos).css("width","calc("+width+"% - 2px)");
 	$("#np_text_"+pos).text(Math.floor(ACTION_NP[ACTION_CURRENT][real_pos])+"%");
 	// check if it's possible to NP
@@ -1202,6 +1203,11 @@ function calcFull(noview){
 		}
 		//console.log(out+"]");
 		//console.log("BEFORE: a:"+a+",  l:"+lastNP);
+		if(wave>2){ // action goes past the last np
+			removeAction(a);
+			a--;
+			continue;
+		}
 		if(lastNP > 0)					// last was an np
 		{
 			if(pos <= 2 && action == 3) // followed by another np
