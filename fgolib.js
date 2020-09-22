@@ -1289,27 +1289,7 @@ function calcFull(noview){
 					console.log("FAKE NP");
 					fakeNp=true;
 				}
-				//apply effects that trigger before NP
-				for(var e=0;e<servant.np.effect.length;e++){
-					if(servant.np.before[e]){//applies before
-						if(servant.np.target[e] == "all"){
-							for(var i=0;i<3;i++){
-								applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
-							}
-						}
-						else if(servant.np.target[e] == "target"){
-							applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
-						}
-						else if(servant.np.target[e] == "self"){
-							applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
-						}
-						else if(servant.np.target[e] == "aoe"){
-							//TODO
-							//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
-						}
-					}
-				}
-				
+					
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
 				var min_damage = [0,0,0];
@@ -1318,94 +1298,118 @@ function calcFull(noview){
 				var overkill_hits = 0;
 				var normal_hits = 0;
 				var totalRefund=0;
-				
-				//deal damage to all enemies
-				if(servant.np.target_dmg == "aoe")
+				if(!fakeNp)
 				{
-					//console.log("AOE NP");
-					
-					// get np type
-					var cardType = "";
-					if(     servant.np.type=="np_arts"  ){cardType="arts";}
-					else if(servant.np.type=="np_quick" ){cardType="quick";}
-					else if(servant.np.type=="np_buster"){cardType="buster";}
-					
-					//calcluate mods
-					var cardMod = calcTotalBuff(a,real_pos,cardType);
-					var atkMod = calcTotalBuff(a,real_pos,"atk");
-					var npDmgMod = calcTotalBuff(a,real_pos,"np_dmg");
-					var powerMod = calcTotalBuff(a,real_pos,"power");
-					var dmgPlus = calcTotalBuff(a,real_pos,"dmg");
-					var npGainMod = calcTotalBuff(a,real_pos,"np_gain");
-					
-					for(var e = 0;e<3;e++){
-						if(MAX_HP[wave][e]<=0){//if enemy was dead before this NP
-							continue;
-						}
-						var dmgMods = [PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
-						  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
-						  //console.log(dmgMods);
-						var baseDamage = getHitNPDamage(
-						/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
-						  PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
-						/*srv_attr,     enemy_attr,           atkMod, defMod, npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
-						  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
-						//console.log(baseDamage);
-						//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
-						var baseHitRefund = getHitNPGen(servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
-						var refundMods = [servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
-						  //console.log(refundMods);
-						//console.log(baseHitRefund);
-						// deal each hit
-						var hitDmg=0;
-						for(var hitPercent of servant.np.hits){
-							var hitDamage = hitPercent*(.01)*baseDamage;
-							hitDmg+=hitDamage;
-							//console.log("HIT DID:"+hitDamage);
-							MIN_HP[wave][e] -= hitDamage*1.1;
-							MAX_HP[wave][e] -= hitDamage*.9;
-							
-							min_damage[e] += hitDamage*.9;
-							avg_damage[e] += hitDamage;
-							max_damage[e] += hitDamage*1.1;
-							
-							if(MAX_HP[wave][e] <=0){ // overkill
-								totalRefund+=baseHitRefund*1.5;
-								overkill_hits++;
+					//apply effects that trigger before NP
+					for(var e=0;e<servant.np.effect.length;e++){
+						if(servant.np.before[e]){//applies before
+							if(servant.np.target[e] == "all"){
+								for(var i=0;i<3;i++){
+									applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+								}
 							}
-							else{//not overkill
-								totalRefund+=baseHitRefund;
+							else if(servant.np.target[e] == "target"){
+								applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
 							}
-							normal_hits++;
+							else if(servant.np.target[e] == "self"){
+								applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+							}
+							else if(servant.np.target[e] == "aoe"){
+								//TODO
+								//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+							}
 						}
-						//console.log("DID "+baseDamage+" damage, "+hitDmg+" in hits");
-						MAX_HP[wave][e] = Math.floor(MAX_HP[wave][e]);
-						MIN_HP[wave][e] = Math.floor(MIN_HP[wave][e]);
-						
-						min_damage[e] = Math.floor(min_damage[e]);
-						avg_damage[e] = Math.floor(avg_damage[e]);
-						max_damage[e] = Math.floor(max_damage[e]);
 					}
-				}
-				// refund NP
-				ACTION_NP[a][real_pos] += totalRefund;
-				//apply effects after NP
-				for(var e=0;e<servant.np.effect.length;e++){
-					if(!servant.np.before[e]){//applies after
-						if(servant.np.target[e] == "all"){
-							for(var i=0;i<3;i++){
-								applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+					
+					//deal damage to all enemies
+					if(servant.np.target_dmg == "aoe")
+					{
+						//console.log("AOE NP");
+						
+						// get np type
+					
+						var cardType = "";
+						if(     servant.np.type=="np_arts"  ){cardType="arts";}
+						else if(servant.np.type=="np_quick" ){cardType="quick";}
+						else if(servant.np.type=="np_buster"){cardType="buster";}
+						
+						//calcluate mods
+						var cardMod = calcTotalBuff(a,real_pos,cardType);
+						var atkMod = calcTotalBuff(a,real_pos,"atk");
+						var npDmgMod = calcTotalBuff(a,real_pos,"np_dmg");
+						var powerMod = calcTotalBuff(a,real_pos,"power");
+						var dmgPlus = calcTotalBuff(a,real_pos,"dmg");
+						var npGainMod = calcTotalBuff(a,real_pos,"np_gain");
+					
+						for(var e = 0;e<3;e++){
+							if(MAX_HP[wave][e]<=0){//if enemy was dead before this NP
+								continue;
 							}
+							var dmgMods = [PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
+							  //console.log(dmgMods);
+							var baseDamage = getHitNPDamage(
+							/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
+							  PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+							/*srv_attr,     enemy_attr,           atkMod, defMod, npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
+							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
+							//console.log(baseDamage);
+							//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
+							var baseHitRefund = getHitNPGen(servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
+							var refundMods = [servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
+							  //console.log(refundMods);
+							//console.log(baseHitRefund);
+							// deal each hit
+							var hitDmg=0;
+							for(var hitPercent of servant.np.hits){
+								var hitDamage = hitPercent*(.01)*baseDamage;
+								hitDmg+=hitDamage;
+								//console.log("HIT DID:"+hitDamage);
+								MIN_HP[wave][e] -= hitDamage*1.1;
+								MAX_HP[wave][e] -= hitDamage*.9;
+								
+								min_damage[e] += hitDamage*.9;
+								avg_damage[e] += hitDamage;
+								max_damage[e] += hitDamage*1.1;
+								
+								if(MAX_HP[wave][e] <=0){ // overkill
+									totalRefund+=baseHitRefund*1.5;
+									overkill_hits++;
+								}
+								else{//not overkill
+									totalRefund+=baseHitRefund;
+								}
+								normal_hits++;
+							}
+							//console.log("DID "+baseDamage+" damage, "+hitDmg+" in hits");
+							MAX_HP[wave][e] = Math.floor(MAX_HP[wave][e]);
+							MIN_HP[wave][e] = Math.floor(MIN_HP[wave][e]);
+							
+							min_damage[e] = Math.floor(min_damage[e]);
+							avg_damage[e] = Math.floor(avg_damage[e]);
+							max_damage[e] = Math.floor(max_damage[e]);
 						}
-						else if(servant.np.target[e] == "target"){
-							applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
-						}
-						else if(servant.np.target[e] == "self"){
-							applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
-						}
-						else if(servant.np.target[e] == "aoe"){
-							//TODO
-							//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+					}
+					// refund NP
+					ACTION_NP[a][real_pos] += totalRefund;
+					//apply effects after NP
+					for(var e=0;e<servant.np.effect.length;e++){
+						if(!servant.np.before[e]){//applies after
+							if(servant.np.target[e] == "all"){
+								for(var i=0;i<3;i++){
+									applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+								}
+							}
+							else if(servant.np.target[e] == "target"){
+								applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+							}
+							else if(servant.np.target[e] == "self"){
+								applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+							}
+							else if(servant.np.target[e] == "aoe"){
+								//TODO
+								//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+							}
 						}
 					}
 				}
