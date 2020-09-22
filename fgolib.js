@@ -39,6 +39,7 @@ var BUFF_ICONS = {
 	crit: "icons/effects/Critdmgup.png",
 	dragon_dmg:"icons/effects/Powerup.png",
 	buster_stars:"icons/effects/Powerup.png",
+	power:"icons/effects/Powerup.png",
 }
 var EFFECTS = {
 	np_gain:"NP Gain",
@@ -62,6 +63,7 @@ var EFFECTS = {
 	shuffle: "",
 	stun : "Stun",
 	buster_stars: "Buster Absorb",
+	power: "Power"
 }
 var EFFECT_FLAT ={
 	dmg: true,
@@ -184,7 +186,7 @@ skill3: {name: "Code: H", icon: "np_gain",target_real:"target", target:["target"
 var SERVANTS = [
 {
 	name : "Sieg", atk: 8394,class:"caster",attr:"man",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
-	np: {type:"np_arts", name:"Dragon Boi", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"], effect:["def_down"], turns:[3],values:[20,20,20,20,20]},
+	np: {type:"np_arts", name:"Dragon Boi", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"],before:[true], effect:["def_down"], turns:[3],values:[20,20,20,20,20]},
 	skills: [["arts",6.5]],
 	skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
 	skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
@@ -200,7 +202,7 @@ var SERVANTS = [
 },
 {
 	name:"Waver", atk: 10598,class:"caster",attr:"man",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
-	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"], effect:[["def_down"]], turns:[[3]],values:[[30],[40],[45],[47.5],[50]]},
+	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"],before:[true], effect:["def_down"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
 	skills: [["arts",10]],
 	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
 	skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
@@ -208,7 +210,7 @@ var SERVANTS = [
 },
 {
 	name:"Scathach-Skadi", atk: 10753,class:"caster",attr:"sky",tier:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
-	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[], effect:[], turns:[],values:[[],[],[],[],[]]},
+	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[],before:[], effect:[], turns:[],values:[[],[],[],[],[]]},
 	skills: [["arts",12],["dmg",250]],
 	skill1: {name:"Primordial Rune",        icon:"quick",  target_real:"target",   target:["target"],  effect:["quick"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 	skill2: {name:"Shivering Blizzard B",   icon:"def_down",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
@@ -216,7 +218,7 @@ var SERVANTS = [
 },
 {
 	name:"Merlin", atk: 10546,class:"caster",attr:"earth",tier:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
-	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
+	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"],before:[true], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
 	skills: [["arts",6],["np_regen",5]],
 	skill1: {name:"Dreamlike Charisma A",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,20],[12,20],[13,20],[14,20],[15,20],[16,20],[17,20],[18,20],[20,20]]},
 	skill2: {name:"Illusion A",   icon:"invinc",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
@@ -224,7 +226,7 @@ var SERVANTS = [
 },
 {
 	name:"Edmond Dantes", atk: 12641,class:"avenger",attr:"man",tier:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
-	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"], effect:["def_down"], turns:[3],values:[[20],[20],[20],[20],[20]]},
+	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"],before:[false], effect:["def_down"], turns:[3],values:[[20],[20],[20],[20],[20]]},
 	skills: [["np_regen",3]],
 	skill1: {name:"Iron Determination EX",   icon:"ignore_invinc",  target_real:"self",   target:["self"],  effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 	skill2: {name:"Golden Rule A",   icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
@@ -239,7 +241,7 @@ pic: "icons/ces/Hollow_magic.png"},
 pic: "icons/ces/Black_grail.png"},
 {name: "CKT", effect:["arts","quick","np_dmg"], values:[[10,10,10],[15,15,15]], atk:[250,1000],
 pic: "icons/ces/CE900.png"},
-{name: "Return Match", effect:["atk"], values:[[100],[200]], atk:[500,2000],
+{name: "Return Match", effect:["power"], values:[[100],[200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
 ];
 // 63, 4095
@@ -652,11 +654,20 @@ function positionPopup(){
 		}
 	}
 }
+function calcTotalBuff(action,real_pos,buff_type){
+	var total = 0;
+	if(ACTION_BUFFS[action][real_pos][buff_type] != undefined){
+		for(var buff of ACTION_BUFFS[action][real_pos][buff_type]){
+			total+=buff[0];
+		}
+	}
+	return total;
+}
 function getHitNPGen(type,np_rate,card_up,np_gain,enemyClass,overkill){
 	var cardNpValue =0;
 	if(type == "np_quick"){cardNpValue=1;}
 	else if(type == "np_arts"){cardNpValue=3;}
-	return Math.floor(Math.floor(np_rate * (cardNpValue * (1 + card_up)) * CLASSES_NP_GEN[enemyClass] * (1 + np_gain)) * (overkill?1.5:1));
+	return np_rate * (cardNpValue * (1 + (card_up*.01))) * CLASSES_NP_GEN[enemyClass] * (1 + (np_gain*.01)) * (overkill?1.5:1);
 }
 function getHitNPDamage(base_atk,np_dmg_base,type,cardMod,srv_class,enemy_class,srv_attr,enemy_attr,atkMod,defMod,npDamageMod,powerMod,dmgPlusAdd,superMod,isSuper,rng)
 {
@@ -946,7 +957,7 @@ function displayNP(pos){
 	var width = ACTION_NP[ACTION_CURRENT][real_pos];
 	if(width>100){width=100;}
 	$("#np_value_"+pos).css("width","calc("+width+"% - 2px)");
-	$("#np_text_"+pos).text(ACTION_NP[ACTION_CURRENT][real_pos]+"%");
+	$("#np_text_"+pos).text(Math.floor(ACTION_NP[ACTION_CURRENT][real_pos])+"%");
 	// check if it's possible to NP
 	if(pos < 3 && WAVE_NP[WAVE_CURRENT][real_pos] == 1 && ACTION_NP[ACTION_CURRENT][real_pos] >= 100){
 		$("#np_click_"+pos).css("display","block");
@@ -964,7 +975,10 @@ function applyBuff(action,pos,name,value,turns,source)
 {
 	//console.log("[action: \""+action+"\", pos: \""+pos+"\", name: \""+name+"\", value: \""+value+"\", turns: \""+turns+"\", source: \""+source+"\"]");
 	if(name == "np_gauge"){
-		ACTION_NP[action][pos]+=parseInt(value);
+		ACTION_NP[action][pos]+=parseFloat(value);
+		if(ACTION_NP[action][pos] >= 99 && ACTION_NP[action][pos] < 100){
+			ACTION_NP[action][pos]=100;
+		}
 	}
 	else{
 		// buff already exists
@@ -1227,31 +1241,116 @@ function calcFull(noview){
 			}
 			else if(action == 3)// 				servant NP
 			{
+				var servant = SERVANTS[PARTY[real_pos]];
 				var fakeNp=false;//servant cannot actually NP, but we will do it anyway, it will just do 0 damage and get 0 refund
 				if(ACTION_NP[a][real_pos] < 100){
 					console.log("FAKE NP");
 					fakeNp=true;
 				}
 				//apply effects that trigger before NP
-				//TODO
+				for(var e=0;e<servant.np.effect.length;e++){
+					if(servant.np.before[e]){//applies before
+						if(servant.np.target[e] == "all"){
+							for(var i=0;i<3;i++){
+								applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+							}
+						}
+						else if(servant.np.target[e] == "target"){
+							applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+						}
+						else if(servant.np.target[e] == "self"){
+							applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+						}
+						else if(servant.np.target[e] == "aoe"){
+							//TODO
+							//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+						}
+					}
+				}
 				
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
 				var totalRefund=0;
 				
 				//deal damage to all enemies
-				if(SERVANTS[PARTY[real_pos]].np.target_dmg == "aoe")
+				if(servant.np.target_dmg == "aoe")
 				{
+					console.log("AOE NP");
+					
+					// get np type
+					var cardType = "";
+					if(     servant.np.type=="np_arts"  ){cardType="arts";}
+					else if(servant.np.type=="np_quick" ){cardType="quick";}
+					else if(servant.np.type=="np_buster"){cardType="buster";}
+					
+					//calcluate mods
+					var cardMod = calcTotalBuff(a,real_pos,cardType);
+					var atkMod = calcTotalBuff(a,real_pos,"atk");
+					var npDmgMod = calcTotalBuff(a,real_pos,"np_dmg");
+					var powerMod = calcTotalBuff(a,real_pos,"power");
+					var dmgPlus = calcTotalBuff(a,real_pos,"dmg");
+					var npGainMod = calcTotalBuff(a,real_pos,"np_gain");
+					
 					for(var e = 0;e<3;e++){
-						if(!isNaN(WAVE_HP[wave])){//if enemy was alive before this NP
-							
+						if(isNaN(WAVE_HP[wave][e])){//if enemy was dead before this NP
+							continue;
 						}
-						var enemyDamage = 0;
-						var hitRefund = 0;
-						
+						var dmgMods = [PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+						  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
+						  console.log(dmgMods);
+						var baseDamage = getHitNPDamage(
+						/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
+						  PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+						/*srv_attr,     enemy_attr,           atkMod, defMod, npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
+						  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
+						console.log(baseDamage);
+						//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
+						var baseHitRefund = getHitNPGen(servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
+						var refundMods = [servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
+						  console.log(refundMods);
+						console.log(baseHitRefund);
+						// deal each hit
+						var hitDmg=0;
+						for(var hitPercent of servant.np.hits){
+							var hitDamage = hitPercent*(.01)*baseDamage;
+							hitDmg+=hitDamage;
+							console.log("HIT DID:"+hitDamage);
+							WAVE_HP[wave][e] -= hitDamage;
+							if(WAVE_HP[wave][e] <=0){ // overkill
+								totalRefund+=baseHitRefund*1.5;
+							}
+							else{//not overkill
+								totalRefund+=baseHitRefund;
+							}
+						}
+						console.log("DID "+baseDamage+" damage, "+hitDmg+" in hits");
+						WAVE_HP[wave][e] = Math.floor(WAVE_HP[wave][e]);
+						// if enemy died, set HP to NAN
+						if(WAVE_HP[wave][e] <= 0){WAVE_HP[wave][e]=NaN;}
 					}
 				}
+				// refund NP
+				ACTION_NP[a][real_pos] += totalRefund;
 				//apply effects after NP
+				for(var e=0;e<servant.np.effect.length;e++){
+					if(!servant.np.before[e]){//applies after
+						if(servant.np.target[e] == "all"){
+							for(var i=0;i<3;i++){
+								applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+							}
+						}
+						else if(servant.np.target[e] == "target"){
+							applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+						}
+						else if(servant.np.target[e] == "self"){
+							applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+						}
+						else if(servant.np.target[e] == "aoe"){
+							//TODO
+							//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+						}
+					}
+				}
 			}
 			else{
 				console.log("ACTION ERROR");
@@ -1512,7 +1611,7 @@ $( document ).ready(function (){
 	for(var stage=0;stage<3;stage++){
 		for(var enemy=0;enemy<3;enemy++){
 			
-			$("#enemy_"+stage+"_"+enemy).append("<img class = \"enemy_img\" id =\"enemy_img_"+stage+"_"+enemy+"\"><select class = \"enemy_sel\" id = \"enemy_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemy("+stage+","+enemy+",this.value)\"></select><select class = \"enemy_attr_sel\" id = \"enemy_attr_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemyAttr("+stage+","+enemy+",this.value)\"></select><input class = \"enemy_hp\" type = \"number\" step = \"1\" value = \""+ENEMIES_HP[stage][enemy]+"\" onchange=\"setEnemyHP("+stage+","+enemy+",this.value)\"/>");
+			$("#enemy_"+stage+"_"+enemy).append("<img class = \"enemy_img\" id =\"enemy_img_"+stage+"_"+enemy+"\"><select class = \"enemy_sel\" id = \"enemy_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemy("+stage+","+enemy+",this.value)\"></select><select class = \"enemy_attr_sel\" id = \"enemy_attr_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemyAttr("+stage+","+enemy+",this.value)\"></select><input class = \"enemy_hp\" type = \"number\" step = \"1\" value = \""+ENEMIES_HP[stage][enemy]+"\" onchange=\"setEnemyHP("+stage+","+enemy+",this.value)\"/><div id = \"enemy_damage_"+stage+"_"+enemy+"\" class = \"enemy_damage\"></div>");
 			for(var i=0;i<NUM_CLASS.length;i++){
 				$("#enemy_sel_"+stage+"_"+enemy).append("<option value="+i+(ENEMIES_CLASS[stage][enemy]==i?" selected":"")+">"+NUM_CLASS[i]+"</option>");
 			}
