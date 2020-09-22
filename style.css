@@ -318,3 +318,19 @@ body{
 	color:red;
 	font-weight:bold;
 }
+#np_info td {
+	text-align:center;
+}
+#np_info th {
+	padding: 5px 30px;
+}
+#np_info {
+	display: inline;
+}
+#np_overkill{
+	display: inline;
+}
+#np_info_div{
+	text-align:center;
+	display:block;
+}

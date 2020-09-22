@@ -453,8 +453,11 @@ var ACTIONS = [[-1,-1,-1,-1]];
 // 1= NP possible, 0 = NP Already used
 // NOTE: Even if value is 1, NP GAUGE must still be > 100 to actually NP
 var WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
-// hp of all enemies currently, NaN if doesnt exist
-var WAVE_HP = [[NaN,NaN,NaN],[NaN,NaN,NaN],[NaN,NaN,NaN]];
+// hp of all enemies currently, negative if doesnt exist
+var MAX_HP = [[1,1,1],[1,1,1],[1,1,1]];
+var MIN_HP = [[1,1,1],[1,1,1],[1,1,1]];
+
+var ALL_NPS = [];
 
 var WAVE_CURRENT = 0;
 var WAVE_MAX = 0;
@@ -994,8 +997,27 @@ function applyBuff(action,pos,name,value,turns,source)
 // function to display everything happening on ACTION_CURRENT
 function viewAction(){
 	MASTER_MODE=true;
+	// enemies viewer
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			if(MAX_HP[w][e]<=0){ // DEAD
+				$("#enemy_damage_"+w+"_"+e).text("100% Chance to Kill");
+				$("#enemy_"+w+"_"+e).css("background-color","rgb(70,180,70)");
+			}
+			else if(MIN_HP[w][e]>0){ // NOT DEAD
+				$("#enemy_damage_"+w+"_"+e).text("0% Chance to Kill; MAX HP: "+MAX_HP[w][e]+", MIN HP: "+MIN_HP[w][e]);
+				$("#enemy_"+w+"_"+e).css("background-color","rgb(180,70,70)");
+			}
+			else{ // SCHRODINGERS CAT
+				var chance = (-MIN_HP[w][e])/(MAX_HP[w][e] - MIN_HP[w][e]);
+				$("#enemy_damage_"+w+"_"+e).text(Math.floor(chance*100)+"% Chance to Kill; MAX HP: "+MAX_HP[w][e]+", MIN HP: "+Math.max(MIN_HP[w][e],0));
+				$("#enemy_"+w+"_"+e).css("background-color","rgb("+(110*(1-chance)+70)+","+(110*(chance)+70)+",70)");
+			}
+		}
+	}
 	// actions viewer
 	$(".actions").empty();
+	var disp_np = -1;
 	var cur_wave=0;
 	for(var a =0;a<ACTIONS.length;a++){
 		if(a==ACTION_CURRENT){
@@ -1011,6 +1033,9 @@ function viewAction(){
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
 			}
 			else if(ACTIONS[a][1] == 3){ // np
+				if(a == ACTION_CURRENT){ // currently viewing this np
+					disp_np = ACTIONS[a][3];
+				}
 				var np = SERVANTS[servant].np;
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
 			}
@@ -1029,6 +1054,19 @@ function viewAction(){
 			continue;
 		}
 		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
+	}
+	// display np info if it's current
+	if(disp_np != -1){
+		$("#np_info_div").css("display","block");
+		for(var e =0; e<3;e++){
+			$("#np_0_"+e).text(ALL_NPS[disp_np].min_dmg[e]);
+			$("#np_1_"+e).text(ALL_NPS[disp_np].avg_dmg[e]);
+			$("#np_2_"+e).text(ALL_NPS[disp_np].max_dmg[e]);
+		}
+		$("#np_overkill").text(ALL_NPS[disp_np].overkill_hits+" Overkill Hits");
+	}
+	else{
+		$("#np_info_div").css("display","none");
 	}
 	//display servants/ces in correct order for the action
 	for(var p=0;p<6;p++)
@@ -1097,12 +1135,15 @@ function calcFull(noview){
 	ACTION_BUFFS=[[{},{},{},{},{},{}]];
 	ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 	WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
-	WAVE_HP = [[NaN,NaN,NaN],[NaN,NaN,NaN],[NaN,NaN,NaN]];
+	MAX_HP = [[0,0,0],[0,0,0],[0,0,0]];
+	MIN_HP = [[0,0,0],[0,0,0],[0,0,0]];
+	ALL_NPS = [];
 	// set enemy HP
 	for(var w =0;w<3;w++){
 		for(var e =0;e<3;e++){
 			if(ENEMIES_CLASS[w][e]!=CLASSES_NUM["empty"]){ // enemy exists
-				WAVE_HP[w][e]=ENEMIES_HP[w][e];
+				MAX_HP[w][e]=ENEMIES_HP[w][e];
+				MIN_HP[w][e]=ENEMIES_HP[w][e];
 			}
 		}
 	}
@@ -1146,6 +1187,7 @@ function calcFull(noview){
 	var wave=0;
 	// how many previous actions have been nps in a row
 	var lastNP = 0;
+	var cur_np = 0;
 	// recalculate all actions, skipping action 0
 	for(var a =1;a<ACTIONS.length;a++)
 	{
@@ -1158,16 +1200,16 @@ function calcFull(noview){
 		for(var i = 1; i<ACTIONS.length;i++){
 			out+= "("+ACTIONS[i][0]+","+ACTIONS[i][1]+"),";
 		}
-		console.log(out+"]");
-		console.log("BEFORE: a:"+a+",  l:"+lastNP);
+		//console.log(out+"]");
+		//console.log("BEFORE: a:"+a+",  l:"+lastNP);
 		if(lastNP > 0)					// last was an np
 		{
 			if(pos <= 2 && action == 3) // followed by another np
 			{
-				console.log("another np");
+				//console.log("another np");
 				lastNP++;
 				if(lastNP>3){			// too many nps in a row, remove this one
-					console.log("removing np");
+					//console.log("removing np");
 					removeAction(a);
 					// need to re-check a, so decrement then loop again to get a back to a
 					a--;
@@ -1176,7 +1218,7 @@ function calcFull(noview){
 			}
 			else if(pos != 7) {			// followed by a regular action instead of a wave switch
 				//insert wave switch
-				console.log("inserting switch!");
+				//console.log("inserting switch!");
 				a--;
 				addAction(a,7,0,0,0,true);
 				//move ACTION_CURRENT if it was on the wave switch
@@ -1185,7 +1227,7 @@ function calcFull(noview){
 				continue;
 			}
 			else{						// followed correctly by a wave switch
-				console.log("correct switch");
+				//console.log("correct switch");
 				lastNP=0;
 				wave+=1;
 			}
@@ -1194,20 +1236,20 @@ function calcFull(noview){
 			if(pos <= 2 && action == 3) // followed by np
 			{
 				lastNP=1;
-				console.log("lastnp start");
+				//console.log("lastnp start");
 			}
 			else if(pos == 7) {			// wave switch not led by an np
-				console.log("incorrect switch");
+				//console.log("incorrect switch");
 				//remove wave switch
 				removeAction(a);
 				a--;
 				continue;
 			}
 			else{
-				console.log("reg skill");
+				//console.log("reg skill");
 			}
 		}
-		console.log(" AFTER: a:"+a+",  l:"+lastNP);
+		//console.log(" AFTER: a:"+a+",  l:"+lastNP);
 		// duplicate previous action's data
 		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
@@ -1270,12 +1312,17 @@ function calcFull(noview){
 				
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
+				var min_damage = [0,0,0];
+				var avg_damage = [0,0,0];
+				var max_damage = [0,0,0];
+				var overkill_hits = 0;
+				var normal_hits = 0;
 				var totalRefund=0;
 				
 				//deal damage to all enemies
 				if(servant.np.target_dmg == "aoe")
 				{
-					console.log("AOE NP");
+					//console.log("AOE NP");
 					
 					// get np type
 					var cardType = "";
@@ -1292,41 +1339,52 @@ function calcFull(noview){
 					var npGainMod = calcTotalBuff(a,real_pos,"np_gain");
 					
 					for(var e = 0;e<3;e++){
-						if(isNaN(WAVE_HP[wave][e])){//if enemy was dead before this NP
+						if(MAX_HP[wave][e]<=0){//if enemy was dead before this NP
 							continue;
 						}
 						var dmgMods = [PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
 						  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
-						  console.log(dmgMods);
+						  //console.log(dmgMods);
 						var baseDamage = getHitNPDamage(
 						/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
 						  PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
 						/*srv_attr,     enemy_attr,           atkMod, defMod, npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
 						  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
-						console.log(baseDamage);
+						//console.log(baseDamage);
 						//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
 						var baseHitRefund = getHitNPGen(servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
 						var refundMods = [servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
-						  console.log(refundMods);
-						console.log(baseHitRefund);
+						  //console.log(refundMods);
+						//console.log(baseHitRefund);
 						// deal each hit
 						var hitDmg=0;
 						for(var hitPercent of servant.np.hits){
 							var hitDamage = hitPercent*(.01)*baseDamage;
 							hitDmg+=hitDamage;
-							console.log("HIT DID:"+hitDamage);
-							WAVE_HP[wave][e] -= hitDamage;
-							if(WAVE_HP[wave][e] <=0){ // overkill
+							//console.log("HIT DID:"+hitDamage);
+							MIN_HP[wave][e] -= hitDamage*1.1;
+							MAX_HP[wave][e] -= hitDamage*.9;
+							
+							min_damage[e] += hitDamage*.9;
+							avg_damage[e] += hitDamage;
+							max_damage[e] += hitDamage*1.1;
+							
+							if(MAX_HP[wave][e] <=0){ // overkill
 								totalRefund+=baseHitRefund*1.5;
+								overkill_hits++;
 							}
 							else{//not overkill
 								totalRefund+=baseHitRefund;
 							}
+							normal_hits++;
 						}
-						console.log("DID "+baseDamage+" damage, "+hitDmg+" in hits");
-						WAVE_HP[wave][e] = Math.floor(WAVE_HP[wave][e]);
-						// if enemy died, set HP to NAN
-						if(WAVE_HP[wave][e] <= 0){WAVE_HP[wave][e]=NaN;}
+						//console.log("DID "+baseDamage+" damage, "+hitDmg+" in hits");
+						MAX_HP[wave][e] = Math.floor(MAX_HP[wave][e]);
+						MIN_HP[wave][e] = Math.floor(MIN_HP[wave][e]);
+						
+						min_damage[e] = Math.floor(min_damage[e]);
+						avg_damage[e] = Math.floor(avg_damage[e]);
+						max_damage[e] = Math.floor(max_damage[e]);
 					}
 				}
 				// refund NP
@@ -1351,9 +1409,13 @@ function calcFull(noview){
 						}
 					}
 				}
+				//update the NP RECORD
+				ALL_NPS.push({"min_dmg":min_damage,"max_dmg":max_damage,"avg_dmg":avg_damage,"overkill_hits":overkill_hits,"np_refund":Math.floor(totalRefund)});
+				ACTIONS[a][3]=cur_np;
+				cur_np++;
 			}
 			else{
-				console.log("ACTION ERROR");
+				//console.log("ACTION ERROR");
 			}
 		}
 		else if(pos == 3){ // 					mystic code action
@@ -1408,18 +1470,18 @@ function calcFull(noview){
 					}
 				}
 			}
-			console.log("WAVE SWITCH!");
+			//console.log("WAVE SWITCH!");
 		}
 		else{
-			console.log("INVALID ACTION!");
+			//console.log("INVALID ACTION!");
 		}
 		if(a == ACTION_CURRENT){
 			WAVE_CURRENT=wave;
 		}
-		console.log("----------------");
+		//console.log("----------------");
 		// insert a wave break if actions ends on an np
 		if(wave != 2 && lastNP > 0 && a ==ACTIONS.length-1){
-			console.log("inserting switch at the end!");
+			//console.log("inserting switch at the end!");
 			addAction(ACTIONS.length-1,7,0,0,0,true);
 		}
 	}
