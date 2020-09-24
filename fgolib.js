@@ -1,3 +1,6 @@
+// TODO
+// CLASS SELECT
+// INFO
 var VERSION = 1;
 var SKILL_ICONS = {
 	np_gauge:"icons/skills/np.png",
@@ -40,6 +43,7 @@ var BUFF_ICONS = {
 	dragon_dmg:"icons/effects/Powerup.png",
 	buster_stars:"icons/effects/Powerup.png",
 	power:"icons/effects/Powerup.png",
+	def_down:"icons/effects/Defensedown.png",
 }
 var EFFECTS = {
 	np_gain:"NP Gain",
@@ -445,6 +449,8 @@ var ACTION_ORDER=[0,1,2,3,4,5];
 var ACTION_NP=[0,0,0,0,0,0];
 // buffs on each servant after the last action
 var ACTION_BUFFS=[{}];
+// buffs on each enemy after the last action
+var ACTION_DEBUFFS= [ [ [{},{},{}],[{},{},{}],[{},{},{}] ] ];
 // which skills are currently avaiblible, [6] is mystic code
 var ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 // current action we are viewing, 0 is beginning, default
@@ -673,6 +679,15 @@ function calcTotalBuff(action,real_pos,buff_type){
 	}
 	return total;
 }
+function calcTotalDebuff(action,wave,enemy,debuff_type){
+	var total = 0;
+	if(ACTION_DEBUFFS[action][wave][enemy][debuff_type] != undefined){
+		for(var debuff of ACTION_DEBUFFS[action][wave][enemy][debuff_type]){
+			total+=debuff[0];
+		}
+	}
+	return total;
+}
 function getHitNPGen(type,np_rate,card_up,np_gain,enemyClass,overkill){
 	var cardNpValue =0;
 	if(type == "np_quick"){cardNpValue=1;}
@@ -684,7 +699,7 @@ function getHitNPDamage(base_atk,np_dmg_base,type,cardMod,srv_class,enemy_class,
 	var cardDamageValue=1.5;
 	if(type == "np_quick"){cardDamageValue=.8;}
 	else if(type == "np_arts"){cardDamageValue=1;}
-	return Math.floor((base_atk * (np_dmg_base*.01) * (cardDamageValue * (1 + (cardMod*.01))) * CLASSES_ATTACK[srv_class] * CLASSES_TRIANGLE[srv_class][enemy_class] * ATTR_DMG[srv_attr][enemy_attr] * rng * 0.23 * (1 + (atkMod*.01) - (defMod*.01)) * (1 + (powerMod*.01) + (npDamageMod*.01)) * (1 + (((superMod*.01) - 1) * isSuper))) + dmgPlusAdd);
+	return Math.floor((base_atk * (np_dmg_base*.01) * (cardDamageValue * (1 + (cardMod*.01))) * CLASSES_ATTACK[srv_class] * CLASSES_TRIANGLE[srv_class][enemy_class] * ATTR_DMG[srv_attr][enemy_attr] * rng * 0.23 * (1 + (atkMod*.01) + (defMod*.01)) * (1 + (powerMod*.01) + (npDamageMod*.01)) * (1 + (((superMod*.01) - 1) * isSuper))) + dmgPlusAdd);
 }
 //function calcNPRefund(np_total_damage,)
 
@@ -786,6 +801,27 @@ function displayBuffs(){
 			str+=EFFECTS[buff]+`: `+total+suf+causes+`</span></div>`;
 		}
 		$("#buffs_div_"+p).append(str);
+	}
+}
+function displayDebuffs(){
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			var debuffs = ACTION_DEBUFFS[ACTION_CURRENT][w][e];
+			var str = "";
+			$("#debuffs_"+w+"_"+e).empty();
+			for(debuff in debuffs){
+				str += `<div class = "buff tooltip" style= "background-image:url(`+BUFF_ICONS[debuff]+`)"><span class = 'tooltiptext'>`;
+				var causes = "";
+				var total = 0;
+				var suf = EFFECT_FLAT[buff]?"":"%";
+				for(const cause of debuffs[debuff]){
+					total+=parseFloat(cause[0]);
+					causes+=`<br>`+cause[0]+suf+` - `+cause[1];
+				}
+				str+=EFFECTS[debuff]+`: `+total+suf+causes+`</span></div>`;
+			}
+			$("#debuffs_"+w+"_"+e).append(str);
+		}
 	}
 }
 function displayServant(pos)
@@ -1001,6 +1037,17 @@ function applyBuff(action,pos,name,value,turns,source)
 		}
 	}
 }
+function applyDebuff(action,wave,enemy,name,value,source)
+{
+	// debuff already exists
+	if(ACTION_DEBUFFS[action][wave][enemy].hasOwnProperty(name)){
+		ACTION_DEBUFFS[action][wave][enemy][name].push([value,source]);
+	}
+	// debuff must be created
+	else{
+		ACTION_DEBUFFS[action][wave][enemy][name] = [[value,source]];
+	}
+}
 // function to display everything happening on ACTION_CURRENT
 function viewAction(){
 	MASTER_MODE=true;
@@ -1030,7 +1077,7 @@ function viewAction(){
 		if(a==ACTION_CURRENT){
 			WAVE_CURRENT=cur_wave;
 		}
-		if(ACTIONS[a][0] == -1){ // ACTION 0
+		if(a == 0){ // ACTION 0
 			$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS["start"]+`)"><span class = "tooltiptext">Start of Wave 1</span></div>`);
 		}
 		else if(ACTIONS[a][0] < 3){	//servant
@@ -1070,7 +1117,7 @@ function viewAction(){
 			$("#np_1_"+e).text(ALL_NPS[disp_np].avg_dmg[e]);
 			$("#np_2_"+e).text(ALL_NPS[disp_np].max_dmg[e]);
 		}
-		$("#np_overkill").text(ALL_NPS[disp_np].overkill_hits+" Overkill Hits");
+		$("#np_overkill").text(ALL_NPS[disp_np].overkill_hits+" Overkill Hit"+(ALL_NPS[disp_np].overkill_hits==1?"":"s"));
 	}
 	else{
 		$("#np_info_div").css("display","none");
@@ -1100,6 +1147,7 @@ function viewAction(){
 		}
 	}
 	displayBuffs();
+	displayDebuffs();
 	displayAttack();
 	displayMysticSkills();
 	fixToolTips();
@@ -1140,6 +1188,7 @@ function calcFull(noview){
 	ACTION_ORDER=[[0,1,2,3,4,5]];
 	ACTION_NP=[[0,0,0,0,0,0]];
 	ACTION_BUFFS=[[{},{},{},{},{},{}]];
+	ACTION_DEBUFFS= [ [ [{},{},{}],[{},{},{}],[{},{},{}] ] ];
 	ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 	WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
 	MAX_HP = [[0,0,0],[0,0,0],[0,0,0]];
@@ -1264,6 +1313,7 @@ function calcFull(noview){
 		//console.log(" AFTER: a:"+a+",  l:"+lastNP);
 		// duplicate previous action's data
 		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
+		ACTION_DEBUFFS.push(JSON.parse(JSON.stringify(ACTION_DEBUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
 		ACTION_ORDER.push(ACTION_ORDER[a-1].slice());
 		ACTION_SKILLS.push(ACTION_SKILLS[a-1].slice());
@@ -1289,6 +1339,14 @@ function calcFull(noview){
 					else if(skill.target[e] == "self"){
 						applyBuff(a,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
 					}
+					else if(skill.target[e] == "aoe"){
+						for(var enemy=0;enemy<3;enemy++){
+							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.name);
+						}
+					}
+					else if(skill.target[e] == "single"){
+						applyDebuff(a,wave,target1,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.name);
+					}
 				}
 				// disable the skill
 				ACTION_SKILLS[a][real_pos][action]=0;
@@ -1301,7 +1359,6 @@ function calcFull(noview){
 					console.log("FAKE NP");
 					fakeNp=true;
 				}
-					
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
 				var min_damage = [0,0,0];
@@ -1327,8 +1384,12 @@ function calcFull(noview){
 								applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
 							}
 							else if(servant.np.target[e] == "aoe"){
-								//TODO
-								//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+								for(var enemy=0;enemy<3;enemy++){
+									applyDebuff(a,wave,enemy,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
+								}
+							}
+							else if(servant.np.target[e] == "single"){
+								applyDebuff(a,wave,target1,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
 							}
 						}
 					}
@@ -1357,14 +1418,15 @@ function calcFull(noview){
 							if(MAX_HP[wave][e]<=0){//if enemy was dead before this NP
 								continue;
 							}
+							var defDownMod = calcTotalDebuff(a,wave,e,"def_down");
 							var dmgMods = [PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
-							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
+							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
 							  //console.log(dmgMods);
 							var baseDamage = getHitNPDamage(
 							/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
 							  PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
-							/*srv_attr,     enemy_attr,           atkMod, defMod, npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
-							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, 0,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
+							/*srv_attr,     enemy_attr,                     atkMod, defMod,    npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
+							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
 							//console.log(baseDamage);
 							//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
 							var baseHitRefund = getHitNPGen(servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
@@ -1419,8 +1481,12 @@ function calcFull(noview){
 								applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
 							}
 							else if(servant.np.target[e] == "aoe"){
-								//TODO
-								//applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+								for(var enemy=0;enemy<3;enemy++){
+									applyDebuff(a,wave,enemy,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
+								}
+							}
+							else if(servant.np.target[e] == "single"){
+								applyDebuff(a,wave,target1,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
 							}
 						}
 					}
@@ -1515,7 +1581,7 @@ function clickAction(pos,action)
 			return;
 		}
 		if(ACTION_SKILLS[ACTION_SKILLS.length-1][real_pos][action]==0){
-			// TODO: WARNING DIALOGUE
+			// Can't use skill
 			return;
 		}
 		if(action >=0 && action <= 2) 			// 		servant skill
@@ -1531,11 +1597,11 @@ function clickAction(pos,action)
 				// need a current servants popup
 				popup(0,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 			}
-			else if(skill.target_real == "st")
+			else if(skill.target_real == "single")
 			{
 				// need a current servants popup
-				// TODO: ADD OTHER WAVES
-				popup(2,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
+				// TODO: MAKE SURE THIS WAVE WORKS
+				popup(2+WAVE_CURRENT,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 			}
 		}
 		else if(action == 3)// 				servant NP
@@ -1546,22 +1612,22 @@ function clickAction(pos,action)
 				// JUST ADD THE ACTION, NO TARGETING POPUP
 				addAction(ACTION_CURRENT,pos,action,0,0);
 			}
-			else if(skill.target_real == "target")
+			else if(np.target_real == "target")
 			{
 				// need a current servants popup
 				popup(0,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+np.name);
 			}
-			else if(skill.target_real == "st")
+			else if(np.target_real == "st")
 			{
 				// need a current servants popup
-				// TODO: ADD OTHER WAVES
-				popup(2,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+np.name);
+				// TODO: MAKE SURE THIS WORKS
+				popup(2+WAVE_CURRENT,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+np.name);
 			}
 		}
 	}
 	else if(pos == 3){ // 					mystic code action
 		if(ACTION_SKILLS[ACTION_SKILLS.length-1][6][action]==0){
-			// TODO: WARNING DIALOGUE
+			// Can't use skill
 			return;
 		}
 		var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(action+1)];
@@ -1578,8 +1644,7 @@ function clickAction(pos,action)
 		else if(skill.target_real == "single")
 		{
 			// need a current servants popup
-			// TODO: CURRENT WAVE
-			popup(2,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
+			popup(2+WAVE_CURRENT,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 		}
 		else if(skill.target_real == "orderchange")
 		{
@@ -1691,7 +1756,7 @@ $( document ).ready(function (){
 	for(var stage=0;stage<3;stage++){
 		for(var enemy=0;enemy<3;enemy++){
 			
-			$("#enemy_"+stage+"_"+enemy).append("<img class = \"enemy_img\" id =\"enemy_img_"+stage+"_"+enemy+"\"><select class = \"enemy_sel\" id = \"enemy_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemy("+stage+","+enemy+",this.value)\"></select><select class = \"enemy_attr_sel\" id = \"enemy_attr_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemyAttr("+stage+","+enemy+",this.value)\"></select><input class = \"enemy_hp\" type = \"number\" step = \"1\" value = \""+ENEMIES_HP[stage][enemy]+"\" onchange=\"setEnemyHP("+stage+","+enemy+",this.value)\"/><div id = \"enemy_damage_"+stage+"_"+enemy+"\" class = \"enemy_damage\"></div>");
+			$("#enemy_"+stage+"_"+enemy).append("<img class = \"enemy_img\" id =\"enemy_img_"+stage+"_"+enemy+"\"><select class = \"enemy_sel\" id = \"enemy_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemy("+stage+","+enemy+",this.value)\"></select><select class = \"enemy_attr_sel\" id = \"enemy_attr_sel_"+stage+"_"+enemy+"\" onchange=\"setEnemyAttr("+stage+","+enemy+",this.value)\"></select><input class = \"enemy_hp\" type = \"number\" step = \"1\" value = \""+ENEMIES_HP[stage][enemy]+"\" onchange=\"setEnemyHP("+stage+","+enemy+",this.value)\"/><div class = \"debuffs\" id = \"debuffs_"+stage+"_"+enemy+"\"></div><div id = \"enemy_damage_"+stage+"_"+enemy+"\" class = \"enemy_damage\"></div>");
 			for(var i=0;i<NUM_CLASS.length;i++){
 				$("#enemy_sel_"+stage+"_"+enemy).append("<option value="+i+(ENEMIES_CLASS[stage][enemy]==i?" selected":"")+">"+NUM_CLASS[i]+"</option>");
 			}

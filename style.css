@@ -334,3 +334,10 @@ body{
 	text-align:center;
 	display:block;
 }
+html {
+	overflow: hidden;
+}
+.debuffs{
+	display: inline-block;
+	vertical-align: middle;
+}
