@@ -244,6 +244,12 @@ pic: "icons/ces/CE900.png"},
 {name: "Return Match", effect:["power"], values:[[100],[200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
 ];
+function packNum(num1,num2){
+	return Math.min(Math.max(num1,0),7)*8+Math.min(Math.max(num2,0),7);
+}
+function unpackNum(num){
+	return [Math.floor(num/8),num%8];
+}
 // 63, 4095
 function writeNum(num,size,str){
 	var numSO = "";
@@ -425,8 +431,6 @@ var MYSTIC_CODE_LEVEL = 0;
 var PARTY_CES = [-1,-1,-1,-1,-1,-1];
 // level of ces, 0=lvl1, 1 = mlb, 2= lvl MAX
 var PARTY_CE_LEVEL=[0,0,0,0,0,0];
-// list of all actions taken like skills, nps, fishing or finishing
-var ACTIONS_RAW=[[]];
 
 // CALCULATED DATA
 // ---------------
@@ -445,8 +449,6 @@ var ACTION_BUFFS=[{}];
 var ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
 // current action we are viewing, 0 is beginning, default
 var ACTION_CURRENT=0;
-// used to store ACTION_CURRENT for recalculation
-var ACTION_PREV=0;
 // all actions taken, in more readable format
 var ACTIONS = [[-1,-1,-1,-1]];
 // represents if a servant is able to np yet in a given wave
@@ -456,7 +458,7 @@ var WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
 // hp of all enemies currently, negative if doesnt exist
 var MAX_HP = [[1,1,1],[1,1,1],[1,1,1]];
 var MIN_HP = [[1,1,1],[1,1,1],[1,1,1]];
-
+// data about each np that happens
 var ALL_NPS = [];
 
 var WAVE_CURRENT = 0;
@@ -539,6 +541,11 @@ function writeFull() {
 			writeNum(ENEMIES_HP[i][j],5,URL);
 		}
 	}
+	// write actions
+	for(var a = 1; a< ACTIONS.length;a++){
+		writeNum(packNum(ACTIONS[a][0],ACTIONS[a][1]),1,URL);
+		writeNum(packNum(ACTIONS[a][2],ACTIONS[a][3]),1,URL);
+	}
 	window.history.replaceState(null,"","index.html?id="+URL.str);
 }
 function readFull() {
@@ -617,11 +624,11 @@ function readFull() {
 		}
 	}
 	//read all actions
-	ACTIONS_RAW = [[]];
-	var nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
-	while(!isNaN(nextAction[1])){
-		ACTIONS_RAW.push(nextAction);
-		nextAction = [readNum(URL_READ,1),readNum(URL_READ,1)];
+	ACTIONS = [[]];
+	var nextAction = unpackNum(readNum(URL_READ,1)).concat(unpackNum(readNum(URL_READ,1)));
+	while(!isNaN(nextAction[3])){
+		ACTIONS.push(nextAction);
+		nextAction = unpackNum(readNum(URL_READ,1)).concat(unpackNum(readNum(URL_READ,1)));
 	}
 }
 function positionPopup(){
@@ -959,7 +966,6 @@ function displayNP(pos){
 	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
 	var width = ACTION_NP[ACTION_CURRENT][real_pos];
 	if(width>100){width=100;}
-	console.log("A"+ACTION_CURRENT+"W"+WAVE_CURRENT);
 	$("#np_value_"+pos).css("width","calc("+width+"% - 2px)");
 	$("#np_text_"+pos).text(Math.floor(ACTION_NP[ACTION_CURRENT][real_pos])+"%");
 	// check if it's possible to NP
@@ -1498,8 +1504,8 @@ function calcFull(noview){
 	if(noview){ return; }
 	viewAction();
 }
-function clickAction(pos,action){
-	
+function clickAction(pos,action)
+{
 	//TARGET SELECT
 	if(pos >= 0 && pos <= 2)				// 			servant action
 	{
@@ -1593,6 +1599,7 @@ function clickAction(pos,action){
 	else{
 		console.log("INVALID ACTION!");
 	}
+	writeFull();
 }
 // resets all actions
 function resetActions(){
@@ -1607,6 +1614,7 @@ function clickRemoveAction(action){
 		calcFull(true);
 		viewAction();
 	}
+	writeFull();
 }
 
 $( document ).ready(function (){
