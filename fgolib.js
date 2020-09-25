@@ -93,6 +93,7 @@ var EFFECTS = {
 	np_type_quick:"Change NP Type to Quick",
 	np_type_arts:"Change NP Type to Arts",
 	np_type_buster:"Change NP Type to Buster",
+	self_np_type:"Change own NP Type",
 }
 var EFFECT_FLAT ={
 	dmg: true,
@@ -111,7 +112,7 @@ var EFFECT_FLAT ={
 	def_down: false,
 	h_threat_dmg:false,
 }
-var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster"];
+var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type"];
 var TARGETS = {
 	"self": "Self",
 	"all": "All",
@@ -119,7 +120,7 @@ var TARGETS = {
 	"aoe": "All Enemies",
 	"single": "One Enemy",
 	"not_self":"Not Self",
-	"self_card":"Self"
+	"self_np_type":"Self"
 }
 var CLASSES_ICONS = {
 	saber:"icons/classes/saber.png",
@@ -967,7 +968,12 @@ function displaySkill(pos,skill){
 		$("#skill_"+pos+"_"+skill).addClass("tooltip");
 		var skill_text = skill_object.name+" ("+(SKILLS[real_pos][skill]+1)+")";
 		for(var i=0;i<skill_object.effect.length;i++){
-			skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+skill_object.target[i]+"): "+skill_object.values[SKILLS[real_pos][skill]][i]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
+			if(!(EFFECT_NONE.includes(skill_object.effect[i]))){
+				skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+TARGETS[skill_object.target[i]]+"): "+skill_object.values[SKILLS[real_pos][skill]][i]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
+			}
+			else{ // display no values
+				skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+TARGETS[skill_object.target[i]]+"): "+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
+			}
 		}
 		$("#skill_"+pos+"_"+skill+" > .tooltiptext").html(skill_text);
 	}
