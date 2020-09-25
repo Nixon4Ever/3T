@@ -4,7 +4,6 @@
 // SERVANT SELECT (JP FILTER)
 // INFO
 // VERSION WARNING
-// OC
 // N TIME EFFECTS
 // DISPLAY FAKE ACTIONS
 // Fishing
@@ -279,7 +278,7 @@ var SERVANTS = [
 },
 {
 	name:"Artoria (Caster)", jp:true, atk: 10546,class:"caster",attr:"star",tier:5,q:1,a:3,b:1,qh:3,ah:3,np_perhit:.54,pic:"icons/servants/Artoria_Caster.png",
-	np:{type:"np_arts", name:"Around Caliburn", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false], effect:["atk"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
+	np:{type:"np_arts", name:"Around Caliburn", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false],oc:[false], effect:["atk"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
 	skills: [["arts",12]],
 	skill1: {name:"Charisma of Hope B",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
 	skill2: {name:"Blessing of the Lake A",   icon:"np_gauge",  target_real:"target",    target:["target","all"],     effect:["np_gauge","np_gain"], turns: [0,3], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
@@ -331,7 +330,7 @@ function unpackBin(num){
 function packBinSmall(nums){
 	return Math.min(parseInt(nums.join(""),2),7);
 }
-// unpack a number into 6 bits
+// unpack a number into 3 bits
 function unpackBinSmall(num){
 	var s = num.toString(2).padStart(3,0);
 	var ret = [0,0,0];
@@ -1496,6 +1495,9 @@ function calcFull(noview){
 					console.log("FAKE NP");
 					fakeNp=true;
 				}
+				// calculate oc level
+				var oc = Math.floor((ACTION_NP[a][real_pos]-100)/100);
+				oc += lastNP-1;
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
 				var min_damage = [0,0,0];
@@ -1509,24 +1511,31 @@ function calcFull(noview){
 					//apply effects that trigger before NP
 					for(var e=0;e<np.effect.length;e++){
 						if(np.before[e]){//applies before
+							var effect_level=0;
+							if(np.oc[e]){ // is an oc effect
+								effect_level = oc;
+							}
+							else{ // is an np level effect
+								effect_level = PARTY_NP[real_pos];
+							}
 							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[PARTY_NP[real_pos]][e],np.turns[e],np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
 								}
 							}
 							else if(np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[PARTY_NP[real_pos]][e],np.turns[e],np.name);
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "self"){
-								applyBuff(a,real_pos,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.turns[e],np.name);
+								applyBuff(a,real_pos,np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
-									applyDebuff(a,wave,enemy,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
+									applyDebuff(a,wave,enemy,np.effect[e],np.values[effect_level][e],np.name);
 								}
 							}
 							else if(np.target[e] == "single"){
-								applyDebuff(a,wave,target1,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
+								applyDebuff(a,wave,target1,np.effect[e],np.values[effect_level][e],np.name);
 							}
 						}
 					}
@@ -1606,24 +1615,31 @@ function calcFull(noview){
 					//apply effects after NP
 					for(var e=0;e<np.effect.length;e++){
 						if(!np.before[e]){//applies after
+							var effect_level=0;
+							if(np.oc[e]){ // is an oc effect
+								effect_level = oc;
+							}
+							else{ // is an np level effect
+								effect_level = PARTY_NP[real_pos];
+							}
 							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[SKILLS[real_pos][action]][e],np.turns[e],np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
 								}
 							}
 							else if(np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[SKILLS[real_pos][action]][e],np.turns[e],np.name);
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "self"){
-								applyBuff(a,real_pos,np.effect[e],np.values[SKILLS[real_pos][action]][e],np.turns[e],np.name);
+								applyBuff(a,real_pos,np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
-									applyDebuff(a,wave,enemy,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
+									applyDebuff(a,wave,enemy,np.effect[e],np.values[effect_level][e],np.name);
 								}
 							}
 							else if(np.target[e] == "single"){
-								applyDebuff(a,wave,target1,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
+								applyDebuff(a,wave,target1,np.effect[e],np.values[effect_level][e],np.name);
 							}
 						}
 					}
