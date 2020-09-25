@@ -1,7 +1,17 @@
 // TODO
-// CLASS SELECT
+// SERVANT SELECT
+// SERVANT SELECT (CLASS FILTER)
+// SERVANT SELECT (JP FILTER)
 // INFO
+// VERSION WARNING
+// OC
+// N TIME EFFECTS
+// DISPLAY FAKE ACTIONS
+
+// current version of script
 var VERSION = 1;
+// earliest version that will work with this version
+var LAST_WORKING_VERSION = 1;
 var SKILL_ICONS = {
 	np_gauge:"icons/skills/np.png",
 	crit:"icons/skills/Critdmg.png",
@@ -44,7 +54,18 @@ var BUFF_ICONS = {
 	buster_stars:"icons/effects/Powerup.png",
 	power:"icons/effects/Powerup.png",
 	def_down:"icons/effects/Defensedown.png",
+	h_threat_dmg:"icons/effects/Powerup.png",
+	np_type_quick:"icons/effects/np_type_quick.png",
+	np_type_arts:"icons/effects/np_type_arts.png",
+	np_type_buster:"icons/effects/np_type_buster.png",
 }
+var CARD_TYPES = ["arts","quick","buster"];
+var CARD_ICONS = {
+	arts:"icons/cards/arts.png",
+	quick:"icons/cards/quick.png",
+	buster:"icons/cards/buster.png",
+};
+var CARD_NUM = {"arts":0,"quick":1,"buster":2};
 var EFFECTS = {
 	np_gain:"NP Gain",
 	np_gauge:"NP Gauge",
@@ -67,7 +88,11 @@ var EFFECTS = {
 	shuffle: "",
 	stun : "Stun",
 	buster_stars: "Buster Absorb",
-	power: "Power"
+	power: "Power",
+	h_threat_dmg:"Threat to Humanity Attack",
+	np_type_quick:"Change NP Type to Quick",
+	np_type_arts:"Change NP Type to Arts",
+	np_type_buster:"Change NP Type to Buster",
 }
 var EFFECT_FLAT ={
 	dmg: true,
@@ -83,6 +108,18 @@ var EFFECT_FLAT ={
 	np_regen: false,
 	np_dmg: false,
 	crit: false,
+	def_down: false,
+	h_threat_dmg:false,
+}
+var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster"];
+var TARGETS = {
+	"self": "Self",
+	"all": "All",
+	"target": "Target",
+	"aoe": "All Enemies",
+	"single": "One Enemy",
+	"not_self":"Not Self",
+	"self_card":"Self"
 }
 var CLASSES_ICONS = {
 	saber:"icons/classes/saber.png",
@@ -189,52 +226,71 @@ skill3: {name: "Code: H", icon: "np_gain",target_real:"target", target:["target"
 ];
 var SERVANTS = [
 {
-	name : "Sieg", atk: 8394,class:"caster",attr:"man",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
-	np: {type:"np_arts", name:"Dragon Boi", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"],before:[true], effect:["def_down"], turns:[3],values:[20,20,20,20,20]},
+	name : "Sieg", jp:false, atk: 8394,class:"caster",attr:"man",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
+	np: {type:"np_arts", name:"Ákafiloga All-gríð", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"],before:[true], effect:["def_down"],oc:[true], turns:[3],values:[[20],[25],[30],[35],[40]]},
 	skills: [["arts",6.5]],
 	skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
 	skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
 	skill3: {name:"Dead-Count Shapeshifter EX",  target_real:"self", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
 },
 {
-	name: "Paracelsus", atk: 6711,class:"caster",attr:"man",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
-	np:{type:"np_arts", name:"Sword of Paracelsus", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[], effect:[], turns:[],values:[]},
+	name: "Paracelsus", jp:false, atk: 6711,class:"caster",attr:"man",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
+	np:{type:"np_arts", name:"Sword of Paracelsus", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[],oc:[], effect:[], turns:[],values:[]},
 	skills: [["arts",10]],
 	skill1: {name:"Rapid Casting A",        icon:"np_gauge",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
 	skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
 	skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {
-	name:"Waver", atk: 10598,class:"caster",attr:"man",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
-	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"],before:[true], effect:["def_down"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
+	name:"Waver", jp:false, atk: 10598,class:"caster",attr:"man",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
+	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"],before:[true], effect:["def_down"],oc:[false], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
 	skills: [["arts",10]],
 	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
 	skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
 	skill3: {name:"Tactician's Command A+",  icon:"atk",  target_real:"all",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
 },
 {
-	name:"Scathach-Skadi", atk: 10753,class:"caster",attr:"sky",tier:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
-	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[],before:[], effect:[], turns:[],values:[[],[],[],[],[]]},
+	name:"Scathach-Skadi", jp:false, atk: 10753,class:"caster",attr:"sky",tier:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
+	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[],before:[], effect:[],oc:[], turns:[],values:[[],[],[],[],[]]},
 	skills: [["arts",12],["dmg",250]],
 	skill1: {name:"Primordial Rune",        icon:"quick",  target_real:"target",   target:["target"],  effect:["quick"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 	skill2: {name:"Shivering Blizzard B",   icon:"def_down",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
 	skill3: {name:"Allfather's Wisdom B+",  icon:"np_gauge",  target_real:"target",    target:["target"],     effect:["np_gauge"],turns:[0],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {
-	name:"Merlin", atk: 10546,class:"caster",attr:"earth",tier:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
-	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"],before:[true], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
+	name:"Merlin", jp:false, atk: 10546,class:"caster",attr:"earth",tier:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
+	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"],before:[true],oc:[false], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
 	skills: [["arts",6],["np_regen",5]],
 	skill1: {name:"Dreamlike Charisma A",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,20],[12,20],[13,20],[14,20],[15,20],[16,20],[17,20],[18,20],[20,20]]},
 	skill2: {name:"Illusion A",   icon:"invinc",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Hero Creation EX",  icon:"buster",  target_real:"target",    target:["target"],     effect:["buster"], turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {
-	name:"Edmond Dantes", atk: 12641,class:"avenger",attr:"man",tier:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
-	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"],before:[false], effect:["def_down"], turns:[3],values:[[20],[20],[20],[20],[20]]},
+	name:"Edmond Dantes", jp:false, atk: 12641,class:"avenger",attr:"man",tier:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
+	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["def_down"], turns:[3],values:[[20],[25],[30],[35],[40]]},
 	skills: [["np_regen",3]],
 	skill1: {name:"Iron Determination EX",   icon:"ignore_invinc",  target_real:"self",   target:["self"],  effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 	skill2: {name:"Golden Rule A",   icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 	skill3: {name:"Wisdom of Crisis A",  icon:"np_drain",  target_real:"none",    target:["none"],     effect:[], turns:[],values:[[],[],[],[],[],[],[],[],[],[]]}
+},
+{
+	name:"Artoria (Caster)", jp:true, atk: 10546,class:"caster",attr:"star",tier:5,q:1,a:3,b:1,qh:3,ah:3,np_perhit:.54,pic:"icons/servants/Artoria_Caster.png",
+	np:{type:"np_arts", name:"Around Caliburn", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false], effect:["atk"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
+	skills: [["arts",12]],
+	skill1: {name:"Charisma of Hope B",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
+	skill2: {name:"Blessing of the Lake A",   icon:"np_gauge",  target_real:"target",    target:["target","all"],     effect:["np_gauge","np_gain"], turns: [0,3], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
+	skill3: {name:"Sword of Selection EX",  icon:"arts",  target_real:"target",    target:["target","target"],     effect:["arts","h_threat_dmg"], turns:[3,3],values:[[30,30],[32,32],[34,34],[36,36],[38,38],[40,40],[42,42],[44,44],[46,46],[50,50]]}
+},
+{
+	name:"Space Ishtar", jp:true, atk: 12612,class:"avenger",attr:"star",tier:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.69,pic:"icons/servants/Spaceishtar.png",
+	np:{type:"np_arts", name:"Edin Shugurra Quasar (Arts)", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
+	np2:{type:"np_quick", name:"Edin Shugurra Quasar (Quick)", hits:[16,33,51], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
+	np3:{type:"np_buster", name:"Edin Shugurra Quasar (Buster)", hits:[16,33,51], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
+	nps:{"arts":"np","quick":"np2","buster":"np3"},
+	skills: [["np_regen",3.5],["dmg",270]],
+	skill1: {name:"Devil's Sugar A",   icon:"atk",  target_real:"self",   target:["self","not_self"],  effect:["atk","atk"], turns: [3,3], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
+	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [1,3], values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
+	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,20,20,20],[32,20,20,20],[34,20,20,20],[36,20,20,20],[38,20,20,20],[40,20,20,20],[42,20,20,20],[44,20,20,20],[46,20,20,20],[50,20,20,20]]}
 }];
 var CES = [
 {name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
@@ -749,6 +805,45 @@ function popup(mode,action,text,extraValue){
 	$("#popup_text").css("display","block");
 	$("#popup_div").css("display","block");
 }
+
+function cardPopup(cards,action){
+	// set options
+	for(var type of CARD_TYPES){
+		if(cards.hasOwnProperty(type))
+		{
+			$("#card_popup_"+type).css("display","table-cell");
+			$("#card_popup_"+type).attr("onclick","cardPopupReturn('"+type+"',"+action+")");
+		}
+		else
+		{
+			$("#card_popup_"+type).css("display","none");
+		}
+	}
+	//open popup
+	$("#card_popup_div").css("display","table");
+}
+function cardPopupReturn(card,action){
+	// close popup
+	$("#card_popup_div").css("display","none");
+	// do action
+	action(card);
+}
+function getNP(action,real_pos){
+	//console.log("action:"+action+",pos:"+real_pos);
+	var servant = SERVANTS[PARTY[real_pos]];
+	if(ACTION_BUFFS[action][real_pos].hasOwnProperty("np_type_arts")){
+		return servant[servant.nps["arts"]];
+	}
+	else if(ACTION_BUFFS[action][real_pos].hasOwnProperty("np_type_quick")){
+		return servant[servant.nps["quick"]];
+	}
+	else if(ACTION_BUFFS[action][real_pos].hasOwnProperty("np_type_buster")){
+		return servant[servant.nps["buster"]];
+	}
+	else{
+		return servant.np;
+	}
+}
 //remove action but do not calculate/view
 function removeAction(action){
 	if(action>0){
@@ -791,14 +886,22 @@ function displayBuffs(){
 			var suf = EFFECT_FLAT[buff]?"":"%";
 			for(const cause of buffs[buff]){
 				total+=parseFloat(cause[0]);
-				if(cause[1]==-1){
+				if(EFFECT_NONE.includes(buff)){ // display no numbers about effect
+					causes+=`<br>`+cause[2]+` for `+cause[1]+` turn(s)`;
+				}
+				else if(cause[1]==-1){
 					causes+=`<br>`+cause[0]+suf+` - `+cause[2];
 				}
 				else{
 					causes+=`<br>`+cause[0]+suf+` - `+cause[2]+` for `+cause[1]+` turn(s)`;
 				}
 			}
-			str+=EFFECTS[buff]+`: `+total+suf+causes+`</span></div>`;
+			if(EFFECT_NONE.includes(buff)){
+				str+=EFFECTS[buff]+causes+`</span></div>`;
+			}
+			else{
+				str+=EFFECTS[buff]+`: `+total+suf+causes+`</span></div>`;
+			}
 		}
 		$("#buffs_div_"+p).append(str);
 	}
@@ -843,13 +946,11 @@ function setServant(pos,servant)
 	PARTY[pos]=servant;
 	displayServant(pos,servant);
 	calcFull();
-	writeFull();
 }
 function setNP(pos,level){
 	if(MASTER_MODE){return;}
 	PARTY_NP[pos]=level;
 	calcFull();
-	writeFull();
 }
 function displaySkill(pos,skill){
 	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
@@ -883,7 +984,6 @@ function setSkill(pos,skill,level){
 	SKILLS[real_pos][skill]=parseInt(level);
 	displaySkill(pos,skill);
 	calcFull();
-	writeFull();
 }
 function displayCE(pos)
 {
@@ -901,7 +1001,6 @@ function setCE(pos,ce){
 	PARTY_CES[real_pos]=ce;
 	displayCE(pos);
 	calcFull();
-	writeFull();
 }
 function displayCELevel(pos){
 	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
@@ -927,7 +1026,6 @@ function changeCELevel(pos){
 	}
 	displayCELevel(pos);
 	calcFull();
-	writeFull();
 }
 function displayMysticSkills(){
 	for(var skill=0;skill<3;skill++){
@@ -961,14 +1059,12 @@ function setMystic(mystic){
 	MYSTIC_CODE = mystic;
 	displayMystic();
 	calcFull();
-	writeFull();
 }
 function setMysticLevel(level){
 	if(MASTER_MODE){return;}
 	MYSTIC_CODE_LEVEL = level;
 	displayMystic();
 	calcFull();
-	writeFull();
 }
 function displayEnemy(stage,enemy){
 	$("#enemy_img_"+stage+"_"+enemy).attr("src",CLASSES_ICONS[NUM_CLASS[ENEMIES_CLASS[stage][enemy]]]);
@@ -978,19 +1074,16 @@ function setEnemy(stage,enemy,value){
 	ENEMIES_CLASS[stage][enemy] = value;
 	displayEnemy(stage,enemy);
 	calcFull();
-	writeFull();
 }
 function setEnemyAttr(stage,enemy,value){
 	if(MASTER_MODE){return;}
 	ENEMIES_ATTR[stage][enemy] = value;
 	calcFull();
-	writeFull();
 }
 function setEnemyHP(stage,enemy,value){
 	if(MASTER_MODE){return;}
 	ENEMIES_HP[stage][enemy] = value;
 	calcFull();
-	writeFull();
 }
 function displayAllNP(){
 	for(var i=0;i<6;i++){
@@ -1090,7 +1183,7 @@ function viewAction(){
 				if(a == ACTION_CURRENT){ // currently viewing this np
 					disp_np = ACTIONS[a][3];
 				}
-				var np = SERVANTS[servant].np;
+				var np = getNP(a,ACTION_ORDER[a][ACTIONS[a][0]]);
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
 			}
 		}
@@ -1177,8 +1270,9 @@ function addAction(where,pos,action,target1,target2,nocalc){
 		}
 		ACTIONS[where+1]=[pos,action,target1,target2];
 	}
-	if(nocalc){return;}
+	if(nocalc != undefined && nocalc == true){console.log("SKIPPED");return;}
 	else{
+		console.log("CALCING");
 		ACTION_CURRENT+=1;
 		calcFull();
 	}
@@ -1263,7 +1357,7 @@ function calcFull(noview){
 			a--;
 			continue;
 		}
-		if(lastNP > 0)					// last was an np
+		if(lastNP > 0)					// last action was an np
 		{
 			if(pos <= 2 && action == 3) // followed by another np
 			{
@@ -1347,6 +1441,9 @@ function calcFull(noview){
 					else if(skill.target[e] == "single"){
 						applyDebuff(a,wave,target1,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.name);
 					}
+					else if(skill.target[e] == "self_np_type"){
+						applyBuff(a,real_pos,"np_type_"+CARD_TYPES[target1],0,skill.turns[e],skill.name);
+					}
 				}
 				// disable the skill
 				ACTION_SKILLS[a][real_pos][action]=0;
@@ -1354,6 +1451,7 @@ function calcFull(noview){
 			else if(action == 3)// 				servant NP
 			{
 				var servant = SERVANTS[PARTY[real_pos]];
+				var np = getNP(a,real_pos);
 				var fakeNp=false;//servant cannot actually NP, but we will do it anyway, it will just do 0 damage and get 0 refund
 				if(ACTION_NP[a][real_pos] < 100){
 					console.log("FAKE NP");
@@ -1370,41 +1468,41 @@ function calcFull(noview){
 				if(!fakeNp)
 				{
 					//apply effects that trigger before NP
-					for(var e=0;e<servant.np.effect.length;e++){
-						if(servant.np.before[e]){//applies before
-							if(servant.np.target[e] == "all"){
+					for(var e=0;e<np.effect.length;e++){
+						if(np.before[e]){//applies before
+							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[PARTY_NP[real_pos]][e],np.turns[e],np.name);
 								}
 							}
-							else if(servant.np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+							else if(np.target[e] == "target"){
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[PARTY_NP[real_pos]][e],np.turns[e],np.name);
 							}
-							else if(servant.np.target[e] == "self"){
-								applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.turns[e],servant.np.name);
+							else if(np.target[e] == "self"){
+								applyBuff(a,real_pos,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.turns[e],np.name);
 							}
-							else if(servant.np.target[e] == "aoe"){
+							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
-									applyDebuff(a,wave,enemy,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
+									applyDebuff(a,wave,enemy,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
 								}
 							}
-							else if(servant.np.target[e] == "single"){
-								applyDebuff(a,wave,target1,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
+							else if(np.target[e] == "single"){
+								applyDebuff(a,wave,target1,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
 							}
 						}
 					}
 					
 					//deal damage to all enemies
-					if(servant.np.target_dmg == "aoe")
+					if(np.target_dmg == "aoe")
 					{
 						//console.log("AOE NP");
 						
 						// get np type
 					
 						var cardType = "";
-						if(     servant.np.type=="np_arts"  ){cardType="arts";}
-						else if(servant.np.type=="np_quick" ){cardType="quick";}
-						else if(servant.np.type=="np_buster"){cardType="buster";}
+						if(     np.type=="np_arts"  ){cardType="arts";}
+						else if(np.type=="np_quick" ){cardType="quick";}
+						else if(np.type=="np_buster"){cardType="buster";}
 						
 						//calcluate mods
 						var cardMod = calcTotalBuff(a,real_pos,cardType);
@@ -1419,23 +1517,23 @@ function calcFull(noview){
 								continue;
 							}
 							var defDownMod = calcTotalDebuff(a,wave,e,"def_down");
-							var dmgMods = [PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+							var dmgMods = [PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
 							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
 							  //console.log(dmgMods);
 							var baseDamage = getHitNPDamage(
 							/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
-							  PARTY_ATTACK[real_pos],servant.np.dmg[PARTY_NP[real_pos]],servant.np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+							  PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
 							/*srv_attr,     enemy_attr,                     atkMod, defMod,    npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
 							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
 							//console.log(baseDamage);
 							//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
-							var baseHitRefund = getHitNPGen(servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
-							var refundMods = [servant.np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
+							var baseHitRefund = getHitNPGen(np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
+							var refundMods = [np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
 							  //console.log(refundMods);
 							//console.log(baseHitRefund);
 							// deal each hit
 							var hitDmg=0;
-							for(var hitPercent of servant.np.hits){
+							for(var hitPercent of np.hits){
 								var hitDamage = hitPercent*(.01)*baseDamage;
 								hitDmg+=hitDamage;
 								//console.log("HIT DID:"+hitDamage);
@@ -1467,26 +1565,26 @@ function calcFull(noview){
 					// refund NP
 					ACTION_NP[a][real_pos] += totalRefund;
 					//apply effects after NP
-					for(var e=0;e<servant.np.effect.length;e++){
-						if(!servant.np.before[e]){//applies after
-							if(servant.np.target[e] == "all"){
+					for(var e=0;e<np.effect.length;e++){
+						if(!np.before[e]){//applies after
+							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[SKILLS[real_pos][action]][e],np.turns[e],np.name);
 								}
 							}
-							else if(servant.np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+							else if(np.target[e] == "target"){
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[SKILLS[real_pos][action]][e],np.turns[e],np.name);
 							}
-							else if(servant.np.target[e] == "self"){
-								applyBuff(a,real_pos,servant.np.effect[e],servant.np.values[SKILLS[real_pos][action]][e],servant.np.turns[e],servant.np.name);
+							else if(np.target[e] == "self"){
+								applyBuff(a,real_pos,np.effect[e],np.values[SKILLS[real_pos][action]][e],np.turns[e],np.name);
 							}
-							else if(servant.np.target[e] == "aoe"){
+							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
-									applyDebuff(a,wave,enemy,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
+									applyDebuff(a,wave,enemy,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
 								}
 							}
-							else if(servant.np.target[e] == "single"){
-								applyDebuff(a,wave,target1,servant.np.effect[e],servant.np.values[PARTY_NP[real_pos]][e],servant.np.name);
+							else if(np.target[e] == "single"){
+								applyDebuff(a,wave,target1,np.effect[e],np.values[PARTY_NP[real_pos]][e],np.name);
 							}
 						}
 					}
@@ -1542,8 +1640,9 @@ function calcFull(noview){
 					for(var i=0;i<buffs.length;i++){
 						if(buffs[i][1]!=-1 && buffs[i][1]!=63){//effect is not infinte turns
 							buffs[i][1]--;
-							if(buffs[i][1]<=0){//this was the last turn, remove effect
-								buffs = buffs.filter(function(effect,effect_pos){return effect_pos!=i;});
+							if(buffs[i][1]==0){//this was the last turn, remove effect
+								buffs.splice(i,1);
+								i--;
 							}
 						}
 					}
@@ -1567,6 +1666,7 @@ function calcFull(noview){
 			addAction(ACTIONS.length-1,7,0,0,0,true);
 		}
 	}
+	writeFull();
 	if(noview){ return; }
 	viewAction();
 }
@@ -1586,7 +1686,8 @@ function clickAction(pos,action)
 		}
 		if(action >=0 && action <= 2) 			// 		servant skill
 		{
-			var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
+			var servant = SERVANTS[PARTY[real_pos]];
+			var skill = servant["skill"+(action+1)];
 			if(skill.target_real == "aoe" || skill.target_real == "all" || skill.target_real == "self")
 			{
 				// JUST ADD THE ACTION, NO TARGETING POPUP
@@ -1603,10 +1704,15 @@ function clickAction(pos,action)
 				// TODO: MAKE SURE THIS WAVE WORKS
 				popup(2+WAVE_CURRENT,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+skill.name);
 			}
+			else if(skill.target_real == "self_np_type")
+			{
+				// need a current servants popup
+				cardPopup(servant.nps,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",CARD_NUM[tar],0)}","Select NP Type for "+servant.name);
+			}
 		}
 		else if(action == 3)// 				servant NP
 		{
-			var np = SERVANTS[PARTY[real_pos]].np;
+			var np = getNP(ACTION_CURRENT,real_pos);
 			if(np.target_dmg == "aoe" || np.target_dmg == "all" || np.target_dmg == "self" || np.target_dmg == "none")
 			{
 				// JUST ADD THE ACTION, NO TARGETING POPUP
@@ -1617,7 +1723,7 @@ function clickAction(pos,action)
 				// need a current servants popup
 				popup(0,"function(tar){addAction(ACTION_CURRENT,"+pos+","+action+",tar,0)}","Select target for "+np.name);
 			}
-			else if(np.target_real == "st")
+			else if(np.target_real == "single")
 			{
 				// need a current servants popup
 				// TODO: MAKE SURE THIS WORKS
@@ -1664,7 +1770,6 @@ function clickAction(pos,action)
 	else{
 		console.log("INVALID ACTION!");
 	}
-	writeFull();
 }
 // resets all actions
 function resetActions(){
@@ -1679,7 +1784,6 @@ function clickRemoveAction(action){
 		calcFull(true);
 		viewAction();
 	}
-	writeFull();
 }
 
 $( document ).ready(function (){

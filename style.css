@@ -334,10 +334,43 @@ body{
 	text-align:center;
 	display:block;
 }
-html {
-	overflow: hidden;
+@media (min-height: 900px){
+	html {
+		overflow: hidden;
+	}
 }
 .debuffs{
 	display: inline-block;
 	vertical-align: middle;
+}
+#details_div{
+	height: 403px;
+    display: inline-block;
+    width: 300px;
+    margin-right: 50px;
+    vertical-align: top;
+    box-shadow: 0 0 20px 3px #a2a2a2;
+    background-color: #f3f3f3;
+}
+#card_popup_div{
+	width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #0c0c0cc8;
+    display: none;
+    z-index: 10;
+}
+#card_popup_arts{background-image:url(icons/cards/arts.png);}
+#card_popup_quick{background-image:url(icons/cards/quick.png);}
+#card_popup_buster{background-image:url(icons/cards/buster.png);}
+.card_popup_type{
+	background-repeat: no-repeat;
+    background-size: 220px;
+    background-position: center;
+    display: table-cell;
+	transition: background-color .07s;
+	cursor:pointer;
+}
+.card_popup_type:hover{
+	background-color: #0c0c0c4a;
 }

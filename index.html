@@ -10,6 +10,11 @@
 		<div id = "popup_text"></div>
 		<div id = "style_holder" style = "position:absolute">
 		</div>
+		<div id = "card_popup_div">
+			<div class = "card_popup_type" id = "card_popup_arts" onclick="selectCardType('arts')"></div>
+			<div class = "card_popup_type" id = "card_popup_quick" onclick="selectCardType('quick')"></div>
+			<div class = "card_popup_type" id = "card_popup_buster" onclick="selectCardType('buster')"></div>
+		</div>
 		<div id = "popup_div">
 			<svg id = "popup" viewBox="0 0 100 100">
 				<defs>
@@ -37,7 +42,11 @@
 		</div>
 		<!-- SERVANTS SELECTION -->
 		<div id = "serv_sel_main">
-			
+			<div id = "details_div">
+				<p>Run Details:</p>
+				<p>100% Chance to clear</p>
+				<p></p>
+			</div>
 		</div>
 		<div class = "divider">
 		</div>
