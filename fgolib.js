@@ -7,6 +7,9 @@
 // OC
 // N TIME EFFECTS
 // DISPLAY FAKE ACTIONS
+// Fishing
+// card damage
+// rng
 
 // current version of script
 var VERSION = 1;
@@ -311,6 +314,32 @@ function packNum(num1,num2){
 function unpackNum(num){
 	return [Math.floor(num/8),num%8];
 }
+// pack 6 bits into one number
+function packBin(nums){
+	return Math.min(parseInt(nums.join(""),2),63);
+}
+// unpack a number into 6 bits
+function unpackBin(num){
+	var s = num.toString(2).padStart(6,0);
+	var ret = [0,0,0,0,0,0];
+	for(var i=0;i<6;i++){
+		if(s[i]=="1"){ret[i]=1;}
+	}
+	return ret;
+}
+// pack 3 bits into one number
+function packBinSmall(nums){
+	return Math.min(parseInt(nums.join(""),2),7);
+}
+// unpack a number into 6 bits
+function unpackBinSmall(num){
+	var s = num.toString(2).padStart(3,0);
+	var ret = [0,0,0];
+	for(var i=0;i<3;i++){
+		if(s[i]=="1"){ret[i]=1;}
+	}
+	return ret;
+}
 // 63, 4095
 function writeNum(num,size,str){
 	var numSO = "";
@@ -523,6 +552,8 @@ var MAX_HP = [[1,1,1],[1,1,1],[1,1,1]];
 var MIN_HP = [[1,1,1],[1,1,1],[1,1,1]];
 // data about each np that happens
 var ALL_NPS = [];
+
+var TOTAL_CHANCE = 100;
 
 var WAVE_CURRENT = 0;
 var WAVE_MAX = 0;
@@ -1245,6 +1276,7 @@ function viewAction(){
 			$("#skill_sel_"+p+"_"+s).val(SKILLS[real_pos][s]);
 		}
 	}
+	$("#total_chance").text(TOTAL_CHANCE.toFixed(1)+"% Chance to clear");
 	displayBuffs();
 	displayDebuffs();
 	displayAttack();
@@ -1294,6 +1326,7 @@ function calcFull(noview){
 	MAX_HP = [[0,0,0],[0,0,0],[0,0,0]];
 	MIN_HP = [[0,0,0],[0,0,0],[0,0,0]];
 	ALL_NPS = [];
+	TOTAL_CHANCE = 100;
 	// set enemy HP
 	for(var w =0;w<3;w++){
 		for(var e =0;e<3;e++){
@@ -1670,6 +1703,17 @@ function calcFull(noview){
 		if(wave != 2 && lastNP > 0 && a ==ACTIONS.length-1){
 			//console.log("inserting switch at the end!");
 			addAction(ACTIONS.length-1,7,0,0,0,true);
+		}
+	}
+	// calc TOTAL_CHANCE for each enemy
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			if(MIN_HP[w][e]>0){ // NOT DEAD
+				TOTAL_CHANCE=0;
+			}
+			else if(MAX_HP[w][e]>0){ // SCHRODINGERS CAT
+				TOTAL_CHANCE *= ((-MIN_HP[w][e])/(MAX_HP[w][e] - MIN_HP[w][e]));
+			}
 		}
 	}
 	writeFull();
