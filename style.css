@@ -64,6 +64,7 @@ html{
 #mystic_sel_div{
 	display: block;
     background-position-x: -50px!important;
+	background-size: 340px!important;
 }
 #mystic_portrait{
 	height: 320px;
@@ -318,19 +319,19 @@ body{
 	color:red;
 	font-weight:bold;
 }
-#np_info td {
+#np_info td, #rng_info td {
 	text-align:center;
 }
-#np_info th {
+#np_info th, #rng_info th {
 	padding: 5px 30px;
 }
-#np_info {
+#np_info, #rng_info {
 	display: inline;
 }
 #np_overkill{
 	display: inline;
 }
-#np_info_div{
+#np_info_div, #rng_info_div{
 	text-align:center;
 	display:block;
 }

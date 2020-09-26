@@ -5,10 +5,8 @@
 // INFO
 // VERSION WARNING
 // N TIME EFFECTS
-// DISPLAY FAKE ACTIONS
 // Fishing
 // card damage
-// rng
 
 // current version of script
 var VERSION = 1;
@@ -218,7 +216,7 @@ skill3: {name: "Order Change", icon: "orderchange",target_real:"orderchange", ta
 },
 {name : "Mage's Association Uniform", pic:"icons/mystic/Mage2.png",
 skill1: {name: "Cure-All", icon: "heal",target_real:"none", target:[], effect:[], turns:[0],values:[[],[],[],[],[],[],[],[],[],[]]},
-skill2: {name: "Spiritron Transfer", icon: "np",target_real:"target", target:["target"], effect:["np_gauge"], turns:[0],values:[[20],[20],[20],[20],[20],[20],[20],[20],[20],[20]]},
+skill2: {name: "Spiritron Transfer", icon: "np_gauge",target_real:"target", target:["target"], effect:["np_gauge"], turns:[0],values:[[20],[20],[20],[20],[20],[20],[20],[20],[20],[20]]},
 skill3: {name: "Command Shuffle", icon: "shuffle",target_real:"shuffle", target:["shuffle"], effect:["shuffle"], turns:[0],values:[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]},
 },
 {name : "A Fragment of 2004", pic:"icons/mystic/Fragment2004F.png",
@@ -229,7 +227,7 @@ skill3: {name: "Code: H", icon: "np_gain",target_real:"target", target:["target"
 ];
 var SERVANTS = [
 {
-	name : "Sieg", jp:false, atk: 8394,class:"caster",attr:"man",tier:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
+	name : "Sieg", jp:false, atk: 8394,class:"caster",attr:"man",rarity:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
 	np: {type:"np_arts", name:"Ákafiloga All-gríð", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"],before:[true], effect:["def_down"],oc:[true], turns:[3],values:[[20],[25],[30],[35],[40]]},
 	skills: [["arts",6.5]],
 	skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
@@ -237,7 +235,7 @@ var SERVANTS = [
 	skill3: {name:"Dead-Count Shapeshifter EX",  target_real:"self", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
 },
 {
-	name: "Paracelsus", jp:false, atk: 6711,class:"caster",attr:"man",tier:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
+	name: "Paracelsus", jp:false, atk: 6711,class:"caster",attr:"man",rarity:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
 	np:{type:"np_arts", name:"Sword of Paracelsus", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[],oc:[], effect:[], turns:[],values:[]},
 	skills: [["arts",10]],
 	skill1: {name:"Rapid Casting A",        icon:"np_gauge",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
@@ -245,7 +243,7 @@ var SERVANTS = [
 	skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {
-	name:"Waver", jp:false, atk: 10598,class:"caster",attr:"man",tier:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
+	name:"Waver", jp:false, atk: 10598,class:"caster",attr:"man",rarity:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
 	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"],before:[true], effect:["def_down"],oc:[false], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
 	skills: [["arts",10]],
 	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
@@ -253,7 +251,7 @@ var SERVANTS = [
 	skill3: {name:"Tactician's Command A+",  icon:"atk",  target_real:"all",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
 },
 {
-	name:"Scathach-Skadi", jp:false, atk: 10753,class:"caster",attr:"sky",tier:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
+	name:"Scathach-Skadi", jp:false, atk: 10753,class:"caster",attr:"sky",rarity:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
 	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[],before:[], effect:[],oc:[], turns:[],values:[[],[],[],[],[]]},
 	skills: [["arts",12],["dmg",250]],
 	skill1: {name:"Primordial Rune",        icon:"quick",  target_real:"target",   target:["target"],  effect:["quick"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
@@ -261,7 +259,7 @@ var SERVANTS = [
 	skill3: {name:"Allfather's Wisdom B+",  icon:"np_gauge",  target_real:"target",    target:["target"],     effect:["np_gauge"],turns:[0],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {
-	name:"Merlin", jp:false, atk: 10546,class:"caster",attr:"earth",tier:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
+	name:"Merlin", jp:false, atk: 10546,class:"caster",attr:"earth",rarity:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
 	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"],before:[true],oc:[false], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
 	skills: [["arts",6],["np_regen",5]],
 	skill1: {name:"Dreamlike Charisma A",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,20],[12,20],[13,20],[14,20],[15,20],[16,20],[17,20],[18,20],[20,20]]},
@@ -269,7 +267,7 @@ var SERVANTS = [
 	skill3: {name:"Hero Creation EX",  icon:"buster",  target_real:"target",    target:["target"],     effect:["buster"], turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
 },
 {
-	name:"Edmond Dantes", jp:false, atk: 12641,class:"avenger",attr:"man",tier:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
+	name:"Edmond Dantes", jp:false, atk: 12641,class:"avenger",attr:"man",rarity:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
 	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["def_down"], turns:[3],values:[[20],[25],[30],[35],[40]]},
 	skills: [["np_regen",3]],
 	skill1: {name:"Iron Determination EX",   icon:"ignore_invinc",  target_real:"self",   target:["self"],  effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
@@ -277,7 +275,7 @@ var SERVANTS = [
 	skill3: {name:"Wisdom of Crisis A",  icon:"np_drain",  target_real:"none",    target:["none"],     effect:[], turns:[],values:[[],[],[],[],[],[],[],[],[],[]]}
 },
 {
-	name:"Artoria (Caster)", jp:true, atk: 10546,class:"caster",attr:"star",tier:5,q:1,a:3,b:1,qh:3,ah:3,np_perhit:.54,pic:"icons/servants/Artoria_Caster.png",
+	name:"Artoria (Caster)", jp:true, atk: 10546,class:"caster",attr:"star",rarity:5,q:1,a:3,b:1,qh:3,ah:3,np_perhit:.54,pic:"icons/servants/Artoria_Caster.png",
 	np:{type:"np_arts", name:"Around Caliburn", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false],oc:[false], effect:["atk"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
 	skills: [["arts",12]],
 	skill1: {name:"Charisma of Hope B",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
@@ -285,7 +283,7 @@ var SERVANTS = [
 	skill3: {name:"Sword of Selection EX",  icon:"arts",  target_real:"target",    target:["target","target"],     effect:["arts","h_threat_dmg"], turns:[3,3],values:[[30,30],[32,32],[34,34],[36,36],[38,38],[40,40],[42,42],[44,44],[46,46],[50,50]]}
 },
 {
-	name:"Space Ishtar", jp:true, atk: 12612,class:"avenger",attr:"star",tier:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.69,pic:"icons/servants/Spaceishtar.png",
+	name:"Space Ishtar", jp:true, atk: 12612,class:"avenger",attr:"star",rarity:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.69,pic:"icons/servants/Spaceishtar.png",
 	np:{type:"np_arts", name:"Edin Shugurra Quasar (Arts)", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
 	np2:{type:"np_quick", name:"Edin Shugurra Quasar (Quick)", hits:[16,33,51], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
 	np3:{type:"np_buster", name:"Edin Shugurra Quasar (Buster)", hits:[16,33,51], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
@@ -296,15 +294,15 @@ var SERVANTS = [
 	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,20,20,20],[32,20,20,20],[34,20,20,20],[36,20,20,20],[38,20,20,20],[40,20,20,20],[42,20,20,20],[44,20,20,20],[46,20,20,20],[50,20,20,20]]}
 }];
 var CES = [
-{name: "Kaleidoscope", effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
+{name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
 pic: "icons/ces/Kaleidoscope.png"},
-{name: "Imaginary Element", effect:["np_gauge"], values:[[60],[75]], atk:[200,750],
+{name: "Imaginary Element", rarity: 4, effect:["np_gauge"], values:[[60],[75]], atk:[200,750],
 pic: "icons/ces/Hollow_magic.png"},
-{name: "Black Grail", effect:["np_dmg"], values:[[60],[80]], atk:[600,2400],
+{name: "Black Grail", rarity: 5, effect:["np_dmg"], values:[[60],[80]], atk:[600,2400],
 pic: "icons/ces/Black_grail.png"},
-{name: "CKT", effect:["arts","quick","np_dmg"], values:[[10,10,10],[15,15,15]], atk:[250,1000],
+{name: "CKT", rarity: 5, effect:["arts","quick","np_dmg"], values:[[10,10,10],[15,15,15]], atk:[250,1000],
 pic: "icons/ces/CE900.png"},
-{name: "Return Match", effect:["power"], values:[[100],[200]], atk:[500,2000],
+{name: "Return Match", rarity: 5, effect:["power"], values:[[100],[200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
 ];
 function packNum(num1,num2){
@@ -974,13 +972,15 @@ function displayServant(pos)
 function setServant(pos,servant)
 {
 	if(MASTER_MODE){return;}
-	PARTY[pos]=servant;
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	PARTY[real_pos]=servant;
 	displayServant(pos,servant);
 	calcFull();
 }
 function setNP(pos,level){
 	if(MASTER_MODE){return;}
-	PARTY_NP[pos]=level;
+	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
+	PARTY_NP[real_pos]=level;
 	calcFull();
 }
 function displaySkill(pos,skill){
@@ -1000,6 +1000,9 @@ function displaySkill(pos,skill){
 		for(var i=0;i<skill_object.effect.length;i++){
 			if(!(EFFECT_NONE.includes(skill_object.effect[i]))){
 				skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+TARGETS[skill_object.target[i]]+"): "+skill_object.values[SKILLS[real_pos][skill]][i]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
+				if(skill_object.rng!=undefined && skill_object.rng[SKILLS[real_pos][skill]][i] < 100){ // has rng
+					skill_text+=", "+skill_object.rng[SKILLS[real_pos][skill]][i]+"% chance";
+				}
 			}
 			else{ // display no values
 				skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+TARGETS[skill_object.target[i]]+"): "+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
@@ -1177,6 +1180,12 @@ function applyDebuff(action,wave,enemy,name,value,source)
 		ACTION_DEBUFFS[action][wave][enemy][name] = [[value,source]];
 	}
 }
+function setCurrentRNG(effect,value){
+	var curRNG = unpackBinSmall(ACTIONS[ACTION_CURRENT][3]);
+	curRNG[effect] = (value?1:0);
+	ACTIONS[ACTION_CURRENT][3] = packBinSmall(curRNG);
+	calcFull();
+}
 // function to display everything happening on ACTION_CURRENT
 function viewAction(){
 	MASTER_MODE=true;
@@ -1201,6 +1210,9 @@ function viewAction(){
 	// actions viewer
 	$(".actions").empty();
 	var disp_np = -1;
+	var disp_rng = false;
+	var cur_skill = undefined;
+	var cur_skill_level = -1;
 	var cur_wave=0;
 	for(var a =0;a<ACTIONS.length;a++){
 		if(a==ACTION_CURRENT){
@@ -1210,20 +1222,38 @@ function viewAction(){
 			$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS["start"]+`)"><span class = "tooltiptext">Start of Wave 1</span></div>`);
 		}
 		else if(ACTIONS[a][0] < 3){	//servant
-			var servant = PARTY[ACTION_ORDER[a][ACTIONS[a][0]]];
+			var real_pos = ACTION_ORDER[a][ACTIONS[a][0]];
+			var servant = SERVANTS[PARTY[real_pos]];
 			if(ACTIONS[a][1]<3){ // skill
-				var skill = SERVANTS[servant]["skill"+(1+ACTIONS[a][1])];
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
+				var prev_action = Math.max(0,a-1);
+				var invalid = (ACTION_SKILLS[prev_action][real_pos][ACTIONS[a][1]] == 0);
+				var skill = servant["skill"+(1+ACTIONS[a][1])];
+				if(a == ACTION_CURRENT && skill.rng != undefined){ // viewed action has rng setting
+					cur_skill_level = SKILLS[real_pos][ACTIONS[a][1]];
+					for(var rngvalue of skill.rng[cur_skill_level]){
+						if(rngvalue != 100){ // at least one of the effects actually is rng
+							cur_skill = skill;
+							disp_rng = true;
+						}
+					}
+				}
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" style = "background-image:`+(invalid?"url(icons/skills/invalid.png),":"")+`url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+servant.name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
 			}
 			else if(ACTIONS[a][1] == 3){ // np
+				var prev_action = Math.max(0,a-1);
+				var invalid = (ACTION_NP[prev_action][real_pos] < 100);
 				if(a == ACTION_CURRENT){ // currently viewing this np
 					disp_np = ACTIONS[a][3];
 				}
 				var np = getNP(a,ACTION_ORDER[a][ACTIONS[a][0]]);
-				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+SERVANTS[servant].name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
+				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:`+(invalid?"url(icons/skills/invalid.png),":"")+`url(`+SKILL_ICONS[np.type]+`)"><span class = "tooltiptext">`+np.name+`<br>`+servant.name+` (slot `+(ACTION_ORDER[a][ACTIONS[a][0]]+1)+`)<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
 			}
 		}
 		else if(ACTIONS[a][0] == 3){	//mystic code
+			var invalid = false;
+			if(ACTION_SKILLS[a][6][ACTIONS[a][1]] == 0){ //skill cannot be used
+				invalid=true;
+			}
 			if(ACTIONS[a][1]<3){ // skill
 				var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(1+ACTIONS[a][1])];
 				$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS[skill.icon]+`)"><span class = "tooltiptext">`+skill.name+`<br>`+MYSTIC_CODES[MYSTIC_CODE].name+`<br><div class = "action_delete" onclick="clickRemoveAction(`+a+`)">Delete</div></span></div>`);
@@ -1251,6 +1281,26 @@ function viewAction(){
 	else{
 		$("#np_info_div").css("display","none");
 	}
+	if(disp_rng == true){
+		var rngs = unpackBinSmall(ACTIONS[ACTION_CURRENT][3]);
+		for(var e=0; e<3; e++){
+			$("#rng_"+e).css("display","none");
+		}
+		var cur_rng = 0;
+		for(var e=0; e<cur_skill.effect.length; e++){
+			if(cur_skill.rng[cur_skill_level][e] != undefined && cur_skill.rng[cur_skill_level][e] < 100){ // is an actual rng effect
+				$("#rng_"+cur_rng).css("display","table-row");
+				$("#rng_name_"+cur_rng).text(EFFECTS[cur_skill.effect[e]]);
+				$("#rng_chance_"+cur_rng).text(cur_skill.rng[cur_skill_level][e]+"%");
+				$("#is_rng_"+cur_rng).prop('checked',(rngs[cur_rng]==1));
+				cur_rng++;
+			}
+		}
+		$("#rng_info_div").css("display","block");
+	}
+	else{
+		$("#rng_info_div").css("display","none");
+	}
 	//display servants/ces in correct order for the action
 	for(var p=0;p<6;p++)
 	{
@@ -1269,7 +1319,7 @@ function viewAction(){
 		// CE SELECT
 		$("#ce_sel_"+p).val(PARTY_CES[real_pos]);
 		// NP LEVEL SELECT
-		$("#np_sel_"+p).val(PARTY_NP[real_pos]);
+		$("#servant_np_sel_"+p).val(PARTY_NP[real_pos]);
 		// SKILL LEVEL SELECTS
 		for(var s =0;s<3;s++){
 			$("#skill_sel_"+p+"_"+s).val(SKILLS[real_pos][s]);
@@ -1448,7 +1498,7 @@ function calcFull(noview){
 		ACTION_DEBUFFS.push(JSON.parse(JSON.stringify(ACTION_DEBUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
 		ACTION_ORDER.push(ACTION_ORDER[a-1].slice());
-		ACTION_SKILLS.push(ACTION_SKILLS[a-1].slice());
+		ACTION_SKILLS.push(JSON.parse(JSON.stringify(ACTION_SKILLS[a-1])));
 		
 		// calculate new values:
 		if(pos >= 0 && pos <= 2)				// 			servant action
@@ -1457,9 +1507,28 @@ function calcFull(noview){
 			var real_pos = ACTION_ORDER[a][pos];
 			if(action >=0 && action <= 2) 			// 		servant skill
 			{
+				if(ACTION_SKILLS[a][real_pos][action] == 0){ //skill cannot be used
+					continue;
+				}
 				// APPLY THE ACTUAL BUFFS/DEBUFFS
 				var skill = SERVANTS[PARTY[real_pos]]["skill"+(action+1)];
+				var rngs = [0,0,0];var cur_rng=-2;
+				if(skill.rng != undefined){ // is rng skill
+					cur_rng = -1; var rngs = unpackBinSmall(ACTIONS[a][3]);
+				}
 				for(var e=0;e<skill.target.length;e++){// loop over each skill effect
+					if(cur_rng!=-2){//has rng
+						var chance = skill.rng[SKILLS[real_pos][action]][e];
+						if(chance < 100){ // this effect is rng
+							cur_rng++;if(cur_rng>2){console.log("WARNING SKILL HAS TOO MANY RNG ELEMENTS");}
+							if(rngs[cur_rng] == 1){ // this effect is depended on
+								TOTAL_CHANCE *= (chance*.01);
+							}
+							else{ // effect not depended on, skip
+								continue;
+							}
+						}
+					}
 					if(skill.target[e] == "all"){
 						for(var i=0;i<3;i++){
 							applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
@@ -1654,6 +1723,9 @@ function calcFull(noview){
 			}
 		}
 		else if(pos == 3){ // 					mystic code action
+			if(ACTION_SKILLS[a][6][action] == 0){ //skill cannot be used
+				continue;
+			}
 			var skill = MYSTIC_CODES[MYSTIC_CODE]["skill"+(action+1)];
 			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
 				if(skill.target[e] == "all"){
@@ -1872,7 +1944,7 @@ $( document ).ready(function (){
 		
 		html += `<br><select id = "servant_sel_`+p+`" class = "servant_sel" onchange="setServant(`+p+`,this.value)">
 				<option value = -1>Empty</option>
-			</select><select onchange = "setNP(`+p+`,this.value)" id = "servant_np_sel_`+p+` class = "servant_np_sel"">`;
+			</select><select onchange = "setNP(`+p+`,this.value)" id = "servant_np_sel_`+p+`" class = "servant_np_sel">`;
 		for(var i=0;i<5;i++){
 			html+=`<option value="`+i+`"`+(PARTY_NP[p]==i?" selected":"")+`>NP `+(i+1)+`</option>`;
 		}
