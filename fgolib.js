@@ -2,12 +2,13 @@
 // SERVANT SELECT (JP FILTER)
 // INFO
 // VERSION WARNING
-// N TIME EFFECTS
 // Fishing
 // card damage
 // servant death
 // reset button
 // set all classes/attr
+// delayed stun
+// cleanse
 
 // current version of script
 var VERSION = 1;
@@ -43,6 +44,9 @@ var SKILL_ICONS = {
 	evade:"icons/skills/Dodge.png",
 	atkdef:"icons/skills/AtkDefUp.png",
 	np_regen:"icons/skills/NPturn.png",
+	taunt:"icons/skills/Taunt.png",
+	charm:"icons/skills/Charm.png",
+	buffchance:"icons/skills/Staffup.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -64,6 +68,9 @@ var BUFF_ICONS = {
 	np_type_quick:"icons/effects/np_type_quick.png",
 	np_type_arts:"icons/effects/np_type_arts.png",
 	np_type_buster:"icons/effects/np_type_buster.png",
+	stun:"icons/effects/Stunstatus.png",
+	delayed_stun:"icons/effects/DelayedDebuff.png",
+	debuff_immune:"icons/effects/DebuffImmune.png",
 }
 var CARD_TYPES = ["arts","quick","buster"];
 var CARD_ICONS = {
@@ -100,6 +107,8 @@ var EFFECTS = {
 	np_type_arts:"Change NP Type to Arts",
 	np_type_buster:"Change NP Type to Buster",
 	self_np_type:"Change own NP Type",
+	delayed_stun:"Stun after x turns",
+	debuff_immune:"Debuff Immune"
 }
 var EFFECT_FLAT ={
 	dmg: true,
@@ -118,7 +127,7 @@ var EFFECT_FLAT ={
 	def_down: false,
 	h_threat_dmg:false,
 }
-var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type"];
+var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune"];
 var TARGETS = {
 	"self": "Self",
 	"all": "All",
@@ -345,8 +354,24 @@ var SERVANTS = [
 	np:{type:"np_quick", name:"Troias Tragōidia", hits:[6,13,20,26,35], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["quick"], turns:[1],values:[[20,30,40,50,60]]},
 	skills: [["quick",11],["dmg",150]],
 	skill1: {name:"Drómos Komḗtēs A+",   icon:"quick",  target_real:"self",   target:["self"],  effect:["quick"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
-	skill2: {name:"Swan Mystic Code A",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
-	skill3: {name:"Fate Weaver B",  icon:"np_regen",  target_real:"self",    target:["self"],     effect:["np_regen"], turns:[3],values:[[5,5.5,6,6.5,7,7.5,8,8.5,9,10]]}
+	skill2: {name:"Andreíos Amárantos B",   icon:"invinc",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Diatrekhōn Astēr Lonkhē",  icon:"taunt",  target_real:"self",    target:["self","self"],     effect:["np_gauge","np_gain"], turns:[0,1],values:[[20,21,22,23,24,25,26,27,28,30],[20,21,22,23,24,25,26,27,28,30]]}
+},
+{
+	name:"Marie Antoinette", jp:false, atk: 8293,class:"rider",attr:"man",rarity:4,q:2,a:2,b:1,qh:2,ah:1,np_perhit:1,pic:"icons/servants/Marie.png",
+	np:{type:"np_quick", name:"Guillotine Breaker", hits:[6,13,20,26,35], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["quick",11]],
+	skill1: {name:"Siren Song C",   icon:"charm",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Beautiful Princess A",   icon:"invinc",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"God's Grace B",  icon:"buffchance",  target_real:"none",    target:[],     effect:[], turns:[],values:[]}
+},
+{
+	name:"Frankenstein", jp:false, atk: 9441,class:"berserker",attr:"earth",rarity:5,q:1,a:1,b:3,qh:2,ah:2,np_perhit:.83,pic:"icons/servants/Frankenstein.jpg",
+	np:{type:"np_quick", name:"Blasted Tree", hits:[4,9,14,19,23,31], dmg:[900,1100,1200,1250,1300], target_dmg: "aoe", target:["self"],before:[false],oc:[false], effect:["stun"], turns:[2],values:[[500,500,500,500,500]]},
+	skills: [["buster",4]],
+	skill1: {name:"Galvanism B",   icon:"np_gain",  target_real:"self",   target:["self"],  effect:["np_gain"], turns: [3], values:[[25,27,29,31,33,35,37,39,41,45]]},
+	skill2: {name:"Wail of the Living Dead C",   icon:"stun",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Overload C",  icon:"np_dmg",  target_real:"self",    target:["self"],     effect:["np_dmg"], turns:[1],values:[[20,21,22,23,24,25,26,27,28,30]]}
 },
 ];
 var CES = [
@@ -360,6 +385,8 @@ pic: "icons/ces/Black_grail.png"},
 pic: "icons/ces/CE900.png"},
 {name: "Return Match", rarity: 5, effect:["power"], values:[[100,200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
+{name: "Vessel of the saint", rarity: 5, effect:["debuff_immune","np_gain"], times:[3,-1], values:[[1,1],[15,20]], atk:[250,1000],
+pic: "icons/ces/Vessel_of_the_Saint.png"},
 ];
 function packNum(num1,num2){
 	return Math.min(Math.max(num1,0),7)*8+Math.min(Math.max(num2,0),7);
@@ -973,15 +1000,20 @@ function displayBuffs(){
 			var suf = EFFECT_FLAT[buff]?"":"%";
 			for(const cause of buffs[buff]){
 				total+=parseFloat(cause[0]);
-				if(EFFECT_NONE.includes(buff)){ // display no numbers about effect
-					causes+=`<br>`+cause[2]+` for `+cause[1]+` turn(s)`;
+				causes+=`<br>`;
+				if(!EFFECT_NONE.includes(buff)){ // display no numbers about effect
+					causes+=cause[0]+suf;
 				}
-				else if(cause[1]==-1){
-					causes+=`<br>`+cause[0]+suf+` - `+cause[2];
+				if(cause[1]!=-1 && cause[2]!=-1){ // has turns and times
+					causes+=" ("+cause[1]+" turn"+(cause[1]==1?"":"s")+", "+cause[2]+" time"+(cause[2]==1?"":"s")+")";
 				}
-				else{
-					causes+=`<br>`+cause[0]+suf+` - `+cause[2]+` for `+cause[1]+` turn(s)`;
+				else if(cause[1]!=-1){
+					causes+=" ("+cause[1]+" turn"+(cause[1]==1?"":"s")+")";
 				}
+				else if(cause[2]!=-1){
+					causes+=" ("+cause[2]+" time"+(cause[2]==1?"":"s")+")";
+				}
+				causes+=` - `+cause[3];
 			}
 			if(EFFECT_NONE.includes(buff)){
 				str+=EFFECTS[buff]+causes+`</span></div>`;
@@ -1209,7 +1241,7 @@ function displayNP(pos){
 	}
 }
 // -1 turns = infinite, assumes pos is the "real" pos
-function applyBuff(action,pos,name,value,turns,source)
+function applyBuff(action,pos,name,value,turns,times,source)
 {
 	//console.log("[action: \""+action+"\", pos: \""+pos+"\", name: \""+name+"\", value: \""+value+"\", turns: \""+turns+"\", source: \""+source+"\"]");
 	if(name == "np_gauge"){
@@ -1219,13 +1251,27 @@ function applyBuff(action,pos,name,value,turns,source)
 		}
 	}
 	else{
+		if(name == "stun"){ // is a debuff, add more later
+			if(calcTotalBuff(action,pos,"debuff_immune") > 0){
+				// decrement debuff immune times
+				if(ACTION_BUFFS[action][pos]["debuff_immune"][0][2] != -1){
+					ACTION_BUFFS[action][pos]["debuff_immune"][0][2]--;
+				}
+				if(ACTION_BUFFS[action][pos]["debuff_immune"][0][2] == 0){ // out of debuff immune!
+					delete ACTION_BUFFS[action][pos]["debuff_immune"];
+				}
+				// dont actually apply the debuff
+				return;
+			}
+		}
 		// buff already exists
 		if(ACTION_BUFFS[action][pos].hasOwnProperty(name)){
-			ACTION_BUFFS[action][pos][name].push([value,turns,source]);
+			if(name == "debuff_immune" || name == "stun"){return;}//cannot add more than one of these, add more later
+			ACTION_BUFFS[action][pos][name].push([value,turns,times,source]);
 		}
 		// buff must be created
 		else{
-			ACTION_BUFFS[action][pos][name] = [[value,turns,source]];
+			ACTION_BUFFS[action][pos][name] = [[value,turns,times,source]];
 		}
 	}
 }
@@ -1279,9 +1325,6 @@ function viewAction(){
 	var cur_skill_level = -1;
 	var cur_wave=0;
 	for(var a =0;a<ACTIONS.length;a++){
-		if(a==ACTION_CURRENT){
-			WAVE_CURRENT=cur_wave;
-		}
 		if(a == 0){ // ACTION 0
 			$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS["start"]+`)"><span class = "tooltiptext">Start of Wave 1</span></div>`);
 		}
@@ -1290,7 +1333,7 @@ function viewAction(){
 			var servant = SERVANTS[PARTY[real_pos]];
 			if(ACTIONS[a][1]<3){ // skill
 				var prev_action = Math.max(0,a-1);
-				var invalid = (ACTION_SKILLS[prev_action][real_pos][ACTIONS[a][1]] == 0);
+				var invalid = (ACTION_SKILLS[prev_action][real_pos][ACTIONS[a][1]] == 0) || (calcTotalBuff(prev_action,real_pos,"stun") > 0);//already used or stunned
 				var skill = servant["skill"+(1+ACTIONS[a][1])];
 				if(a == ACTION_CURRENT && skill.rng != undefined){ // viewed action has rng setting
 					cur_skill_level = SKILLS[real_pos][ACTIONS[a][1]];
@@ -1307,7 +1350,7 @@ function viewAction(){
 			}
 			else if(ACTIONS[a][1] == 3){ // np
 				var prev_action = Math.max(0,a-1);
-				var invalid = (ACTION_NP[prev_action][real_pos] < 100);
+				var invalid = (ACTION_NP[prev_action][real_pos] < 100) || (calcTotalBuff(prev_action,real_pos,"stun") > 0);//np not full yet or stunned;
 				if(a == ACTION_CURRENT){ // currently viewing this np
 					disp_np = ACTIONS[a][3];
 				}
@@ -1330,7 +1373,9 @@ function viewAction(){
 			if(cur_wave>2){break;}
 			//insert wave break
 			$("#actions_"+cur_wave).append(`<div class = "`+(ACTION_CURRENT==a?"action-active ":"")+`action tooltip" id = "action_`+a+`" onclick="setViewAction(`+a+`)" style = "background-image:url(`+SKILL_ICONS["start"]+`)"><span class = "tooltiptext">Start of Wave `+(cur_wave+1)+`</span></div>`);
-			continue;
+		}
+		if(a==ACTION_CURRENT){
+			WAVE_CURRENT=cur_wave;
 		}
 		$("#action_"+a).attr("onclick",`(function(e){ if(e.target === e.currentTarget){ setViewAction(`+a+`); }})(event)`);
 	}
@@ -1478,14 +1523,14 @@ function calcFull(noview){
 		// calculate class skill buffs
 		if(PARTY[p]>=0){
 			for(const skill of SERVANTS[PARTY[p]].skills){
-				applyBuff(0,p,skill[0],skill[1],-1,"Passive");
+				applyBuff(0,p,skill[0],skill[1],-1,-1,"Passive");
 			}
 		}
 		//calculate buffs from CES
 		var ce = PARTY_CES[p];
 		if(ce < 0 || ce > CES.length){continue;} // skip if no ce given
 		for(var i=0;i<CES[ce].effect.length;i++){
-			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[i][PARTY_CE_LEVEL[p]==0?0:1],-1,CES[ce].name);
+			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[i][PARTY_CE_LEVEL[p]==0?0:1],(CES[ce].turns == undefined?-1:CES[ce].turns[i]),(CES[ce].times == undefined?-1:CES[ce].times[i]),CES[ce].name);
 		}
 	}
 	var wave=0;
@@ -1500,12 +1545,12 @@ function calcFull(noview){
 		var target1 = ACTIONS[a][2];
 		var target2 = ACTIONS[a][3];
 		// make sure it's valid before pushing
-		var out = "[";
-		for(var i = 1; i<ACTIONS.length;i++){
-			out+= "("+ACTIONS[i][0]+","+ACTIONS[i][1]+"),";
-		}
+		//var out = "[";
+		//for(var i = 1; i<ACTIONS.length;i++){
+		//	out+= "("+ACTIONS[i][0]+","+ACTIONS[i][1]+"),";
+		//}
 		//console.log(out+"]");
-		//console.log("BEFORE: a:"+a+",  l:"+lastNP);
+		//console.log("BEFORE: a:"+a+",aa:"+ACTIONS[a][1]+",w:"+wave);
 		if(wave>2){ // action goes past the last np
 			removeAction(a);
 			a--;
@@ -1558,14 +1603,17 @@ function calcFull(noview){
 				//console.log("reg skill");
 			}
 		}
-		//console.log(" AFTER: a:"+a+",  l:"+lastNP);
+		//console.log("a:"+a+",aa:"+ACTIONS[a][0]+",w:"+wave+",ac:"+ACTION_CURRENT);
 		// duplicate previous action's data
 		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
 		ACTION_DEBUFFS.push(JSON.parse(JSON.stringify(ACTION_DEBUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
 		ACTION_ORDER.push(ACTION_ORDER[a-1].slice());
 		ACTION_SKILLS.push(JSON.parse(JSON.stringify(ACTION_SKILLS[a-1])));
-		
+		if(a == ACTION_CURRENT){
+			console.log("PUSHING CURRENT WAVE");
+			WAVE_CURRENT=wave;
+		}
 		// calculate new values:
 		if(pos >= 0 && pos <= 2)				// 			servant action
 		{
@@ -1573,7 +1621,7 @@ function calcFull(noview){
 			var real_pos = ACTION_ORDER[a][pos];
 			if(action >=0 && action <= 2) 			// 		servant skill
 			{
-				if(ACTION_SKILLS[a][real_pos][action] == 0){ //skill cannot be used
+				if(ACTION_SKILLS[a][real_pos][action] == 0 || (calcTotalBuff(a,real_pos,"stun") > 0)){// skill cannot be used (already used or stunned)
 					continue;
 				}
 				// APPLY THE ACTUAL BUFFS/DEBUFFS
@@ -1597,25 +1645,25 @@ function calcFull(noview){
 					}
 					if(skill.target[e] == "all"){
 						for(var i=0;i<3;i++){
-							applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],skill.name);
+							applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
 						}
 					}
 					else if(skill.target[e] == "target"){
-						applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],skill.name);
+						applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
 					}
 					else if(skill.target[e] == "self"){
-						applyBuff(a,real_pos,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],skill.name);
+						applyBuff(a,real_pos,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
 					}
 					else if(skill.target[e] == "aoe"){
 						for(var enemy=0;enemy<3;enemy++){
-							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.name);
+							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],(skill.times == undefined?-1:skill.times[e]),skill.name);
 						}
 					}
 					else if(skill.target[e] == "single"){
-						applyDebuff(a,wave,target1,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.name);
+						applyDebuff(a,wave,target1,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],(skill.times == undefined?-1:skill.times[e]),skill.name);
 					}
 					else if(skill.target[e] == "self_np_type"){
-						applyBuff(a,real_pos,"np_type_"+CARD_TYPES[target1],0,skill.turns[e],skill.name);
+						applyBuff(a,real_pos,"np_type_"+CARD_TYPES[target1],0,skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
 					}
 				}
 				// disable the skill
@@ -1626,7 +1674,7 @@ function calcFull(noview){
 				var servant = SERVANTS[PARTY[real_pos]];
 				var np = getNP(a,real_pos);
 				var fakeNp=false;//servant cannot actually NP, but we will do it anyway, it will just do 0 damage and get 0 refund
-				if(ACTION_NP[a][real_pos] < 100){
+				if(ACTION_NP[a][real_pos] < 100 || (calcTotalBuff(a,real_pos,"stun") > 0)){
 					console.log("FAKE NP");
 					fakeNp=true;
 				}
@@ -1655,14 +1703,14 @@ function calcFull(noview){
 							}
 							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[e][effect_level],np.turns[e],(np.times == undefined?-1:np.times[e]),np.name);
 								}
 							}
 							else if(np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[e][effect_level],np.turns[e],(np.times == undefined?-1:np.times[e]),np.name);
 							}
 							else if(np.target[e] == "self"){
-								applyBuff(a,real_pos,np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
+								applyBuff(a,real_pos,np.effect[e],np.values[e][effect_level],np.turns[e],(np.times == undefined?-1:np.times[e]),np.name);
 							}
 							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
@@ -1759,14 +1807,14 @@ function calcFull(noview){
 							}
 							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[e][effect_level],np.turns[e],(np.times == undefined?-1:np.times[e]),np.name);
 								}
 							}
 							else if(np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[e][effect_level],np.turns[e],(np.times == undefined?-1:np.times[e]),np.name);
 							}
 							else if(np.target[e] == "self"){
-								applyBuff(a,real_pos,np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
+								applyBuff(a,real_pos,np.effect[e],np.values[e][effect_level],np.turns[e],(np.times == undefined?-1:np.times[e]),np.name);
 							}
 							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
@@ -1796,11 +1844,11 @@ function calcFull(noview){
 			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
 				if(skill.target[e] == "all"){
 					for(var i=0;i<3;i++){
-						applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[e][MYSTIC_CODE_LEVEL],skill.turns[e],skill.name);
+						applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[e][MYSTIC_CODE_LEVEL],skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
 					}
 				}
 				else if(skill.target[e] == "target"){
-					applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[e][MYSTIC_CODE_LEVEL],skill.turns[e],skill.name);
+					applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[e][MYSTIC_CODE_LEVEL],skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
 				}
 				else if(skill.target[e] == "orderchange"){
 					var tar1 = ACTION_ORDER[a][target1];
@@ -1848,9 +1896,6 @@ function calcFull(noview){
 		}
 		else{
 			//console.log("INVALID ACTION!");
-		}
-		if(a == ACTION_CURRENT){
-			WAVE_CURRENT=wave;
 		}
 		//console.log("----------------");
 		// insert a wave break if actions ends on an np
