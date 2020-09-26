@@ -67,7 +67,7 @@ html{
 	background-size: 340px!important;
 }
 #mystic_portrait{
-	height: 320px;
+	height: 340px;
 }
 #mystic_sel{
 	width:150px;
@@ -345,7 +345,7 @@ body{
 	vertical-align: middle;
 }
 #details_div{
-	height: 403px;
+	height: 423px;
     display: inline-block;
     width: 300px;
     margin-right: 50px;

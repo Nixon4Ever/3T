@@ -6,7 +6,6 @@
 // card damage
 // servant death
 // reset button
-// set all classes/attr
 
 // current version of script
 var VERSION = 1;
@@ -1051,7 +1050,7 @@ function displayDebuffs(){
 				str += `<div class = "buff tooltip" style= "background-image:url(`+BUFF_ICONS[debuff]+`)"><span class = 'tooltiptext'>`;
 				var causes = "";
 				var total = 0;
-				var suf = EFFECT_FLAT[buff]?"":"%";
+				var suf = (EFFECT_FLAT[debuff]?"":"%");
 				for(const cause of debuffs[debuff]){
 					total+=parseFloat(cause[0]);
 					causes+=`<br>`+cause[0]+suf+` - `+cause[1];
@@ -1686,11 +1685,11 @@ function calcFull(noview){
 					}
 					else if(skill.target[e] == "aoe"){
 						for(var enemy=0;enemy<3;enemy++){
-							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],(skill.times == undefined?-1:skill.times[e]),skill.name);
+							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.name);
 						}
 					}
 					else if(skill.target[e] == "single"){
-						applyDebuff(a,wave,target1,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],(skill.times == undefined?-1:skill.times[e]),skill.name);
+						applyDebuff(a,wave,target1,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.name);
 					}
 					else if(skill.target[e] == "self_np_type"){
 						applyBuff(a,real_pos,"np_type_"+CARD_TYPES[target1],0,skill.turns[e],(skill.times == undefined?-1:skill.times[e]),skill.name);
@@ -2121,6 +2120,29 @@ function servantPopup(fake_pos){
 	$("#serv_popup_text").text("Select servant for slot "+(realpos+1));
 	$("#serv_popup_div").css("display","block");
 }
+function setAllEnemies(value){
+	MASTER_MODE=true;
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			ENEMIES_CLASS[w][e] = value;
+			$("#enemy_sel_"+w+"_"+e).val(value);
+			displayEnemy(w,e);
+		}
+	}
+	MASTER_MODE=false;
+	calcFull();
+}
+function setAllAttr(value){
+	MASTER_MODE=true;
+	for(var w=0;w<3;w++){
+		for(var e=0;e<3;e++){
+			ENEMIES_ATTR[w][e] = value;
+			$("#enemy_attr_sel_"+w+"_"+e).val(value);
+		}
+	}
+	MASTER_MODE=false;
+	calcFull();
+}
 $( document ).ready(function (){
 	readFull();
 	// initialize servant displays
@@ -2200,6 +2222,12 @@ $( document ).ready(function (){
 			}
 			displayEnemy(stage,enemy);
 		}
+	}
+	for(var i=0;i<NUM_CLASS.length;i++){
+		$("#enemy_all_sel").append("<option value="+i+">"+NUM_CLASS[i]+"</option>");
+	}
+	for(var i=0;i<NUM_ATTR.length;i++){
+		$("#attr_all_sel").append("<option value="+i+">"+NUM_ATTR[i]+"</option>");
 	}
 	// INITIALIZE TARGET POPUP
 	for(var p=0;p<6;p++){
