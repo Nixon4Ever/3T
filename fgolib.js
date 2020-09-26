@@ -1,5 +1,4 @@
 // TODO
-// SERVANT SELECT (JP FILTER)
 // INFO
 // VERSION WARNING
 // Fishing
@@ -386,6 +385,22 @@ var SERVANTS = [
 	skill1: {name:"Shining Water Robe A",   icon:"quickbuster",  target_real:"all",   target:["all","all","all"],  effect:["buster","quick","np_gain"], turns: [3,3,3], values:[[10,11,12,13,14,15,16,17,18,20],[10,11,12,13,14,15,16,17,18,20],[10,11,12,13,14,15,16,17,18,20]]},
 	skill2: {name:"Accel Turn B",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Summer Breaker! A",  icon:"invinc",  target_real:"self",    target:["self","self"],     effect:["np_gain","delayed_stun"], turns: [1,1], values:[[30,32,34,36,38,40,42,44,46,50],[1,1,1,1,1,1,1,1,1,1]]}
+},
+{
+	name:"Tamamo", jp:false, atk: 10546,class:"caster",attr:"sky",rarity:5,q:1,a:3,b:1,qh:3,ah:5,np_perhit:.32,pic:"icons/servants/Tamamo.png",
+	np:{type:"np_arts", name:"Eightfold Blessing of Amaterasu", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[true],oc:[true], effect:["np_gauge"], turns:[0],values:[[25,31.25,37.5,43.75,50]]},
+	skills: [["arts",6],["dmg",200]],
+	skill1: {name:"Curse EX",   icon:"np_drain",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Morph A",   icon:"def",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Fox's Wedding 'EX'",  icon:"arts",  target_real:"target",    target:["target"],     effect:["arts"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]}
+},
+{
+	name:"Tamamo (JP)", jp:true, atk: 10546,class:"caster",attr:"sky",rarity:5,q:1,a:3,b:1,qh:3,ah:5,np_perhit:.32,pic:"icons/servants/Tamamo.png",
+	np:{type:"np_arts", name:"Eightfold Blessing of Amaterasu", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[true],oc:[true], effect:["np_gauge"], turns:[0],values:[[25,31.25,37.5,43.75,50]]},
+	skills: [["arts",6],["dmg",200]],
+	skill1: {name:"Curse Layer - Vast Sunshine A",   icon:"np_drain",  target_real:"all",   target:["all"],  effect:["np_dmg"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Morph A",   icon:"def",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Fox's Wedding 'EX'",  icon:"arts",  target_real:"target",    target:["target"],     effect:["arts"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
 ];
 var CES = [
@@ -2083,10 +2098,27 @@ function clickRemoveAction(action){
 		viewAction();
 	}
 }
+var SERV_POPUP_NA=true;
+var SERV_POPUP_CLASS=-1;
+
+function toggleNA(){
+	SERV_POPUP_NA = !SERV_POPUP_NA;
+	filterServants();
+}
 function serv_popup_setclass(newclass){
+	SERV_POPUP_CLASS = newclass;
+	filterServants();
+}
+function filterServants(){
+	if(SERV_POPUP_NA){
+		$("#na_select").text("NA");
+	}
+	else{
+		$("#na_select").text("JP");
+	}
 	//highlight the class icon
 	for(var i=0;i<NUM_CLASS.length-1;i++){
-		if(i==newclass){
+		if(i==SERV_POPUP_CLASS){
 			$("#class_"+i).css("background-color","#ffffff59");
 		}
 		else{
@@ -2095,7 +2127,7 @@ function serv_popup_setclass(newclass){
 	}
 	// filter servants
 	for(var i=0;i<SERVANTS.length;i++){
-		if(newclass == -1 || CLASSES_NUM[SERVANTS[i].class] == newclass){
+		if((SERVANTS[i].jp == false || !SERV_POPUP_NA) && (SERV_POPUP_CLASS == -1 || CLASSES_NUM[SERVANTS[i].class] == SERV_POPUP_CLASS)){
 			$("#servant_"+i).css("display","inline-block");
 		}
 		else{
@@ -2308,6 +2340,7 @@ $( document ).ready(function (){
 	$('#serv_popup_servants').append($('.servant').detach().sort(function(a,b){
 		return compareStrings($('.servant_name',a).text(), $('.servant_name',b).text());
 	}));
+	filterServants();
 	// empty option
 	$("#serv_popup_servants").append(`<div class ="servant" id = "servant_null" onclick="serv_popup_setservant(-1)" style="background-image:url(`+CLASSES_ICONS['empty']+`)"><div class = "servant_name">Empty</div></div>`);
 	// calculate entire run

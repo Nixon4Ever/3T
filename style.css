@@ -458,3 +458,19 @@ body{
 .serv_sel_name:hover{
 	box-shadow: inset 0 0 1px 1px white;
 }
+#na_select{
+	display: inline-block;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    color: white;
+    font-size: 30;
+    font-weight: bold;
+    vertical-align: top;
+    cursor: pointer;
+	transition: background-color .07s;
+}
+#na_select:hover{
+	background-color: #ffffff59;
+}
