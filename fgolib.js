@@ -6,6 +6,8 @@
 // Fishing
 // card damage
 // servant death
+// reset button
+// set all classes/attr
 
 // current version of script
 var VERSION = 1;
@@ -35,7 +37,12 @@ var SKILL_ICONS = {
 	ignore_invinc:"icons/skills/Shieldbreak.png",
 	invinc:"icons/skills/Invishield.png",
 	def_down:"icons/skills/Shielddown.png",
-	start:"icons/skills/start.png"
+	start:"icons/skills/start.png",
+	star_gather:"icons/skills/Starzoom.png",
+	star_drop:"icons/skills/Critgem.png",
+	evade:"icons/skills/Dodge.png",
+	atkdef:"icons/skills/AtkDefUp.png",
+	np_regen:"icons/skills/NPturn.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -292,7 +299,48 @@ var SERVANTS = [
 	skill1: {name:"Devil's Sugar A",   icon:"atk",  target_real:"self",   target:["self","not_self"],  effect:["atk","atk"], turns: [3,3], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
 	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [1,3], values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
 	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,20,20,20],[32,20,20,20],[34,20,20,20],[36,20,20,20],[38,20,20,20],[40,20,20,20],[42,20,20,20],[44,20,20,20],[46,20,20,20],[50,20,20,20]]}
-}];
+},
+{
+	name:"Lancelot", jp:false, atk: 10477,class:"berserker",attr:"earth",rarity:4,q:1,a:1,b:3,qh:2,ah:2,np_perhit:.5,pic:"icons/servants/Lancelot.png",
+	np:{type:"np_quick", name:"Knight of Owner", hits:[3,5,3,7,8,10,12,14,16,22], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["atk"], turns:[3],values:[[10],[15],[20],[25],[30]]},
+	skills: [["buster",6]],
+	skill1: {name:"Eternal Arms Mastery A+",   icon:"star_gather",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Protection of the Spirits A",   icon:"star_drop",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Mana Reversal A",  icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns:[1],values:[[50],[55],[60],[65],[70],[75],[80],[85],[90],[100]]}
+},
+{
+	name:"Jeanne (Archer)", jp:false, atk: 10525,class:"archer",attr:"man",rarity:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.68,pic:"icons/servants/Jeanne_Archer.png",
+	np:{type:"np_arts", name:"Des Océans d'Allégresse", hits:[10,20,30,40], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [],
+	skill1: {name:"Enjoying Endless Summer! A",   icon:"arts",  target_real:"self",   target:["self"],  effect:["arts"], turns: [3], values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
+	skill2: {name:"Saint of the Shore (Dolphin) A+",   icon:"np_gauge",  target_real:"self",    target:["self","self"],     effect:["np_gauge","np_dmg"], turns: [0,3], values:[[20,10],[22,11],[24,12],[26,13],[28,14],[30,15],[32,16],[34,17],[36,18],[40,20]]},
+	skill3: {name:"Servant Cheer! B",  icon:"atk",  target_real:"all",    target:["all"],     effect:["atk"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]}
+},
+{
+	name:"Atalante", jp:false, atk: 8633,class:"archer",attr:"earth",rarity:4,q:2,a:2,b:1,qh:3,ah:2,np_perhit:.5,pic:"icons/servants/Atalante.png",
+	np:{type:"np_quick", name:"Phoebus Catastrophe", hits:[3,5,3,7,8,10,12,14,16,22], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [],
+	skill1: {name:"Beyond Arcadia A",   icon:"quick",  target_real:"all",   target:["all"],  effect:["quick"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill2: {name:"Hunter's Aesthetic C",   icon:"star_gather",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Calydonian Hunt A",  icon:"evade",  target_real:"self",    target:["self"],     effect:["np_gain"], turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+},
+{
+	name:"Parvati", jp:false, atk: 8127,class:"lancer",attr:"sky",rarity:4,q:2,a:1,b:2,qh:3,ah:2,np_perhit:1.08,pic:"icons/servants/Parvati.jpg",
+	np:{type:"np_quick", name:"Trishula Shakti", hits:[10,20,30,40], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["np_gauge"], turns:[0],values:[10,15,20,25,30]},
+	skills: ["dmg",225],
+	skill1: {name:"Imaginary Around EX",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_gain"], turns: [3,3], values:[[20,20],[21,21],[22,22],[23,23],[24,24],[25,25],[26,26],[27,27],[28,28],[30,30]]},
+	skill2: {name:"Ash of Kama EX",   icon:"atkdef",  target_real:"self",    target:["self"],     effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill3: {name:"Blessing of a Goddess A+",  icon:"np_gauge",  target_real:"target",    target:["target","self"],     effect:["np_gauge","np_gauge"], turns:[0,0],values:[[10,-10],[12,-10],[13,-10],[14,-10],[15,-10],[16,-10],[17,-10],[18,-10],[19,-10],[20,-10]]}
+},
+{
+	name:"Valkyrie", jp:false, atk: 8037,class:"lancer",attr:"sky",rarity:4,q:2,a:1,b:2,qh:3,ah:2,np_perhit:.86,pic:"icons/servants/Valkyrie.png",
+	np:{type:"np_quick", name:"Ragnarök Lífþrasir", hits:[3,7,10,14,17,21,28], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: ["dmg",200],
+	skill1: {name:"Primordial Rune (Valkyrie)",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_dmg"], turns: [3,3], values:[[20,10],[21,11],[22,12],[23,13],[24,14],[25,15],[26,16],[27,17],[28,18],[30,20]]},
+	skill2: {name:"Swan Mystic Code A",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Fate Weaver B",  icon:"np_regen",  target_real:"self",    target:["self"],     effect:["np_regen"], turns:[3],values:[[5],[5.5],[6],[6.5],[7],[7.5],[8],[8.5],[9],[10]]}
+},
+];
 var CES = [
 {name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
 pic: "icons/ces/Kaleidoscope.png"},
