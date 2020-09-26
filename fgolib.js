@@ -1192,7 +1192,11 @@ function viewAction(){
 	// enemies viewer
 	for(var w=0;w<3;w++){
 		for(var e=0;e<3;e++){
-			if(MAX_HP[w][e]<=0){ // DEAD
+			if(ENEMIES_CLASS[w][e] == CLASSES_NUM['empty']){ // no enemy
+				$("#enemy_damage_"+w+"_"+e).text("");
+				$("#enemy_"+w+"_"+e).css("background-color","#f1f1f1");
+			}
+			else if(MAX_HP[w][e]<=0){ // DEAD
 				$("#enemy_damage_"+w+"_"+e).text("100% Chance to Kill");
 				$("#enemy_"+w+"_"+e).css("background-color","rgb(70,180,70)");
 			}
