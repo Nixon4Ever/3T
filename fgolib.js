@@ -2100,6 +2100,7 @@ function clickRemoveAction(action){
 }
 var SERV_POPUP_NA=true;
 var SERV_POPUP_CLASS=-1;
+var SERV_POPUP_CUR=-1;
 
 function toggleNA(){
 	SERV_POPUP_NA = !SERV_POPUP_NA;
@@ -2119,7 +2120,7 @@ function filterServants(){
 	//highlight the class icon
 	for(var i=0;i<NUM_CLASS.length-1;i++){
 		if(i==SERV_POPUP_CLASS){
-			$("#class_"+i).css("background-color","#ffffff59");
+			$("#class_"+i).css("background-color","#ffffffA9");
 		}
 		else{
 			$("#class_"+i).css("background-color","");
@@ -2129,6 +2130,12 @@ function filterServants(){
 	for(var i=0;i<SERVANTS.length;i++){
 		if((SERVANTS[i].jp == false || !SERV_POPUP_NA) && (SERV_POPUP_CLASS == -1 || CLASSES_NUM[SERVANTS[i].class] == SERV_POPUP_CLASS)){
 			$("#servant_"+i).css("display","inline-block");
+			if(SERV_POPUP_CUR==i){
+				$("#servant_"+i).css("border-color","rgb(255 255 255 / 74%)");
+			}
+			else{
+				$("#servant_"+i).css("border-color","");
+			}
 		}
 		else{
 			$("#servant_"+i).css("display","none");
@@ -2148,7 +2155,9 @@ function serv_popup_setservant(servant){
 function servantPopup(fake_pos){
 	var realpos = ACTION_ORDER[ACTION_CURRENT][fake_pos];
 	SELECTING_REALPOS=realpos;
+	SERV_POPUP_CUR = PARTY[realpos];
 	$("#serv_popup_text").text("Select servant for slot "+(realpos+1));
+	filterServants();
 	$("#serv_popup_div").css("display","block");
 }
 function setAllEnemies(value){
