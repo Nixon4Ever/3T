@@ -217,19 +217,19 @@ var ATTR_DMG = {
 
 var MYSTIC_CODES = [
 {name : "Chaldea Combat Uniform", pic:"icons/mystic/Chaldeacombat2.png",
-skill1: {name: "Reinforce All", icon: "atk",target_real:"all", target:["all"], effect:["atk"], turns:[1],values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
-skill2: {name: "Gandr", icon: "stun",target_real:"single", target:["single"], effect:["stun"], turns:[1],values:[[500],[500],[500],[500],[500],[500],[500],[500],[500],[500]]},
-skill3: {name: "Order Change", icon: "orderchange",target_real:"orderchange", target:["orderchange"], effect:["orderchange"], turns:[0],values:[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]},
+skill1: {name: "Reinforce All", icon: "atk",target_real:"all", target:["all"], effect:["atk"], turns:[1],values:[[20,21,22,23,24,25,26,27,28,30]]},
+skill2: {name: "Gandr", icon: "stun",target_real:"single", target:["single"], effect:["stun"], turns:[1],values:[[500,500,500,500,500,500,500,500,500,500]]},
+skill3: {name: "Order Change", icon: "orderchange",target_real:"orderchange", target:["orderchange"], effect:["orderchange"], turns:[0],values:[[0,0,0,0,0,0,0,0,0,0]]},
 },
 {name : "Mage's Association Uniform", pic:"icons/mystic/Mage2.png",
 skill1: {name: "Cure-All", icon: "heal",target_real:"none", target:[], effect:[], turns:[0],values:[[],[],[],[],[],[],[],[],[],[]]},
-skill2: {name: "Spiritron Transfer", icon: "np_gauge",target_real:"target", target:["target"], effect:["np_gauge"], turns:[0],values:[[20],[20],[20],[20],[20],[20],[20],[20],[20],[20]]},
-skill3: {name: "Command Shuffle", icon: "shuffle",target_real:"shuffle", target:["shuffle"], effect:["shuffle"], turns:[0],values:[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]},
+skill2: {name: "Spiritron Transfer", icon: "np_gauge",target_real:"target", target:["target"], effect:["np_gauge"], turns:[0],values:[[20,20,20,20,20,20,20,20,20,20]]},
+skill3: {name: "Command Shuffle", icon: "shuffle",target_real:"shuffle", target:["shuffle"], effect:["shuffle"], turns:[0],values:[[0,0,0,0,0,0,0,0,0,0]]},
 },
 {name : "A Fragment of 2004", pic:"icons/mystic/Fragment2004F.png",
-skill1: {name: "Code: F", icon: "np_dmg",target_real:"target", target:["target"], effect:["np_dmg"], turns:[1],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
-skill2: {name: "Code: U", icon: "buster_stars",target_real:"none", target:[], effect:[], turns:[0],values:[[],[],[],[],[],[],[],[],[],[]]},
-skill3: {name: "Code: H", icon: "np_gain",target_real:"target", target:["target"], effect:["np_gain"], turns:[1],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+skill1: {name: "Code: F", icon: "np_dmg",target_real:"target", target:["target"], effect:["np_dmg"], turns:[1],values:[[30,32,34,36,38,40,42,44,46,50]]},
+skill2: {name: "Code: U", icon: "buster_stars",target_real:"none", target:[], effect:[], turns:[0],values:[]},
+skill3: {name: "Code: H", icon: "np_gain",target_real:"target", target:["target"], effect:["np_gain"], turns:[1],values:[[30,32,34,36,38,40,42,44,46,50]]},
 },
 ];
 var SERVANTS = [
@@ -237,120 +237,128 @@ var SERVANTS = [
 	name : "Sieg", jp:false, atk: 8394,class:"caster",attr:"man",rarity:4,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.78,pic:"icons/servants/cardboard.png",
 	np: {type:"np_arts", name:"Ákafiloga All-gríð", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg:"aoe", target:["aoe"],before:[true], effect:["def_down"],oc:[true], turns:[3],values:[[20],[25],[30],[35],[40]]},
 	skills: [["arts",6.5]],
-	skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
-	skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22],[23.4],[24.8],[26.2],[27.6],[29],[30.4],[31.8],[33.2],[36]]},
-	skill3: {name:"Dead-Count Shapeshifter EX",  target_real:"self", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,50],[21,55],[22,60],[23,65],[24,70],[25,75],[26,80],[27,85],[28,90],[30,100]]}
+	skill1: {name:"Artificial Hero (Fake) B+",  icon:"np_gain",  target_real:"self" ,target:["self"], effect:["np_gain"], turns:[3],   values:[[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Magecraft C",   icon:"arts",  target_real:"self",  target:["self"],        effect:["arts"], turns:[1],   values:[[22,23.4,24.8,26.2,27.6,29,30.4,31.8,33.2,36]]},
+	skill3: {name:"Dead-Count Shapeshifter EX",  target_real:"self", icon:"divinity",target:["self","self"], effect:["np_gauge","dragon_dmg"], turns:[0,1], values:[[20,21,22,23,24,25,26,27,28,30],[50,55,60,65,70,75,80,85,90,100]]}
 },
 {
 	name: "Paracelsus", jp:false, atk: 6711,class:"caster",attr:"man",rarity:3,q:1,a:3,b:1,qh:2,ah:2,np_perhit:.55,pic:"icons/servants/para.jpg",
 	np:{type:"np_arts", name:"Sword of Paracelsus", hits:[16,33,51],dmg:[400,500,550,575,600],target_dmg: "aoe", target:[],oc:[], effect:[], turns:[],values:[]},
 	skills: [["arts",10]],
-	skill1: {name:"Rapid Casting A",        icon:"np_gauge",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55],[57.5],[60],[62.5],[65],[67.5],[70],[72.5],[75],[80]]},
-	skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
-	skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+	skill1: {name:"Rapid Casting A",        icon:"np_gauge",  target_real:"self",   target:["self"],  effect:["np_gauge"], turns: [0], values:[[55,57.5,60,62.5,65,67.5,70,72.5,75,80]]},
+	skill2: {name:"Elemental A+",           icon:"arts",  target_real:"all", target:["all"],   effect:["arts"], turns:[3],values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill3: {name:"Philosopher's Stone A+", icon:"guts",  target_real:"target", target:["target"], effect:["np_gain"],turns:[3],values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
 {
 	name:"Waver", jp:false, atk: 10598,class:"caster",attr:"man",rarity:5,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.64,pic:"icons/servants/waver.png",
-	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"],before:[true], effect:["def_down"],oc:[false], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
+	np:{type:"np_arts", name:"Unreturning Formation", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["aoe"],before:[true], effect:["def_down"],oc:[false], turns:[3],values:[[30,40,45,47.5,50]]},
 	skills: [["arts",10]],
-	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30],[30],[30],[30],[30],[30],[30],[30],[30],[30]]},
-	skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]},
-	skill3: {name:"Tactician's Command A+",  icon:"atk",  target_real:"all",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,20,200],[10,21,230],[10,22,260],[10,23,290],[10,24,320],[10,25,350],[10,26,380],[10,27,410],[10,28,440],[10,30,500]]}
+	skill1: {name:"Discerning Eye A",        icon:"crit",  target_real:"target",   target:["target"],  effect:["np_gauge"], turns: [0], values:[[30,30,30,30,30,30,30,30,30,30]]},
+	skill2: {name:"Tactician's Advice A+",   icon:"def",  target_real:"all",    target:["all"],     effect:["np_gauge"], turns: [0], values:[[10,10,10,10,10,10,10,10,10,10]]},
+	skill3: {name:"Tactician's Command A+",  icon:"atk",  target_real:"all",    target:["all","all","all"],     effect:["np_gauge","atk","dmg"],turns:[0,3,3],values:[[10,10,10,10,10,10,10,10,10,10],[20,21,22,23,24,25,26,27,28,30],[200,230,260,290,320,350,380,410,440,500]]}
 },
 {
 	name:"Scathach-Skadi", jp:false, atk: 10753,class:"caster",attr:"sky",rarity:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.67,pic:"icons/servants/skadi.png",
 	np:{type:"np_arts", name:"Gate of Skye", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:[],before:[], effect:[],oc:[], turns:[],values:[[],[],[],[],[]]},
 	skills: [["arts",12],["dmg",250]],
-	skill1: {name:"Primordial Rune",        icon:"quick",  target_real:"target",   target:["target"],  effect:["quick"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
-	skill2: {name:"Shivering Blizzard B",   icon:"def_down",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
-	skill3: {name:"Allfather's Wisdom B+",  icon:"np_gauge",  target_real:"target",    target:["target"],     effect:["np_gauge"],turns:[0],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+	skill1: {name:"Primordial Rune",        icon:"quick",  target_real:"target",   target:["target"],  effect:["quick"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill2: {name:"Shivering Blizzard B",   icon:"def_down",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
+	skill3: {name:"Allfather's Wisdom B+",  icon:"np_gauge",  target_real:"target",    target:["target"],     effect:["np_gauge"],turns:[0],values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
 {
 	name:"Merlin", jp:false, atk: 10546,class:"caster",attr:"earth",rarity:5,q:1,a:3,b:1,qh:3,ah:2,np_perhit:.81,pic:"icons/servants/merlin.jpg",
-	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"],before:[true],oc:[false], effect:["np_regen"], turns:[5],values:[[5],[5],[5],[5],[5]]},
+	np:{type:"np_arts", name:"Garden of Avalon", hits:[], dmg:[0,0,0,0,0], target_dmg: "none", target:["all"],before:[true],oc:[false], effect:["np_regen"], turns:[5],values:[[5,5,5,5,5]]},
 	skills: [["arts",6],["np_regen",5]],
-	skill1: {name:"Dreamlike Charisma A",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,20],[12,20],[13,20],[14,20],[15,20],[16,20],[17,20],[18,20],[20,20]]},
+	skill1: {name:"Dreamlike Charisma A",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,11,12,13,14,15,16,17,18,20],[20,20,20,20,20,20,20,20,20,20]]},
 	skill2: {name:"Illusion A",   icon:"invinc",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
-	skill3: {name:"Hero Creation EX",  icon:"buster",  target_real:"target",    target:["target"],     effect:["buster"], turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+	skill3: {name:"Hero Creation EX",  icon:"buster",  target_real:"target",    target:["target"],     effect:["buster"], turns:[3],values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
 {
 	name:"Edmond Dantes", jp:false, atk: 12641,class:"avenger",attr:"man",rarity:5,q:2,a:1,b:2,qh:4,ah:2,np_perhit:.62,pic:"icons/servants/dantes.png",
-	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["def_down"], turns:[3],values:[[20],[25],[30],[35],[40]]},
+	np:{type:"np_quick", name:"Enfer Château d'If", hits:[3,6,10,13,16,13,10,29], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["def_down"], turns:[3],values:[[20,25,30,35,40]]},
 	skills: [["np_regen",3]],
-	skill1: {name:"Iron Determination EX",   icon:"ignore_invinc",  target_real:"self",   target:["self"],  effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
-	skill2: {name:"Golden Rule A",   icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns: [3], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill1: {name:"Iron Determination EX",   icon:"ignore_invinc",  target_real:"self",   target:["self"],  effect:["atk"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill2: {name:"Golden Rule A",   icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]},
 	skill3: {name:"Wisdom of Crisis A",  icon:"np_drain",  target_real:"none",    target:["none"],     effect:[], turns:[],values:[[],[],[],[],[],[],[],[],[],[]]}
 },
 {
 	name:"Artoria (Caster)", jp:true, atk: 10546,class:"caster",attr:"star",rarity:5,q:1,a:3,b:1,qh:3,ah:3,np_perhit:.54,pic:"icons/servants/Artoria_Caster.png",
-	np:{type:"np_arts", name:"Around Caliburn", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false],oc:[false], effect:["atk"], turns:[3],values:[[30],[40],[45],[47.5],[50]]},
+	np:{type:"np_arts", name:"Around Caliburn", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false],oc:[false], effect:["atk"], turns:[3],values:[[30,40,45,47.5,50]]},
 	skills: [["arts",12]],
-	skill1: {name:"Charisma of Hope B",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
-	skill2: {name:"Blessing of the Lake A",   icon:"np_gauge",  target_real:"target",    target:["target","all"],     effect:["np_gauge","np_gain"], turns: [0,3], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
-	skill3: {name:"Sword of Selection EX",  icon:"arts",  target_real:"target",    target:["target","target"],     effect:["arts","h_threat_dmg"], turns:[3,3],values:[[30,30],[32,32],[34,34],[36,36],[38,38],[40,40],[42,42],[44,44],[46,46],[50,50]]}
+	skill1: {name:"Charisma of Hope B",   icon:"atk",  target_real:"all",   target:["all","all"],  effect:["atk","np_gauge"], turns: [3,0], values:[[10,11,12,13,14,15,16,17,18,20],[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Blessing of the Lake A",   icon:"np_gauge",  target_real:"target",    target:["target","all"],     effect:["np_gauge","np_gain"], turns: [0,3], values:[[10,11,12,13,14,15,16,17,18,20],[20,21,22,23,24,25,26,27,28,30]]},
+	skill3: {name:"Sword of Selection EX",  icon:"arts",  target_real:"target",    target:["target","target"],     effect:["arts","h_threat_dmg"], turns:[3,3],values:[[30,32,34,36,38,40,42,44,46,50],[30,32,34,36,38,40,42,44,46,50]]}
 },
 {
 	name:"Space Ishtar", jp:true, atk: 12612,class:"avenger",attr:"star",rarity:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.69,pic:"icons/servants/Spaceishtar.png",
-	np:{type:"np_arts", name:"Edin Shugurra Quasar (Arts)", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
-	np2:{type:"np_quick", name:"Edin Shugurra Quasar (Quick)", hits:[16,33,51], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
-	np3:{type:"np_buster", name:"Edin Shugurra Quasar (Buster)", hits:[16,33,51], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20],[30],[40],[50],[60]]},
+	np:{type:"np_arts", name:"Edin Shugurra Quasar (Arts)", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20,30,40,50,60]]},
+	np2:{type:"np_quick", name:"Edin Shugurra Quasar (Quick)", hits:[16,33,51], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20,30,40,50,60]]},
+	np3:{type:"np_buster", name:"Edin Shugurra Quasar (Buster)", hits:[16,33,51], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20,30,40,50,60]]},
 	nps:{"arts":"np","quick":"np2","buster":"np3"},
 	skills: [["np_regen",3.5],["dmg",270]],
-	skill1: {name:"Devil's Sugar A",   icon:"atk",  target_real:"self",   target:["self","not_self"],  effect:["atk","atk"], turns: [3,3], values:[[10,20],[11,21],[12,22],[13,23],[14,24],[15,25],[16,26],[17,27],[18,28],[20,30]]},
-	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [1,3], values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]},
-	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80],[100,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,20,20,20],[32,20,20,20],[34,20,20,20],[36,20,20,20],[38,20,20,20],[40,20,20,20],[42,20,20,20],[44,20,20,20],[46,20,20,20],[50,20,20,20]]}
+	skill1: {name:"Devil's Sugar A",   icon:"atk",  target_real:"self",   target:["self","not_self"],  effect:["atk","atk"], turns: [3,3], values:[[10,11,12,13,14,15,16,17,18,20],[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [1,3], values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,100,100,100,100,100,100,100,100,100],[80,80,80,80,80,80,80,80,80,80],[80,80,80,80,80,80,80,80,80,80],[80,80,80,80,80,80,80,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,32,34,36,38,40,42,44,46,50],[20,20,20,20,20,20,20,20,20,20],[20,20,20,20,20,20,20,20,20,20],[20,20,20,20,20,20,20,20,20,20]]}
 },
 {
 	name:"Lancelot", jp:false, atk: 10477,class:"berserker",attr:"earth",rarity:4,q:1,a:1,b:3,qh:2,ah:2,np_perhit:.5,pic:"icons/servants/Lancelot.png",
-	np:{type:"np_quick", name:"Knight of Owner", hits:[3,5,3,7,8,10,12,14,16,22], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["atk"], turns:[3],values:[[10],[15],[20],[25],[30]]},
+	np:{type:"np_quick", name:"Knight of Owner", hits:[3,5,3,7,8,10,12,14,16,22], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["atk"], turns:[3],values:[[10,15,20,25,30]]},
 	skills: [["buster",6]],
 	skill1: {name:"Eternal Arms Mastery A+",   icon:"star_gather",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
 	skill2: {name:"Protection of the Spirits A",   icon:"star_drop",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
-	skill3: {name:"Mana Reversal A",  icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns:[1],values:[[50],[55],[60],[65],[70],[75],[80],[85],[90],[100]]}
+	skill3: {name:"Mana Reversal A",  icon:"np_gain",  target_real:"self",    target:["self"],     effect:["np_gain"], turns:[1],values:[[50,55,60,65,70,75,80,85,90,100]]}
 },
 {
 	name:"Jeanne (Archer)", jp:false, atk: 10525,class:"archer",attr:"man",rarity:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.68,pic:"icons/servants/Jeanne_Archer.png",
 	np:{type:"np_arts", name:"Des Océans d'Allégresse", hits:[10,20,30,40], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
 	skills: [],
-	skill1: {name:"Enjoying Endless Summer! A",   icon:"arts",  target_real:"self",   target:["self"],  effect:["arts"], turns: [3], values:[[20],[21],[22],[23],[24],[25],[26],[27],[28],[30]]},
-	skill2: {name:"Saint of the Shore (Dolphin) A+",   icon:"np_gauge",  target_real:"self",    target:["self","self"],     effect:["np_gauge","np_dmg"], turns: [0,3], values:[[20,10],[22,11],[24,12],[26,13],[28,14],[30,15],[32,16],[34,17],[36,18],[40,20]]},
-	skill3: {name:"Servant Cheer! B",  icon:"atk",  target_real:"all",    target:["all"],     effect:["atk"], turns:[3],values:[[10],[11],[12],[13],[14],[15],[16],[17],[18],[20]]}
+	skill1: {name:"Enjoying Endless Summer! A",   icon:"arts",  target_real:"self",   target:["self"],  effect:["arts"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Saint of the Shore (Dolphin) A+",   icon:"np_gauge",  target_real:"self",    target:["self","self"],     effect:["np_gauge","np_dmg"], turns: [0,3], values:[[20,22,24,26,28,30,32,34,36,40],[10,11,12,13,14,15,16,17,18,20]]},
+	skill3: {name:"Servant Cheer! B",  icon:"atk",  target_real:"all",    target:["all"],     effect:["atk"], turns:[3],values:[[10,11,12,13,14,15,16,17,18,20]]}
 },
 {
 	name:"Atalante", jp:false, atk: 8633,class:"archer",attr:"earth",rarity:4,q:2,a:2,b:1,qh:3,ah:2,np_perhit:.5,pic:"icons/servants/Atalante.png",
 	np:{type:"np_quick", name:"Phoebus Catastrophe", hits:[3,5,3,7,8,10,12,14,16,22], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
 	skills: [],
-	skill1: {name:"Beyond Arcadia A",   icon:"quick",  target_real:"all",   target:["all"],  effect:["quick"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
+	skill1: {name:"Beyond Arcadia A",   icon:"quick",  target_real:"all",   target:["all"],  effect:["quick"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]},
 	skill2: {name:"Hunter's Aesthetic C",   icon:"star_gather",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
-	skill3: {name:"Calydonian Hunt A",  icon:"evade",  target_real:"self",    target:["self"],     effect:["np_gain"], turns:[3],values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]}
+	skill3: {name:"Calydonian Hunt A",  icon:"evade",  target_real:"self",    target:["self"],     effect:["np_gain"], turns:[3],values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
 {
 	name:"Parvati", jp:false, atk: 8127,class:"lancer",attr:"sky",rarity:4,q:2,a:1,b:2,qh:3,ah:2,np_perhit:1.08,pic:"icons/servants/Parvati.jpg",
-	np:{type:"np_quick", name:"Trishula Shakti", hits:[10,20,30,40], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["np_gauge"], turns:[0],values:[[10],[15],[20],[25],[30]]},
+	np:{type:"np_quick", name:"Trishula Shakti", hits:[10,20,30,40], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["np_gauge"], turns:[0],values:[[10,15,20,25,30]]},
 	skills: [["dmg",225]],
-	skill1: {name:"Imaginary Around EX",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_gain"], turns: [3,3], values:[[20,20],[21,21],[22,22],[23,23],[24,24],[25,25],[26,26],[27,27],[28,28],[30,30]]},
-	skill2: {name:"Ash of Kama EX",   icon:"atkdef",  target_real:"self",    target:["self"],     effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
-	skill3: {name:"Blessing of a Goddess A+",  icon:"np_gauge",  target_real:"target",    target:["target","self"],     effect:["np_gauge","np_gauge"], turns:[0,0],values:[[10,-10],[12,-10],[13,-10],[14,-10],[15,-10],[16,-10],[17,-10],[18,-10],[19,-10],[20,-10]]}
+	skill1: {name:"Imaginary Around EX",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_gain"], turns: [3,3], values:[[20,21,22,23,24,25,26,27,28,30],[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Ash of Kama EX",   icon:"atkdef",  target_real:"self",    target:["self"],     effect:["atk"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill3: {name:"Blessing of a Goddess A+",  icon:"np_gauge",  target_real:"target",    target:["target","self"],     effect:["np_gauge","np_gauge"], turns:[0,0],values:[[10,11,12,13,14,15,16,17,18,20],[-10,-10,-10,-10,-10,-10,-10,-10,-10,-10]]}
 },
 {
 	name:"Valkyrie", jp:false, atk: 8037,class:"lancer",attr:"sky",rarity:4,q:2,a:1,b:2,qh:3,ah:2,np_perhit:.86,pic:"icons/servants/Valkyrie.png",
 	np:{type:"np_quick", name:"Ragnarök Lífþrasir", hits:[3,7,10,14,17,21,28], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
 	skills: [["dmg",200]],
-	skill1: {name:"Primordial Rune (Valkyrie)",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_dmg"], turns: [3,3], values:[[20,10],[21,11],[22,12],[23,13],[24,14],[25,15],[26,16],[27,17],[28,18],[30,20]]},
+	skill1: {name:"Primordial Rune (Valkyrie)",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_dmg"], turns: [3,3], values:[[20,21,22,23,24,25,26,27,28,30],[10,11,12,13,14,15,16,17,18,20]]},
 	skill2: {name:"Swan Mystic Code A",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
-	skill3: {name:"Fate Weaver B",  icon:"np_regen",  target_real:"self",    target:["self"],     effect:["np_regen"], turns:[3],values:[[5],[5.5],[6],[6.5],[7],[7.5],[8],[8.5],[9],[10]]}
+	skill3: {name:"Fate Weaver B",  icon:"np_regen",  target_real:"self",    target:["self"],     effect:["np_regen"], turns:[3],values:[[5,5.5,6,6.5,7,7.5,8,8.5,9,10]]}
+},
+{
+	name:"Achilles", jp:false, atk: 11883,class:"rider",attr:"earth",rarity:5,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.57,pic:"icons/servants/Achilles.png",
+	np:{type:"np_quick", name:"Troias Tragōidia", hits:[6,13,20,26,35], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["quick"], turns:[1],values:[[20,30,40,50,60]]},
+	skills: [["quick",11],["dmg",150]],
+	skill1: {name:"Drómos Komḗtēs A+",   icon:"quick",  target_real:"self",   target:["self"],  effect:["quick"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
+	skill2: {name:"Swan Mystic Code A",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Fate Weaver B",  icon:"np_regen",  target_real:"self",    target:["self"],     effect:["np_regen"], turns:[3],values:[[5,5.5,6,6.5,7,7.5,8,8.5,9,10]]}
 },
 ];
 var CES = [
-{name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80],[100]], atk:[500,2000],
+{name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80,100]], atk:[500,2000],
 pic: "icons/ces/Kaleidoscope.png"},
-{name: "Imaginary Element", rarity: 4, effect:["np_gauge"], values:[[60],[75]], atk:[200,750],
+{name: "Imaginary Element", rarity: 4, effect:["np_gauge"], values:[[60,75]], atk:[200,750],
 pic: "icons/ces/Hollow_magic.png"},
-{name: "Black Grail", rarity: 5, effect:["np_dmg"], values:[[60],[80]], atk:[600,2400],
+{name: "Black Grail", rarity: 5, effect:["np_dmg"], values:[[60,80]], atk:[600,2400],
 pic: "icons/ces/Black_grail.png"},
-{name: "CKT", rarity: 5, effect:["arts","quick","np_dmg"], values:[[10,10,10],[15,15,15]], atk:[250,1000],
+{name: "CKT", rarity: 5, effect:["arts","quick","np_dmg"], values:[[10,15],[10,15],[10,15]], atk:[250,1000],
 pic: "icons/ces/CE900.png"},
-{name: "Return Match", rarity: 5, effect:["power"], values:[[100],[200]], atk:[500,2000],
+{name: "Return Match", rarity: 5, effect:["power"], values:[[100,200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
 ];
 function packNum(num1,num2){
@@ -1051,9 +1059,9 @@ function displaySkill(pos,skill){
 		var skill_text = skill_object.name+" ("+(SKILLS[real_pos][skill]+1)+")";
 		for(var i=0;i<skill_object.effect.length;i++){
 			if(!(EFFECT_NONE.includes(skill_object.effect[i]))){
-				skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+TARGETS[skill_object.target[i]]+"): "+skill_object.values[SKILLS[real_pos][skill]][i]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
-				if(skill_object.rng!=undefined && skill_object.rng[SKILLS[real_pos][skill]][i] < 100){ // has rng
-					skill_text+=", "+skill_object.rng[SKILLS[real_pos][skill]][i]+"% chance";
+				skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+TARGETS[skill_object.target[i]]+"): "+skill_object.values[i][SKILLS[real_pos][skill]]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
+				if(skill_object.rng!=undefined && skill_object.rng[i][SKILLS[real_pos][skill]] < 100){ // has rng
+					skill_text+=", "+skill_object.rng[i][SKILLS[real_pos][skill]]+"% chance";
 				}
 			}
 			else{ // display no values
@@ -1131,7 +1139,7 @@ function displayMysticSkills(){
 		}
 		var skill_text = skill_object.name+" ("+(parseInt(MYSTIC_CODE_LEVEL)+1)+")";
 		for(var i=0;i<skill_object.effect.length;i++){
-			skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+skill_object.target[i]+"): "+skill_object.values[MYSTIC_CODE_LEVEL][i]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
+			skill_text+="<br>"+EFFECTS[skill_object.effect[i]]+" ("+skill_object.target[i]+"): "+skill_object.values[i][MYSTIC_CODE_LEVEL]+(EFFECT_FLAT[skill_object.effect[i]]?"":"%")+(skill_object.turns[i]==0?"":" ("+skill_object.turns[i]+" turn"+(skill_object.turns[i]==1?"":"s")+")");
 		}
 		$("#mystic_skill_"+skill + " > .tooltiptext").html(skill_text);
 	}
@@ -1286,10 +1294,12 @@ function viewAction(){
 				var skill = servant["skill"+(1+ACTIONS[a][1])];
 				if(a == ACTION_CURRENT && skill.rng != undefined){ // viewed action has rng setting
 					cur_skill_level = SKILLS[real_pos][ACTIONS[a][1]];
-					for(var rngvalue of skill.rng[cur_skill_level]){
-						if(rngvalue != 100){ // at least one of the effects actually is rng
-							cur_skill = skill;
-							disp_rng = true;
+					for(var rng_effect_values of skill.rng){
+						for(var rngvalue of rng_effect_values){
+							if(rngvalue != 100){ // at least one of the effects actually is rng
+								cur_skill = skill;
+								disp_rng = true;
+							}
 						}
 					}
 				}
@@ -1344,10 +1354,10 @@ function viewAction(){
 		}
 		var cur_rng = 0;
 		for(var e=0; e<cur_skill.effect.length; e++){
-			if(cur_skill.rng[cur_skill_level][e] != undefined && cur_skill.rng[cur_skill_level][e] < 100){ // is an actual rng effect
+			if(cur_skill.rng[e][cur_skill_level] != undefined && cur_skill.rng[e][cur_skill_level] < 100){ // is an actual rng effect
 				$("#rng_"+cur_rng).css("display","table-row");
 				$("#rng_name_"+cur_rng).text(EFFECTS[cur_skill.effect[e]]);
-				$("#rng_chance_"+cur_rng).text(cur_skill.rng[cur_skill_level][e]+"%");
+				$("#rng_chance_"+cur_rng).text(cur_skill.rng[e][cur_skill_level]+"%");
 				$("#is_rng_"+cur_rng).prop('checked',(rngs[cur_rng]==1));
 				cur_rng++;
 			}
@@ -1475,7 +1485,7 @@ function calcFull(noview){
 		var ce = PARTY_CES[p];
 		if(ce < 0 || ce > CES.length){continue;} // skip if no ce given
 		for(var i=0;i<CES[ce].effect.length;i++){
-			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[PARTY_CE_LEVEL[p]==0?0:1][i],-1,CES[ce].name);
+			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[i][PARTY_CE_LEVEL[p]==0?0:1],-1,CES[ce].name);
 		}
 	}
 	var wave=0;
@@ -1574,7 +1584,7 @@ function calcFull(noview){
 				}
 				for(var e=0;e<skill.target.length;e++){// loop over each skill effect
 					if(cur_rng!=-2){//has rng
-						var chance = skill.rng[SKILLS[real_pos][action]][e];
+						var chance = skill.rng[e][SKILLS[real_pos][action]];
 						if(chance < 100){ // this effect is rng
 							cur_rng++;if(cur_rng>2){console.log("WARNING SKILL HAS TOO MANY RNG ELEMENTS");}
 							if(rngs[cur_rng] == 1){ // this effect is depended on
@@ -1587,22 +1597,22 @@ function calcFull(noview){
 					}
 					if(skill.target[e] == "all"){
 						for(var i=0;i<3;i++){
-							applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+							applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],skill.name);
 						}
 					}
 					else if(skill.target[e] == "target"){
-						applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+						applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],skill.name);
 					}
 					else if(skill.target[e] == "self"){
-						applyBuff(a,real_pos,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.turns[e],skill.name);
+						applyBuff(a,real_pos,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.turns[e],skill.name);
 					}
 					else if(skill.target[e] == "aoe"){
 						for(var enemy=0;enemy<3;enemy++){
-							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.name);
+							applyDebuff(a,wave,enemy,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.name);
 						}
 					}
 					else if(skill.target[e] == "single"){
-						applyDebuff(a,wave,target1,skill.effect[e],skill.values[SKILLS[real_pos][action]][e],skill.name);
+						applyDebuff(a,wave,target1,skill.effect[e],skill.values[e][SKILLS[real_pos][action]],skill.name);
 					}
 					else if(skill.target[e] == "self_np_type"){
 						applyBuff(a,real_pos,"np_type_"+CARD_TYPES[target1],0,skill.turns[e],skill.name);
@@ -1645,22 +1655,22 @@ function calcFull(noview){
 							}
 							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
 								}
 							}
 							else if(np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "self"){
-								applyBuff(a,real_pos,np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
+								applyBuff(a,real_pos,np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
-									applyDebuff(a,wave,enemy,np.effect[e],np.values[effect_level][e],np.name);
+									applyDebuff(a,wave,enemy,np.effect[e],np.values[e][effect_level],np.name);
 								}
 							}
 							else if(np.target[e] == "single"){
-								applyDebuff(a,wave,target1,np.effect[e],np.values[effect_level][e],np.name);
+								applyDebuff(a,wave,target1,np.effect[e],np.values[e][effect_level],np.name);
 							}
 						}
 					}
@@ -1691,13 +1701,13 @@ function calcFull(noview){
 							}
 							var defDownMod = calcTotalDebuff(a,wave,e,"def_down");
 							var dmgMods = [PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
-							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,      npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG];
+							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,      npDmgMod,    powerMod, dmgPlus,    0,        0,       1];
 							  //console.log(dmgMods);
 							var baseDamage = getHitNPDamage(
 							/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
 							  PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
 							/*srv_attr,     enemy_attr,                     atkMod, defMod,    npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
-							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,npDmgMod,    powerMod, dmgPlus,    0,        0,       RNG);
+							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,npDmgMod,    powerMod, dmgPlus,    0,        0,       1);
 							//console.log(baseDamage);
 							//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
 							var baseHitRefund = getHitNPGen(np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
@@ -1749,22 +1759,22 @@ function calcFull(noview){
 							}
 							if(np.target[e] == "all"){
 								for(var i=0;i<3;i++){
-									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
+									applyBuff(a,ACTION_ORDER[a][i],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
 								}
 							}
 							else if(np.target[e] == "target"){
-								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
+								applyBuff(a,ACTION_ORDER[a][target1],np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "self"){
-								applyBuff(a,real_pos,np.effect[e],np.values[effect_level][e],np.turns[e],np.name);
+								applyBuff(a,real_pos,np.effect[e],np.values[e][effect_level],np.turns[e],np.name);
 							}
 							else if(np.target[e] == "aoe"){
 								for(var enemy=0;enemy<3;enemy++){
-									applyDebuff(a,wave,enemy,np.effect[e],np.values[effect_level][e],np.name);
+									applyDebuff(a,wave,enemy,np.effect[e],np.values[e][effect_level],np.name);
 								}
 							}
 							else if(np.target[e] == "single"){
-								applyDebuff(a,wave,target1,np.effect[e],np.values[effect_level][e],np.name);
+								applyDebuff(a,wave,target1,np.effect[e],np.values[e][effect_level],np.name);
 							}
 						}
 					}
@@ -1786,11 +1796,11 @@ function calcFull(noview){
 			for(var e=0;e<skill.target.length;e++){// loop over each skill effect
 				if(skill.target[e] == "all"){
 					for(var i=0;i<3;i++){
-						applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[MYSTIC_CODE_LEVEL][e],skill.turns[e],skill.name);
+						applyBuff(a,ACTION_ORDER[a][i],skill.effect[e],skill.values[e][MYSTIC_CODE_LEVEL],skill.turns[e],skill.name);
 					}
 				}
 				else if(skill.target[e] == "target"){
-					applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[MYSTIC_CODE_LEVEL][e],skill.turns[e],skill.name);
+					applyBuff(a,ACTION_ORDER[a][target1],skill.effect[e],skill.values[e][MYSTIC_CODE_LEVEL],skill.turns[e],skill.name);
 				}
 				else if(skill.target[e] == "orderchange"){
 					var tar1 = ACTION_ORDER[a][target1];
