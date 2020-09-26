@@ -8,7 +8,6 @@
 // reset button
 // set all classes/attr
 // delayed stun
-// cleanse
 
 // current version of script
 var VERSION = 1;
@@ -47,6 +46,7 @@ var SKILL_ICONS = {
 	taunt:"icons/skills/Taunt.png",
 	charm:"icons/skills/Charm.png",
 	buffchance:"icons/skills/Staffup.png",
+	cleanse:"icons/skills/Bubbles.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -127,7 +127,7 @@ var EFFECT_FLAT ={
 	def_down: false,
 	h_threat_dmg:false,
 }
-var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune"];
+var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune","cleanse"];
 var TARGETS = {
 	"self": "Self",
 	"all": "All",
@@ -372,6 +372,14 @@ var SERVANTS = [
 	skill1: {name:"Galvanism B",   icon:"np_gain",  target_real:"self",   target:["self"],  effect:["np_gain"], turns: [3], values:[[25,27,29,31,33,35,37,39,41,45]]},
 	skill2: {name:"Wail of the Living Dead C",   icon:"stun",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Overload C",  icon:"np_dmg",  target_real:"self",    target:["self"],     effect:["np_dmg"], turns:[1],values:[[20,21,22,23,24,25,26,27,28,30]]}
+},
+{
+	name:"BB", jp:false, atk: 8197,class:"moon_cancer",attr:"man",rarity:4,q:2,a:2,b:1,qh:4,ah:3,np_perhit:.61,pic:"icons/servants/BB.jpg",
+	np:{type:"np_arts", name:"C.C.C.", hits:[6,13,20,26,35], dmg:[900,1200,1350,1425,1500], target_dmg: "single", target:["all"],before:[false],oc:[false], effect:["np_gauge"], turns:[0],values:[[20,20,20,20,20]]},
+	skills: [["arts",10]],
+	skill1: {name:"Domina Cornam D",   icon:"cleanse",  target_real:"target",   target:["target","target"],  effect:["cleanse","debuff_immune"], turns: [0,3],times:[0,1], values:[[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]},
+	skill2: {name:"Aurea Poculum C",   icon:"stun",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Self-Modification EX",  icon:"crit",  target_real:"none",    target:[],     effect:[], turns: [], values:[]}
 },
 ];
 var CES = [
@@ -1248,6 +1256,13 @@ function applyBuff(action,pos,name,value,turns,times,source)
 		ACTION_NP[action][pos]+=parseFloat(value);
 		if(ACTION_NP[action][pos] >= 99 && ACTION_NP[action][pos] < 100){
 			ACTION_NP[action][pos]=100;
+		}
+	}
+	else if(name == "cleanse"){
+		for(var buff in ACTION_BUFFS[action][pos]){
+			if(buff == "stun"){ // all debuffs, all more
+				delete ACTION_BUFFS[action][pos][buff];
+			}
 		}
 	}
 	else{
