@@ -306,7 +306,7 @@ var SERVANTS = [
 	nps:{"arts":"np","quick":"np2","buster":"np3"},
 	skills: [["np_regen",3.5],["dmg",270]],
 	skill1: {name:"Devil's Sugar A",   icon:"atk",  target_real:"self",   target:["self","not_self"],  effect:["atk","atk"], turns: [3,3], values:[[10,11,12,13,14,15,16,17,18,20],[20,21,22,23,24,25,26,27,28,30]]},
-	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [1,3], values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [-1,3],times:[1,-1], values:[[10,11,12,13,14,15,16,17,18,20]]},
 	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,100,100,100,100,100,100,100,100,100],[80,80,80,80,80,80,80,80,80,80],[80,80,80,80,80,80,80,80,80,80],[80,80,80,80,80,80,80,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,32,34,36,38,40,42,44,46,50],[20,20,20,20,20,20,20,20,20,20],[20,20,20,20,20,20,20,20,20,20],[20,20,20,20,20,20,20,20,20,20]]}
 },
 {
@@ -385,7 +385,7 @@ pic: "icons/ces/Black_grail.png"},
 pic: "icons/ces/CE900.png"},
 {name: "Return Match", rarity: 5, effect:["power"], values:[[100,200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
-{name: "Vessel of the saint", rarity: 5, effect:["debuff_immune","np_gain"], times:[3,-1], values:[[1,1],[15,20]], atk:[250,1000],
+{name: "Vessel of the Saint", rarity: 5, effect:["debuff_immune","np_gain"], times:[3,-1], values:[[1,1],[15,20]], atk:[250,1000],
 pic: "icons/ces/Vessel_of_the_Saint.png"},
 ];
 function packNum(num1,num2){
@@ -1823,6 +1823,24 @@ function calcFull(noview){
 							}
 							else if(np.target[e] == "single"){
 								applyDebuff(a,wave,target1,np.effect[e],np.values[e][effect_level],np.name);
+							}
+						}
+					}
+					// tick down effects that buffed NP
+					for(buff in ACTION_BUFFS[a][real_pos]){
+						if(buff == "np_dmg"){
+							var buffs = ACTION_BUFFS[a][real_pos][buff];
+							for(var i=0;i<buffs.length;i++){
+								if(buffs[i][2]!=-1 && buffs[i][2]!=63){//effect has limited times
+									buffs[i][2]--;
+									if(buffs[i][2]==0){//this was the last time, remove effect
+										buffs.splice(i,1);
+										i--;
+									}
+								}
+							}
+							if(buffs.length == 0){//if buff no longer applies to servant at all, remove it
+								delete ACTION_BUFFS[a][real_pos][buff];
 							}
 						}
 					}
