@@ -5,7 +5,6 @@
 // Fishing
 // card damage
 // servant death
-// reset button
 
 // current version of script
 var VERSION = 1;
@@ -2142,6 +2141,62 @@ function setAllAttr(value){
 	}
 	MASTER_MODE=false;
 	calcFull();
+}
+function resetActions(){
+	ACTIONS=[[]];
+	calcFull();
+}
+function resetAll(){
+	window.location.assign("index.html");
+}
+function newTabSameEnemies(){
+	var url = {str:""};
+	//write version
+	writeNum(VERSION,2,url);
+	// write mystic code
+	writeNum(0,1,url);
+	writeNum(0,1,url);
+	//write servants
+	for(var i=0;i<6;i++){
+		writeNum(4095,2,url);
+	}
+	//write servant np levels
+	for(var i=0;i<6;i++){
+		writeNum(0,1,url);
+	}
+	//write ces
+	for(var i=0;i<6;i++){
+		writeNum(4095,2,url);
+	}
+	//write ce levels
+	for(var i=0;i<6;i++){
+		writeNum(0,1,url);
+	}
+	//write skill levels
+	for(var i=0;i<6;i++){
+		for(var j=0;j<3;j++){
+			writeNum(0,1,url);
+		}
+	}
+	//write enemies classes
+	for(var i=0;i<3;i++){
+		for(var j=0;j<3;j++){
+			writeNum(ENEMIES_CLASS[i][j],1,url);
+		}
+	}
+	//write enemies attributes
+	for(var i=0;i<3;i++){
+		for(var j=0;j<3;j++){
+			writeNum(ENEMIES_ATTR[i][j],1,url);
+		}
+	}
+	//write enemies HP
+	for(var i=0;i<3;i++){
+		for(var j=0;j<3;j++){
+			writeNum(ENEMIES_HP[i][j],5,url);
+		}
+	}
+	window.open("index.html?id="+url.str);
 }
 $( document ).ready(function (){
 	readFull();
