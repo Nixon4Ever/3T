@@ -1628,6 +1628,12 @@ function calcFull(noview){
 		}
 		//console.log("a:"+a+",aa:"+ACTIONS[a][0]+",w:"+wave+",ac:"+ACTION_CURRENT);
 		// duplicate previous action's data
+		if(pos >= 0 && pos <= 2 && PARTY[ACTION_ORDER[a-1][pos]]<0){ // this is a servant action, but the slot is actually empty
+			removeAction(a);
+			a--;
+			continue;
+		}
+		
 		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
 		ACTION_DEBUFFS.push(JSON.parse(JSON.stringify(ACTION_DEBUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
@@ -1642,6 +1648,7 @@ function calcFull(noview){
 		{
 			// servant's real pos in PARTY[]
 			var real_pos = ACTION_ORDER[a][pos];
+			
 			if(action >=0 && action <= 2) 			// 		servant skill
 			{
 				if(ACTION_SKILLS[a][real_pos][action] == 0 || (calcTotalBuff(a,real_pos,"stun") > 0)){// skill cannot be used (already used or stunned)
