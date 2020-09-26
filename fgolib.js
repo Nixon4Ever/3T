@@ -326,8 +326,8 @@ var SERVANTS = [
 },
 {
 	name:"Parvati", jp:false, atk: 8127,class:"lancer",attr:"sky",rarity:4,q:2,a:1,b:2,qh:3,ah:2,np_perhit:1.08,pic:"icons/servants/Parvati.jpg",
-	np:{type:"np_quick", name:"Trishula Shakti", hits:[10,20,30,40], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["np_gauge"], turns:[0],values:[10,15,20,25,30]},
-	skills: ["dmg",225],
+	np:{type:"np_quick", name:"Trishula Shakti", hits:[10,20,30,40], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["np_gauge"], turns:[0],values:[[10],[15],[20],[25],[30]]},
+	skills: [["dmg",225]],
 	skill1: {name:"Imaginary Around EX",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_gain"], turns: [3,3], values:[[20,20],[21,21],[22,22],[23,23],[24,24],[25,25],[26,26],[27,27],[28,28],[30,30]]},
 	skill2: {name:"Ash of Kama EX",   icon:"atkdef",  target_real:"self",    target:["self"],     effect:["atk"], turns: [1], values:[[30],[32],[34],[36],[38],[40],[42],[44],[46],[50]]},
 	skill3: {name:"Blessing of a Goddess A+",  icon:"np_gauge",  target_real:"target",    target:["target","self"],     effect:["np_gauge","np_gauge"], turns:[0,0],values:[[10,-10],[12,-10],[13,-10],[14,-10],[15,-10],[16,-10],[17,-10],[18,-10],[19,-10],[20,-10]]}
@@ -335,7 +335,7 @@ var SERVANTS = [
 {
 	name:"Valkyrie", jp:false, atk: 8037,class:"lancer",attr:"sky",rarity:4,q:2,a:1,b:2,qh:3,ah:2,np_perhit:.86,pic:"icons/servants/Valkyrie.png",
 	np:{type:"np_quick", name:"Ragnarök Lífþrasir", hits:[3,7,10,14,17,21,28], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
-	skills: ["dmg",200],
+	skills: [["dmg",200]],
 	skill1: {name:"Primordial Rune (Valkyrie)",   icon:"quick",  target_real:"self",   target:["self","self"],  effect:["quick","np_dmg"], turns: [3,3], values:[[20,10],[21,11],[22,12],[23,13],[24,14],[25,15],[26,16],[27,17],[28,18],[30,20]]},
 	skill2: {name:"Swan Mystic Code A",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Fate Weaver B",  icon:"np_regen",  target_real:"self",    target:["self"],     effect:["np_regen"], turns:[3],values:[[5],[5.5],[6],[6.5],[7],[7.5],[8],[8.5],[9],[10]]}
