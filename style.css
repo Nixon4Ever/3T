@@ -375,3 +375,86 @@ body{
 .card_popup_type:hover{
 	background-color: #0c0c0c4a;
 }
+#serv_popup_div{
+	width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #151515f0;
+    display: block;
+    z-index: 10;
+}
+#serv_popup_text{
+    line-height: 100px;
+    width: 100%;
+    text-align: center;
+    height: 100px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0px 0px 16px #ffffff6b;
+    font-size: 30px;
+}
+#serv_popup_classes{
+	width: 100%;
+    height: 100px;
+    background-color: #73737387;
+    text-align: center;
+	background-blend-mode:overlay;
+}
+#serv_popup_servants{
+	text-align: center;
+}
+.class{
+	width: 100px;
+    height: 100px;
+    display: inline-block;
+    background-size: 80px;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+	transition: background-color .07s;
+}
+.class:hover{
+	background-color: #ffffff59;
+}
+.servant{
+	position: relative;
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    background-size: 150px;
+    background-clip: content-box;
+    border-width: 8px;
+    border-style: solid;
+    border-color: #FFF0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    box-shadow: inset 0 0 20px 2px #151515f0;
+    transition: border-color .07s;
+    border-radius: 33px;
+    overflow: hidden;
+}
+.servant:hover{
+	border-color: #ffffff36;
+}
+.servant_name{
+	background-color: #afafafa1;
+    border-radius: 10px;
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    line-height: 20px;
+    font-weight: bold;
+    bottom: 0;
+    left: 0;
+}
+.serv_sel_name{
+	font-weight: bold;
+    background-color: #ffffff5c;
+    cursor: pointer;
+    height: 20px;
+    line-height: 20px;
+    text-shadow: 0 0 9px white;
+}
+.serv_sel_name:hover{
+	box-shadow: inset 0 0 1px 1px white;
+}

@@ -1,12 +1,11 @@
 // TODO
-// SERVANT SELECT
-// SERVANT SELECT (CLASS FILTER)
 // SERVANT SELECT (JP FILTER)
 // INFO
 // VERSION WARNING
 // N TIME EFFECTS
 // Fishing
 // card damage
+// servant death
 
 // current version of script
 var VERSION = 1;
@@ -123,19 +122,20 @@ var TARGETS = {
 	"self_np_type":"Self"
 }
 var CLASSES_ICONS = {
-	saber:"icons/classes/saber.png",
-	archer:"icons/classes/archer.png",
-	lancer:"icons/classes/lancer.png",
-	rider:"icons/classes/rider.png",
-	caster:"icons/classes/caster.png",
-	assassin:"icons/classes/assassin.png",
-	berserker:"icons/classes/berserker.png",
-	ruler:"icons/classes/ruler.png",
-	avenger:"icons/classes/avenger.png",
+	saber:"icons/classes/Class-Saber-Gold.png",
+	archer:"icons/classes/Class-Archer-Gold.png",
+	lancer:"icons/classes/Class-Lancer-Gold.png",
+	rider:"icons/classes/Class-Rider-Gold.png",
+	caster:"icons/classes/Class-Caster-Gold.png",
+	assassin:"icons/classes/Class-Assassin-Gold.png",
+	berserker:"icons/classes/Class-Berserker-Gold.png",
+	ruler:"icons/classes/Class-Ruler-Gold.png",
+	avenger:"icons/classes/Class-Avenger-Gold.png",
 	alter_ego:"icons/classes/alter-ego.png",
 	moon_cancer:"icons/classes/mooncancer.png",
 	foreigner:"icons/classes/Class-Foreigner-Gold.png",
-	empty:"icons/empty.png"
+	all:"icons/classes/Icon_Class_All.png",
+	empty:"icons/empty.png",
 }
 var CLASSES_NP_GEN = {
 	saber:1,
@@ -557,6 +557,8 @@ var WAVE_MAX = 0;
 // Global RNG Multiplier to use
 var RNG = 1;
 
+var SELECTING_REALPOS = 0;
+
 // special mode which makes everything ignore input while javascript does its magic
 var MASTER_MODE=false;
 
@@ -961,9 +963,11 @@ function displayServant(pos)
 	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
 	if(PARTY[real_pos] >= 0){
 		$("#serv_sel_div_"+pos).css("background","url("+SERVANTS[PARTY[real_pos]].pic+")");
+		$("#serv_name_"+pos).text(SERVANTS[PARTY[real_pos]].name);
 	}
 	else{
 		$("#serv_sel_div_"+pos).css("background","grey");
+		$("#serv_name_"+pos).text("Select Servant");
 	}
 	displaySkill(pos,0);
 	displaySkill(pos,1);
@@ -1192,7 +1196,7 @@ function viewAction(){
 	// enemies viewer
 	for(var w=0;w<3;w++){
 		for(var e=0;e<3;e++){
-			if(ENEMIES_CLASS[w][e] == CLASSES_NUM['empty']){ // no enemy
+			if(ENEMIES_CLASS[w][e] == CLASSES_NUM['empty']){ // EMPTY
 				$("#enemy_damage_"+w+"_"+e).text("");
 				$("#enemy_"+w+"_"+e).css("background-color","#f1f1f1");
 			}
@@ -1206,7 +1210,7 @@ function viewAction(){
 			}
 			else{ // SCHRODINGERS CAT
 				var chance = (-MIN_HP[w][e])/(MAX_HP[w][e] - MIN_HP[w][e]);
-				$("#enemy_damage_"+w+"_"+e).text(Math.floor(chance*100)+"% Chance to Kill; MAX HP: "+MAX_HP[w][e]+", MIN HP: "+Math.max(MIN_HP[w][e],0));
+				$("#enemy_damage_"+w+"_"+e).text(Math.floor(chance*100)+"% Chance to Kill; MAX HP: "+MAX_HP[w][e]);
 				$("#enemy_"+w+"_"+e).css("background-color","rgb("+(110*(1-chance)+70)+","+(110*(chance)+70)+",70)");
 			}
 		}
@@ -1927,7 +1931,42 @@ function clickRemoveAction(action){
 		viewAction();
 	}
 }
-
+function serv_popup_setclass(newclass){
+	//highlight the class icon
+	for(var i=0;i<NUM_CLASS.length-1;i++){
+		if(i==newclass){
+			$("#class_"+i).css("background-color","#ffffff59");
+		}
+		else{
+			$("#class_"+i).css("background-color","");
+		}
+	}
+	// filter servants
+	for(var i=0;i<SERVANTS.length;i++){
+		if(newclass == -1 || CLASSES_NUM[SERVANTS[i].class] == newclass){
+			$("#servant_"+i).css("display","inline-block");
+		}
+		else{
+			$("#servant_"+i).css("display","none");
+		}
+	}
+}
+function compareStrings(a,b) {
+	if (a>b) return 1;
+	else if (a<b) return -1;
+	return 0;
+}
+function serv_popup_setservant(servant){
+	$("#serv_popup_div").css("display","none");
+	PARTY[SELECTING_REALPOS]=servant;
+	calcFull();
+}
+function servantPopup(fake_pos){
+	var realpos = ACTION_ORDER[ACTION_CURRENT][fake_pos];
+	SELECTING_REALPOS=realpos;
+	$("#serv_popup_text").text("Select servant for slot "+(realpos+1));
+	$("#serv_popup_div").css("display","block");
+}
 $( document ).ready(function (){
 	readFull();
 	// initialize servant displays
@@ -1946,15 +1985,14 @@ $( document ).ready(function (){
 			if(s<2){html+="<p class = \"slash\">/</p>";}
 		}
 		
-		html += `<br><select id = "servant_sel_`+p+`" class = "servant_sel" onchange="setServant(`+p+`,this.value)">
-				<option value = -1>Empty</option>
-			</select><select onchange = "setNP(`+p+`,this.value)" id = "servant_np_sel_`+p+`" class = "servant_np_sel">`;
+		html += `<br><select onchange = "setNP(`+p+`,this.value)" id = "servant_np_sel_`+p+`" class = "servant_np_sel">`;
 		for(var i=0;i<5;i++){
 			html+=`<option value="`+i+`"`+(PARTY_NP[p]==i?" selected":"")+`>NP `+(i+1)+`</option>`;
 		}
+		html+=`</select><div class="serv_sel_name" id = "serv_name_`+p+`" onclick = "servantPopup(`+p+`)"></div>`;
+		
 		// CE SELECTION
-		html+=`</select>
-		</div><div id = "ce_sel_div_`+p+`" class = "ce_sel_div"><select onchange = "setCE(`+p+`,this.value)" class = "ce_sel" id = "ce_sel_`+p+`"><option value=-1>Empty</option></select>
+		html+=`</div><div id = "ce_sel_div_`+p+`" class = "ce_sel_div"><select onchange = "setCE(`+p+`,this.value)" class = "ce_sel" id = "ce_sel_`+p+`"><option value=-1>Empty</option></select>
 		<div class="ce_lvl tooltip" id = "ce_lvl_`+p+`" onclick="changeCELevel(`+p+`)"><span id = "ce_lvl_tip_`+p+`" class = "tooltiptext"></span></div>
 		</div><div class = "np_gauge" id = "np_gauge_`+p+`"><div class="np_text"><div class="np_text_in" id="np_text_`+p+`">100%</div><div id = "np_click_`+p+`" class="np_text_in">Click to NP<img></div></div><div class = "np_value" id = "np_value_`+p+`"></div></div>
 		<div class = "skills_div" id = "skills_div_`+p+`">`;
@@ -1969,9 +2007,6 @@ $( document ).ready(function (){
 		}
 		html+=`</div><div id = "buffs_div_`+p+`" class = "buffs_div"></div></div>`;
 		$("#serv_sel_main").append(html);
-		for(var i=0;i<SERVANTS.length;i++){
-			$("#servant_sel_"+p).append("<option value = "+i+""+(PARTY[p]==i?" selected":"")+">"+SERVANTS[i].name+"</option>");
-		}
 		for(var i=0;i<CES.length;i++){
 			$("#ce_sel_"+p).append("<option value = "+i+""+(PARTY_CES[p]==i?" selected":"")+">"+CES[i].name+"</option>");
 		}
@@ -2012,7 +2047,7 @@ $( document ).ready(function (){
 			displayEnemy(stage,enemy);
 		}
 	}
-	// INITIALIZE POPUP
+	// INITIALIZE TARGET POPUP
 	for(var p=0;p<6;p++){
 		$("#popup_div").append(`<div class = "cut_btn serv_btn" id = "serv_btn_`+p+`"></div>`);
 	}
@@ -2022,6 +2057,22 @@ $( document ).ready(function (){
 		}
 	}
 	positionPopup();
+	// INITIALIZE SERVANTS POPUP
+	// classes
+	for(var i=0;i<NUM_CLASS.length-1;i++){
+		$("#serv_popup_classes").append(`<div class ="class" id = "class_`+i+`" onclick="serv_popup_setclass(`+i+`)" style="background-image:url(`+CLASSES_ICONS[NUM_CLASS[i]]+`)"></div>`);
+	}
+	$("#serv_popup_classes").append(`<div class ="class" id = "class_`+i+`" onclick="serv_popup_setclass(-1)" style="background-image:url(`+CLASSES_ICONS['all']+`)"></div>`);
+	//servants
+	for(var i=0;i<SERVANTS.length;i++){
+		$("#serv_popup_servants").append(`<div class ="servant" id = "servant_`+i+`" onclick="serv_popup_setservant(`+i+`)" style="background-image:url(`+SERVANTS[i].pic+`)"><div class = "servant_name">`+SERVANTS[i].name+`</div></div>`);
+	}
+	// sort them in alphabetical order
+	$('#serv_popup_servants').append($('.servant').detach().sort(function(a,b){
+		return compareStrings($('.servant_name',a).text(), $('.servant_name',b).text());
+	}));
+	// empty option
+	$("#serv_popup_servants").append(`<div class ="servant" id = "servant_null" onclick="serv_popup_setservant(-1)" style="background-image:url(`+CLASSES_ICONS['empty']+`)"><div class = "servant_name">Empty</div></div>`);
 	// calculate entire run
 	calcFull();
 	viewAction();
