@@ -7,7 +7,6 @@
 // servant death
 // reset button
 // set all classes/attr
-// delayed stun
 
 // current version of script
 var VERSION = 1;
@@ -47,6 +46,7 @@ var SKILL_ICONS = {
 	charm:"icons/skills/Charm.png",
 	buffchance:"icons/skills/Staffup.png",
 	cleanse:"icons/skills/Bubbles.png",
+	quickbuster:"icons/skills/QuickBuster.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -127,7 +127,7 @@ var EFFECT_FLAT ={
 	def_down: false,
 	h_threat_dmg:false,
 }
-var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune","cleanse"];
+var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune","cleanse","delayed_stun","stun"];
 var TARGETS = {
 	"self": "Self",
 	"all": "All",
@@ -380,6 +380,14 @@ var SERVANTS = [
 	skill1: {name:"Domina Cornam D",   icon:"cleanse",  target_real:"target",   target:["target","target"],  effect:["cleanse","debuff_immune"], turns: [0,3],times:[0,1], values:[[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]},
 	skill2: {name:"Aurea Poculum C",   icon:"stun",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Self-Modification EX",  icon:"crit",  target_real:"none",    target:[],     effect:[], turns: [], values:[]}
+},
+{
+	name:"Ishtar (Rider)", jp:false, atk: 9603,class:"rider",attr:"sky",rarity:4,q:2,a:2,b:1,qh:2,ah:3,np_perhit:.68,pic:"icons/servants/Ishtar_Rider.jpg",
+	np:{type:"np_quick", name:"An Gal Tā Seven Colors", hits:[10,20,30,40], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["quick"], turns:[1],values:[[20,30,40,50,60]]},
+	skills: [["quick",12],["dmg",225]],
+	skill1: {name:"Shining Water Robe A",   icon:"quickbuster",  target_real:"all",   target:["all","all","all"],  effect:["buster","quick","np_gain"], turns: [3,3,3], values:[[10,11,12,13,14,15,16,17,18,20],[10,11,12,13,14,15,16,17,18,20],[10,11,12,13,14,15,16,17,18,20]]},
+	skill2: {name:"Accel Turn B",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Summer Breaker! A",  icon:"invinc",  target_real:"self",    target:["self","self"],     effect:["np_gain","delayed_stun"], turns: [1,1], values:[[30,32,34,36,38,40,42,44,46,50],[1,1,1,1,1,1,1,1,1,1]]}
 },
 ];
 var CES = [
@@ -1917,6 +1925,9 @@ function calcFull(noview){
 							if(buffs[i][1]==0){//this was the last turn, remove effect
 								buffs.splice(i,1);
 								i--;
+								if(buff == "delayed_stun"){ // now stun
+									applyBuff(a,real_pos,"stun",1,1,-1,"Delayed Stun");
+								}
 							}
 						}
 					}
