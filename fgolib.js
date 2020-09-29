@@ -1858,7 +1858,7 @@ function calcFull(noview){
 						}
 					}
 					// refund NP
-					ACTION_NP[a][real_pos] += totalRefund;
+					applyBuff(a,real_pos,"np_gauge",totalRefund,0,0,"refund");
 					//apply effects after NP
 					for(var e=0;e<np.effect.length;e++){
 						if(!np.before[e]){//applies after
