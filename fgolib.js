@@ -297,7 +297,7 @@ var SERVANTS = [
 	skill3: {name:"Sword of Selection EX",  icon:"arts",  target_real:"target",    target:["target","target"],     effect:["arts","h_threat_dmg"], turns:[3,3],values:[[30,32,34,36,38,40,42,44,46,50],[30,32,34,36,38,40,42,44,46,50]]}
 },
 {
-	name:"Space Ishtar", jp:true, atk: 12612,class:"avenger",attr:"star",rarity:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.69,pic:"icons/servants/Spaceishtar.png",
+	name:"Space Ishtar", jp:true, atk: 12612,class:"avenger",attr:"star",rarity:5,q:1,a:2,b:2,qh:4,ah:2,np_perhit:.69,pic:"icons/servants/SpaceIshtar.png",
 	np:{type:"np_arts", name:"Edin Shugurra Quasar (Arts)", hits:[16,33,51], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20,30,40,50,60]]},
 	np2:{type:"np_quick", name:"Edin Shugurra Quasar (Quick)", hits:[16,33,51], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20,30,40,50,60]]},
 	np3:{type:"np_buster", name:"Edin Shugurra Quasar (Buster)", hits:[16,33,51], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["np_dmg"], turns:[3],values:[[20,30,40,50,60]]},
