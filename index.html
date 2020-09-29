@@ -1,10 +1,11 @@
 <html>
 	<head>
-		<title>3T Farming Sim</title>
+		<title id = "title">3 Turn Farming Sim</title>
 		<script src="jquery-3.5.1.min.js"></script>
 		<script src="fgolib.js"></script>
 		<link rel="stylesheet" href="style.css">
 		<meta charset="utf-8">
+		<link rel="icon" href="artsquick.png">
 	</head>
 	<body>
 		<div id = "popup_text"></div>
@@ -50,10 +51,10 @@
 			<div id = "details_div">
 				<p style = "font-weight:bold">Run Details:</p>
 				<p id = "total_chance">100% Chance to clear</p>
-				<p>Set all enemies</p>
+				<p style = "font-weight:bold">Set all enemies</p>
 				<select id = "enemy_all_sel" onchange = "setAllEnemies(this.value)"></select>
 				<select id = "attr_all_sel" onchange = "setAllAttr(this.value)"></select>
-				<br>
+				<p style = "font-weight:bold">Actions</p>
 				<button onclick="newTabSameEnemies()">Try another setup with the same enemies</button>
 				<button onclick="resetActions()">Reset Actions</button>
 				<button onclick="resetAll()">Reset All</button>

@@ -4,6 +4,7 @@
 // Fishing
 // card damage
 // servant death
+// supereffective
 
 // current version of script
 var VERSION = 1;
@@ -303,7 +304,7 @@ var SERVANTS = [
 	nps:{"arts":"np","quick":"np2","buster":"np3"},
 	skills: [["np_regen",3.5],["dmg",270]],
 	skill1: {name:"Devil's Sugar A",   icon:"atk",  target_real:"self",   target:["self","not_self"],  effect:["atk","atk"], turns: [3,3], values:[[10,11,12,13,14,15,16,17,18,20],[20,21,22,23,24,25,26,27,28,30]]},
-	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [-1,3],times:[1,-1], values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill2: {name:"Venus Driver B",   icon:"np_dmg",  target_real:"self_np_type", card_options:["arts","quick","buster"],    target:["self","self_np_type"],     effect:["np_dmg","self_np_type"], turns: [1,3],times:[1,-1], values:[[10,11,12,13,14,15,16,17,18,20]]},
 	skill3: {name:"Multiple Star-ring EX",  icon:"np_gauge",  target_real:"self",    target:["self","self","self","self"], rng:[[100,100,100,100,100,100,100,100,100,100],[80,80,80,80,80,80,80,80,80,80],[80,80,80,80,80,80,80,80,80,80],[80,80,80,80,80,80,80,80,80,80]],    effect:["np_gauge","buster","arts","quick"], turns:[0,3,3,3],values:[[30,32,34,36,38,40,42,44,46,50],[20,20,20,20,20,20,20,20,20,20],[20,20,20,20,20,20,20,20,20,20],[20,20,20,20,20,20,20,20,20,20]]}
 },
 {
@@ -385,6 +386,14 @@ var SERVANTS = [
 	skill1: {name:"Shining Water Robe A",   icon:"quickbuster",  target_real:"all",   target:["all","all","all"],  effect:["buster","quick","np_gain"], turns: [3,3,3], values:[[10,11,12,13,14,15,16,17,18,20],[10,11,12,13,14,15,16,17,18,20],[10,11,12,13,14,15,16,17,18,20]]},
 	skill2: {name:"Accel Turn B",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Summer Breaker! A",  icon:"invinc",  target_real:"self",    target:["self","self"],     effect:["np_gain","delayed_stun"], turns: [1,1], values:[[30,32,34,36,38,40,42,44,46,50],[1,1,1,1,1,1,1,1,1,1]]}
+},
+{
+	name:"Arjuna", jp:false, atk: 12342,class:"archer",attr:"sky",rarity:5,q:1,a:3,b:1,qh:2,ah:3,np_perhit:.51,pic:"icons/servants/Arjuna.png",
+	np:{type:"np_buster", name:"Pashupata", hits:[100], dmg:[400,500,550,575,600], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["def_down"], turns:[3],values:[[20,25,30,35,40]]},
+	skills: [["dmg",175]],
+	skill1: {name:"Clairvoyance (Archer) B+",   icon:"star_drop",  target_real:"self",   target:["self"],  effect:["debuff_immune"], turns: [5], values:[[1,1,1,1,1,1,1,1,1,1]]},
+	skill2: {name:"Hero of the Endowed A",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[25,25,25,25,25,25,25,25,25,25]]},
+	skill3: {name:"Mana Burst (Flame) A",  icon:"buster",  target_real:"self",    target:["self","self"],     effect:["buster","np_dmg"], turns: [1,1], values:[[20,21,22,23,24,25,26,27,28,30],[10,11,12,13,14,15,16,17,18,20]]}
 },
 {
 	name:"Tamamo", jp:false, atk: 10546,class:"caster",attr:"sky",rarity:5,q:1,a:3,b:1,qh:3,ah:5,np_perhit:.32,pic:"icons/servants/Tamamo.png",
@@ -752,6 +761,18 @@ function writeFull() {
 		writeNum(packNum(ACTIONS[a][2],ACTIONS[a][3]),1,URL);
 	}
 	window.history.replaceState(null,"","index.html?id="+URL.str);
+	var servants = "";
+	for(var i=0;i<6;i++){
+		if(PARTY[i] >=0){
+			servants += " + "+SERVANTS[PARTY[i]].name;
+		}
+	}
+	if(servants != ""){
+		$("#title").text("3 Turn Farming Sim - "+servants.substr(3));
+	}
+	else{
+		$("#title").text("3 Turn Farming Sim");
+	}
 }
 function readFull() {
 	readUrlText();
