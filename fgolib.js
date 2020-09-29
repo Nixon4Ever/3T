@@ -1444,7 +1444,7 @@ function viewAction(){
 			$("#np_1_"+e).text(ALL_NPS[disp_np].avg_dmg[e]);
 			$("#np_2_"+e).text(ALL_NPS[disp_np].max_dmg[e]);
 		}
-		$("#np_overkill").text(ALL_NPS[disp_np].overkill_hits+" Overkill Hit"+(ALL_NPS[disp_np].overkill_hits==1?"":"s"));
+		$("#np_overkill").text("Minimum "+ALL_NPS[disp_np].overkill_hits+" Overkill Hit"+(ALL_NPS[disp_np].overkill_hits==1?"":"s"));
 	}
 	else{
 		$("#np_info_div").css("display","none");
@@ -1953,7 +1953,7 @@ function calcFull(noview){
 						np_regen_total+=effect[0];
 					}
 				}
-				ACTION_NP[a][real_pos]+=np_regen_total;
+				applyBuff(a,real_pos,"np_gauge",np_regen_total,0,0,"NP Regen");
 			}
 			// tick down the remaining turns of effects
 			for(var p=0;p<6;p++){
