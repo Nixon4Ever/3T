@@ -99,6 +99,7 @@ html{
 	box-shadow: inset 0 0 8px 0px black;
 	position: relative;
 	background-blend-mode: color;
+	width: 150px;
 }
 .servant_portrait{
 	width: 150px;

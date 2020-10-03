@@ -561,6 +561,14 @@ var SERVANTS = [
 	skill2: {name:"Frigid Charisma B",   icon:"atk",  target_real:"all",   target:["all"],  effect:["atk"], turns: [3], values:[[10,11,12,13,14,15,16,17,18,20]]},
 	skill3: {name:"Schwipsig B",  icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
+{
+	name:"Ushiwakamaru (Assassin)", jp:false, atk: 9456,class:"assassin",attr:"man",rarity:4,q:3,a:1,b:1,qh:4,ah:4,np_perhit:.54,pic:"icons/servants/UshiAssassin.png",
+	np:{type:"np_quick", name:"Tengu's Fan, Akarashimakaze", hits:[6,13,20,26,35], dmg:[600,800,900,950,1000], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["quick_def_down"], turns:[3],values:[[20,25,30,35,40]]},
+	skills: [["quick",11]],
+	skill1: {name:"Animal Communication D",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[20,22,24,26,28,30,32,34,36,40]]},
+	skill2: {name:"Tengu's Play (Summer) EX",   icon:"evade",  target_real:"self",   target:["self"],  effect:["quick"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
+	skill3: {name:"Heaven-Sent Child of Kurama A+",  icon:"star_gather",  target_real:"self",    target:["self"],     effect:["debuff_immune"], turns: [1], values:[[1,1,1,1,1,1,1,1,1,1]]}
+},
 ];
 var CES = [
 {name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80,100]], atk:[500,2000],
