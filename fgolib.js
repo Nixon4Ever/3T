@@ -1,11 +1,12 @@
 // TODO
 // INFO
 // VERSION WARNING
+// patch notes
 // Fishing
 // card damage
-// servant death
 // supereffective
 // ruler,htthreat
+// single target nps
 
 // current version of script
 var VERSION = 1;
@@ -46,8 +47,10 @@ var SKILL_ICONS = {
 	buffchance:"icons/skills/Staffup.png",
 	cleanse:"icons/skills/Bubbles.png",
 	quickbuster:"icons/skills/QuickBuster.png",
+	artquickbuster:"icons/skills/Alltypeup.png",
 	debuff_down:"icons/skills/DebuffResDown.png",
 	delay:"icons/skills/Clockup.png",
+	hp_regen:"icons/skills/Healarrow.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -77,6 +80,7 @@ var BUFF_ICONS = {
 	ignore_invinc:"icons/effects/Invinciblepierce.png",
 	delayed_atk:"icons/effects/DelayedBuff.png",
 	arts_def_down:"icons/effects/Artsresistdown.png",
+	human_dmg:"icons/effects/Powerup.png",
 }
 var CARD_TYPES = ["arts","quick","buster"];
 var CARD_ICONS = {
@@ -121,6 +125,8 @@ var EFFECTS = {
 	arts_def_down:"Arts resistance down",
 	cleanse:"Cleanse Debuffs",
 	delayed_atk:"Delayed Attack",
+	human_dmg:"Human Damage",
+	ignore_invinc:"Ignore Invincible",
 }
 var EFFECT_FLAT ={
 	dmg: true,
@@ -139,7 +145,7 @@ var EFFECT_FLAT ={
 	def_down: false,
 	h_threat_dmg:false,
 }
-var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune","cleanse","delayed_stun","stun"];
+var EFFECT_NONE = ["np_type_quick","np_type_arts","np_type_buster","self_np_type","debuff_immune","cleanse","delayed_stun","stun","ignore_invinc"];
 var TARGETS = {
 	"self": "Self",
 	"all": "All",
@@ -464,6 +470,96 @@ var SERVANTS = [
 	skill1: {name:"Toughness EX",   icon:"def",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
 	skill2: {name:"Clairvoyance A",   icon:"star_drop",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
 	skill3: {name:"Arrow Construction A",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[20,21,22,23,24,25,26,27,28,30]]}
+},
+{
+	name:"Spartacus", jp:false, atk: 5073,class:"berserker",attr:"earth",rarity:1,q:1,a:1,b:3,qh:2,ah:2,np_perhit:1.01,pic:"icons/servants/Spartacus.png",
+	np:{type:"np_buster", name:"Crying Warmonger", hits:[100], dmg:[400,500,550,575,600], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["buster",12]],
+	skill1: {name:"Honor of Suffering B+",   icon:"hp_regen",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Unyielding Will A",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[10,12,14,16,18,20,22,24,26,30]]},
+	skill3: {name:"Triumphant Return of the Sword B",   icon:"buster",  target_real:"self",    target:["self"],     effect:["buster"], turns: [1], values:[[20,22,24,26,28,30,32,34,36,40]]}
+},
+{
+	name:"Kiyohime", jp:false, atk: 6644,class:"berserker",attr:"earth",rarity:3,q:1,a:1,b:3,qh:2,ah:1,np_perhit:2.03,pic:"icons/servants/Kiyohime.png",
+	np:{type:"np_buster", name:"Transforming, Flame-Emitting Meditation", hits:[16,33,51], dmg:[300,400,450,475,500], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["buster",12]],
+	skill1: {name:"Morph C",   icon:"def",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Stalking B",   icon:"def_down",  target_real:"single",    target:["single"],     effect:["def_down"], turns: [3], values:[[12,13.2,14.4,15.6,16.8,18,19.2,20.4,21.6,24]]},
+	skill3: {name:"Flame-Colored Kiss A",   icon:"buster",  target_real:"self",    target:["self","self"],     effect:["buster","cleanse"], turns: [1,0], values:[[20,21,22,23,24,25,26,27,28,30],[1,1,1,1,1,1,1,1,1,1]]}
+},
+{
+	name:"Fergus", jp:false, atk: 7460,class:"saber",attr:"earth",rarity:3,q:1,a:1,b:3,qh:2,ah:2,np_perhit:1.09,pic:"icons/servants/Fergus.jpg",
+	np:{type:"np_buster", name:"Caladbolg", hits:[30,10,15,20,25], dmg:[400,500,550,575,600], target_dmg: "aoe", target:["all"],before:[false],oc:[false], effect:["def_down"], turns:[3],values:[20,20,20,20,20]},
+	skills: [["quick",8]],
+	skill1: {name:"Valor A",   icon:"atk",  target_real:"self",   target:["self"],  effect:["atk"], turns: [3], values:[[10,12,14,16,18,20,22,24,26,30]]},
+	skill2: {name:"Defiant B",   icon:"def",  target_real:"",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Mind's Eye (True) A",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]}
+},
+{
+	name:"Shakespeare", jp:false, atk: 5798,class:"caster",attr:"man",rarity:2,q:1,a:3,b:1,qh:2,ah:1,np_perhit:1.59,pic:"icons/servants/Shakespeare.png",
+	np:{type:"np_buster", name:"First Folio", hits:[10,20,30,40], dmg:[400,500,550,575,600], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["arts",6]],
+	skill1: {name:"Enchant A",   icon:"buster",  target_real:"all",   target:["all"],  effect:["buster"], turns: [1], values:[[20,22,24,26,28,30,32,34,36,40]]},
+	skill2: {name:"Self-Preservation B",   icon:"invinc",  target_real:"",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"King's Men C",   icon:"np_gauge",  target_real:"target",    target:["target"],     effect:["np_gauge"], turns: [0], values:[[20,20,20,20,20,20,20,20,20,20]]}
+},
+{
+	name:"Paul Bunyan", jp:false, atk: 6044,class:"berserker",attr:"earth",rarity:1,q:1,a:1,b:3,qh:3,ah:3,np_perhit:.67,pic:"icons/servants/Bunyan.jpg",
+	np:{type:"np_buster", name:"Marvelous Exploits", hits:[100], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["def_down"], turns:[5],values:[10,15,20,25,30]},
+	skills: [["buster",4]],
+	skill1: {name:"Delightful Comrades A",   icon:"buster",  target_real:"all",   target:["all"],  effect:["buster"], turns: [3], values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill2: {name:"Bean Soup Lake A",   icon:"heal",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Popcorn Blizzard B",   icon:"buster",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[10,11,12,13,14,15,16,17,18,20]]}
+},
+{
+	name:"Jeanne Alter Santa", jp:false, atk: 6044,class:"berserker",attr:"earth",rarity:1,q:2,a:1,b:2,qh:3,ah:3,np_perhit:.72,pic:"icons/servants/JalterSanta.jpg",
+	np:{type:"np_buster", name:"La Grâce Fille Noël", hits:[6,13,20,26,35], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["all"],before:[false],oc:[true], effect:["atk"], turns:[1],values:[10,15,20,25,30]},
+	skills: [["buster",4]],
+	skill1: {name:"Saint's Gift C",   icon:"heal",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Self-Transformation A",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[20,20,20,20,20,20,20,20,20,20]]},
+	skill3: {name:"Ephemeral Dream EX",   icon:"buster",  target_real:"self",    target:["self"],     effect:["buster"], turns: [1], values:[[35,37,39,41,43,45,47,49,51,55]]}
+},
+{
+	name:"Nightingale", jp:false, atk: 10184,class:"berserker",attr:"man",rarity:5,q:1,a:2,b:2,qh:6,ah:2,np_perhit:.77,pic:"icons/servants/Nightingale.png",
+	np:{type:"np_arts", name:"Nightingale Pledge", hits:[], dmg:[], target_dmg: "none", target:["all"],before:[false],oc:[false], effect:["cleanse"], turns:[0],values:[[1,1,1,1,1]]},
+	skills: [["buster",12]],
+	skill1: {name:"Nurse of Steel A+",   icon:"heal",  target_real:"target",   target:["target"],  effect:["debuff_immune"], turns: [3], times:[3], values:[[1,1,1,1,1,1,1,1,1,1]]},
+	skill2: {name:"Understanding of the Human Body A",   icon:"divinity",  target_real:"self",    target:["self"],     effect:["human_dmg"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill3: {name:"Angel's Cry EX",  icon:"buster",  target_real:"target",    target:["target"],     effect:["buster"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]}
+},
+{
+	name:"EMIYA", jp:false, atk: 9398,class:"archer",attr:"man",rarity:4,q:1,a:3,b:1,qh:2,ah:3,np_perhit:.51,pic:"icons/servants/EMIYA.png",
+	np:{type:"np_buster", name:"Unlimited Blade Works", hits:[3,3,5,7,8,10,12,14,16,22], dmg:[400,500,550,575,600], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["quick",12],["dmg",225]],
+	skill1: {name:"Mind's Eye (True) B",   icon:"evade",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Hawkeye B+",   icon:"star_drop",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Projection A",  icon:"artquickbuster",  target_real:"self",    target:["self","self","self"],     effect:["arts","quick","buster"], turns: [1,1,1], values:[[25,26.5,28,29.5,31,32.5,34,35.5,37,40],[25,26.5,28,29.5,31,32.5,34,35.5,37,40],[25,26.5,28,29.5,31,32.5,34,35.5,37,40]]}
+},
+{
+	name:"EMIYA (JP)", jp:true, atk: 9398,class:"archer",attr:"man",rarity:4,q:1,a:3,b:1,qh:2,ah:3,np_perhit:.51,pic:"icons/servants/EMIYA.png",
+	np:{type:"np_buster", name:"Unlimited Blade Works (Buster)", hits:[3,3,5,7,8,10,12,14,16,22], dmg:[400,500,550,575,600], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	np2:{type:"np_arts", name:"Unlimited Blade Works (Arts)", hits:[3,3,5,7,8,10,12,14,16,22], dmg:[600,750,825,862.5,900], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	nps:{"buster":"np","arts":"np2"},
+	skills: [],
+	skill1: {name:"Mind's Eye (True) B",   icon:"evade",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Hawkeye B+",   icon:"star_drop",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Circuit Connection EX",  icon:"artquickbuster",  target_real:"self_np_type",    target:["self","self","self","self_np_type"],     effect:["arts","quick","buster","self_np_type"], turns: [1,1,1,1], values:[[30,32,34,36,38,40,42,44,46,50],[30,32,34,36,38,40,42,44,46,50],[30,32,34,36,38,40,42,44,46,50],[1,1,1,1,1,1,1,1,1,1]]}
+},
+{
+	name:"Artoria (Lancer)", jp:false, atk: 10995,class:"lancer",attr:"sky",rarity:5,q:2,a:1,b:2,qh:3,ah:2,np_perhit:1.1,pic:"icons/servants/Lartoria.jpg",
+	np:{type:"np_buster", name:"Rhongomyniad", hits:[33,67], dmg:[300,400,450,475,500], target_dmg: "aoe", target:["self","self"],before:[false,true],oc:[true,false], effect:["np_gauge","ignore_invinc"], turns:[0,1],values:[[20,30,40,50,60],[1,1,1,1,1]]},
+	skills: [["quick",10]],
+	skill1: {name:"Mana Burst A",   icon:"buster",  target_real:"self",    target:["self"],     effect:["buster"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill2: {name:"Charisma B",   icon:"atk",  target_real:"all",   target:["all"],  effect:["atk"], turns: [3], values:[[9,9.9,10.8,11.7,12.6,13.5,14.4,15.3,16.2,18]]},
+	skill3: {name:"Protection of World's End EX",  icon:"np_gauge",  target_real:"self",    target:["self","self"],     effect:["cleanse","np_gauge"], turns: [0,0], values:[[1,1,1,1,1,1,1,1,1,1],[30,32,34,36,38,40,42,44,46,50]]}
+},
+{
+	name:"Anastasia", jp:false, atk: 10546,class:"caster",attr:"man",rarity:5,q:1,a:3,b:1,qh:4,ah:3,np_perhit:.51,pic:"icons/servants/Anastasia.png",
+	np:{type:"np_arts", name:"Viy Viy Viy", hits:[10,20,30,40], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:["aoe"],before:[false],oc:[true], effect:["def_down"], turns:[3],values:[[20,25,30,35,40]]},
+	skills: [["arts",12]],
+	skill1: {name:"Mystic Eyes of Penetration D",   icon:"ignore_invinc",  target_real:"self",    target:["self","self"],     effect:["ignore_invinc","arts"], turns: [1,1], values:[[1,1,1,1,1,1,1,1,1,1],[30,32,34,36,38,40,42,44,46,50]]},
+	skill2: {name:"Frigid Charisma B",   icon:"atk",  target_real:"all",   target:["all"],  effect:["atk"], turns: [3], values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill3: {name:"Schwipsig B",  icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
 ];
 var CES = [
