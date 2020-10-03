@@ -98,6 +98,7 @@ html{
 	background-size: cover!important;
 	box-shadow: inset 0 0 8px 0px black;
 	position: relative;
+	background-blend-mode: color;
 }
 .servant_portrait{
 	width: 150px;
@@ -418,10 +419,10 @@ body{
 }
 .servant{
 	position: relative;
-    width: 150px;
-    height: 150px;
+    width: 125px;
+    height: 125px;
     display: inline-block;
-    background-size: 150px;
+    background-size: 125px;
     background-clip: content-box;
     border-width: 8px;
     border-style: solid;
@@ -441,7 +442,8 @@ body{
     border-radius: 10px;
     position: absolute;
     display: inline-block;
-    width: 100%;
+    width: 115px;
+    padding: 0px 5px;
     line-height: 20px;
     font-weight: bold;
     bottom: 0;

@@ -5,6 +5,7 @@
 // card damage
 // servant death
 // supereffective
+// ruler,htthreat
 
 // current version of script
 var VERSION = 1;
@@ -45,6 +46,8 @@ var SKILL_ICONS = {
 	buffchance:"icons/skills/Staffup.png",
 	cleanse:"icons/skills/Bubbles.png",
 	quickbuster:"icons/skills/QuickBuster.png",
+	debuff_down:"icons/skills/DebuffResDown.png",
+	delay:"icons/skills/Clockup.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -59,6 +62,7 @@ var BUFF_ICONS = {
 	np_dmg: "icons/effects/Nppowerup.png",
 	crit: "icons/effects/Critdmgup.png",
 	dragon_dmg:"icons/effects/Powerup.png",
+	ruler_dmg:"icons/effects/Powerup.png",
 	buster_stars:"icons/effects/Powerup.png",
 	power:"icons/effects/Powerup.png",
 	def_down:"icons/effects/Defensedown.png",
@@ -69,6 +73,10 @@ var BUFF_ICONS = {
 	stun:"icons/effects/Stunstatus.png",
 	delayed_stun:"icons/effects/DelayedDebuff.png",
 	debuff_immune:"icons/effects/DebuffImmune.png",
+	ignore_def:"icons/effects/Ignoredefense.png",
+	ignore_invinc:"icons/effects/Invinciblepierce.png",
+	delayed_atk:"icons/effects/DelayedBuff.png",
+	arts_def_down:"icons/effects/Artsresistdown.png",
 }
 var CARD_TYPES = ["arts","quick","buster"];
 var CARD_ICONS = {
@@ -106,7 +114,13 @@ var EFFECTS = {
 	np_type_buster:"Change NP Type to Buster",
 	self_np_type:"Change own NP Type",
 	delayed_stun:"Stun after x turns",
-	debuff_immune:"Debuff Immune"
+	debuff_immune:"Debuff Immune",
+	ignore_def:"Ignore Defense",
+	ignore_invic:"Ignore Invincibile",
+	ruler_dmg:"Extra damage to rulers",
+	arts_def_down:"Arts resistance down",
+	cleanse:"Cleanse Debuffs",
+	delayed_atk:"Delayed Attack",
 }
 var EFFECT_FLAT ={
 	dmg: true,
@@ -411,6 +425,46 @@ var SERVANTS = [
 	skill2: {name:"Morph A",   icon:"def",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
 	skill3: {name:"Fox's Wedding 'EX'",  icon:"arts",  target_real:"target",    target:["target"],     effect:["arts"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]}
 },
+{
+	name:"Kiara", jp:false, atk: 10546,class:"alter_ego",attr:"beast",rarity:5,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.55,pic:"icons/servants/Kiara.jpg",
+	np:{type:"np_arts", name:"Amitābha Amidala - Heaven's Hole", hits:[16,33,51], dmg:[600,750,825,862.5,900], target_dmg: "aoe", target:["self","self"],before:[true,true],oc:[false], effect:["ignore_invinc","ignore_def"], turns:[1,1],values:[[1,1,1,1,1],[1,1,1,1,1]]},
+	skills: [["ruler_dmg",50]],
+	skill1: {name:"Clairvoyance (Beast) D+++",   icon:"debuff_down",  target_real:"single",   target:["single","self"],  effect:["arts_def_down","np_gauge"], turns: [3,0], values:[[20,21,22,23,24,25,26,27,28,30],[30,32,34,36,38,40,42,44,46,50]]},
+	skill2: {name:"Five Approaches to Meditation A+",   icon:"np_drain",  target_real:"aoe",    target:["aoe"],     effect:["def_down"], turns: [3], values:[[10,12,14,16,18,20,22,24,26,30]]},
+	skill3: {name:"Goddess Morph EX",  icon:"invinc",  target_real:"self",    target:["self"],     effect:["np_gain"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]}
+},
+{
+	name:"Artoria", jp:false, atk: 11221,class:"saber",attr:"earth",rarity:5,q:1,a:2,b:2,qh:2,ah:2,np_perhit:.86,pic:"icons/servants/Artoria.png",
+	np:{type:"np_buster", name:"Excalibur", hits:[100], dmg:[400,500,550,575,600], target_dmg: "aoe", target:["self"],before:[false],oc:[true], effect:["np_gauge"], turns:[0],values:[[20,27.5,35,42.5,50]]},
+	skills: [["quick",8]],
+	skill1: {name:"Charisma B",   icon:"atk",  target_real:"all",   target:["all"],  effect:["atk"], turns: [3], values:[[9,9.9,10.8,11.7,12.6,13.5,14.4,15.3,16.2,18]]},
+	skill2: {name:"Mana Burst A",   icon:"buster",  target_real:"self",    target:["self"],     effect:["buster"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill3: {name:"Shining Path EX",  icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[20,21,22,23,24,25,26,27,28,30]]}
+},
+{
+	name:"Mordred", jp:false, atk: 11723,class:"saber",attr:"earth",rarity:5,q:1,a:2,b:2,qh:2,ah:3,np_perhit:.56,pic:"icons/servants/Mordred.jpg",
+	np:{type:"np_buster", name:"Clarent Blood Arthur", hits:[6,13,20,26,35], dmg:[400,500,550,575,600], target_dmg: "aoe", target:["self"],before:[false,true],oc:[true,true], effect:["np_gauge","special_dmg"],times:[-1,1], turns:[0,1],values:[[20,25,30,35,40],[180,190,200,210,220]]},
+	skills: [["quick",8]],
+	skill1: {name:"Mana Burst A",   icon:"buster",  target_real:"self",    target:["self"],     effect:["buster"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill2: {name:"Intuition B",   icon:"star_drop",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill3: {name:"Secret of Pedigree EX",  icon:"def",  target_real:"self",    target:["self","self"],     effect:["np_gauge","cleanse"], turns: [0,0], values:[[10,12,14,16,18,20,22,24,26,30],[1,1,1,1,1,1,1,1,1,1]]}
+},
+{
+	name:"Ishtar", jp:false, atk: 12252,class:"archer",attr:"sky",rarity:5,q:1,a:2,b:2,qh:4,ah:4,np_perhit:.45,pic:"icons/servants/Ishtar.jpg",
+	np:{type:"np_buster", name:"An Gal Ta Ki gal Šè", hits:[16,33,51], dmg:[400,500,550,575,600], target_dmg: "aoe", target:["self"],before:[true],oc:[true], effect:["buster"], turns:[1],values:[[20,30,40,50,60]]},
+	skills: [["dmg",225]],
+	skill1: {name:"Manifestation of Beauty B",   icon:"atk",  target_real:"all",   target:["all"],  effect:["atk"], turns: [3], values:[[10,11,12,13,14,15,16,17,18,20]]},
+	skill2: {name:"Shining Majestic Crown A",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill3: {name:"Mana Burst (Gem) A+",  icon:"delay",  target_real:"self",    target:["self"],     effect:["delayed_atk"], turns: [1], values:[[30,32,34,36,38,40,42,44,46,50]]}
+},
+{
+	name:"Arash", jp:false, atk: 5816,class:"archer",attr:"earth",rarity:1,q:1,a:2,b:2,qh:3,ah:2,np_perhit:.84,pic:"icons/servants/Arash.png",
+	np:{type:"np_buster", name:"Stella", hits:[100], dmg:[800,1000,1100,1150,1200], target_dmg: "aoe", target:["self"],before:[false],oc:[false], effect:["death"], turns:[0],values:[[100,100,100,100,100]]},
+	skills: [],
+	skill1: {name:"Toughness EX",   icon:"def",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill2: {name:"Clairvoyance A",   icon:"star_drop",  target_real:"none",   target:[],  effect:[], turns: [], values:[]},
+	skill3: {name:"Arrow Construction A",   icon:"np_gauge",  target_real:"self",    target:["self"],     effect:["np_gauge"], turns: [0], values:[[20,21,22,23,24,25,26,27,28,30]]}
+},
 ];
 var CES = [
 {name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80,100]], atk:[500,2000],
@@ -651,6 +705,8 @@ var PARTY_ATTACK=[];
 var ACTION_ORDER=[0,1,2,3,4,5];
 // np gauge of each servant after the last action
 var ACTION_NP=[0,0,0,0,0,0];
+// if the servnant is alive after n action
+var ACTION_ALIVE = [[true,true,true,true,true]];
 // buffs on each servant after the last action
 var ACTION_BUFFS=[{}];
 // buffs on each enemy after the last action
@@ -1100,7 +1156,12 @@ function displayServant(pos)
 {
 	var real_pos = ACTION_ORDER[ACTION_CURRENT][pos];
 	if(PARTY[real_pos] >= 0){
-		$("#serv_sel_div_"+pos).css("background","url("+SERVANTS[PARTY[real_pos]].pic+")");
+		if(ACTION_ALIVE[ACTION_CURRENT][real_pos]){
+			$("#serv_sel_div_"+pos).css("background","url("+SERVANTS[PARTY[real_pos]].pic+")");
+		}
+		else{
+			$("#serv_sel_div_"+pos).css("background","linear-gradient(black, black),url("+SERVANTS[PARTY[real_pos]].pic+")");
+		}
 		$("#serv_name_"+pos).text(SERVANTS[PARTY[real_pos]].name);
 	}
 	else{
@@ -1307,6 +1368,9 @@ function applyBuff(action,pos,name,value,turns,times,source)
 			}
 		}
 	}
+	else if(name == "death"){ // kill this servant
+		ACTION_ALIVE[action][pos]=false;
+	}
 	else{
 		if(name == "stun"){ // is a debuff, add more later
 			if(calcTotalBuff(action,pos,"debuff_immune") > 0){
@@ -1390,7 +1454,7 @@ function viewAction(){
 			var servant = SERVANTS[PARTY[real_pos]];
 			if(ACTIONS[a][1]<3){ // skill
 				var prev_action = Math.max(0,a-1);
-				var invalid = (ACTION_SKILLS[prev_action][real_pos][ACTIONS[a][1]] == 0) || (calcTotalBuff(prev_action,real_pos,"stun") > 0);//already used or stunned
+				var invalid = (ACTION_SKILLS[prev_action][real_pos][ACTIONS[a][1]] == 0) || (calcTotalBuff(prev_action,real_pos,"stun") > 0 || !ACTION_ALIVE[prev_action][real_pos]);//already used, stunned, or dead
 				var skill = servant["skill"+(1+ACTIONS[a][1])];
 				if(a == ACTION_CURRENT && skill.rng != undefined){ // viewed action has rng setting
 					cur_skill_level = SKILLS[real_pos][ACTIONS[a][1]];
@@ -1407,7 +1471,7 @@ function viewAction(){
 			}
 			else if(ACTIONS[a][1] == 3){ // np
 				var prev_action = Math.max(0,a-1);
-				var invalid = (ACTION_NP[prev_action][real_pos] < 100) || (calcTotalBuff(prev_action,real_pos,"stun") > 0);//np not full yet or stunned;
+				var invalid = (ACTION_NP[prev_action][real_pos] < 100) || (calcTotalBuff(prev_action,real_pos,"stun") > 0 || !ACTION_ALIVE[prev_action][real_pos]);//np not full yet, stunned, or dead;
 				if(a == ACTION_CURRENT){ // currently viewing this np
 					disp_np = ACTIONS[a][3];
 				}
@@ -1539,6 +1603,7 @@ function calcFull(noview){
 	ACTION_BUFFS=[[{},{},{},{},{},{}]];
 	ACTION_DEBUFFS= [ [ [{},{},{}],[{},{},{}],[{},{},{}] ] ];
 	ACTION_SKILLS=[[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1]]];
+	ACTION_ALIVE = [[true,true,true,true,true]];
 	WAVE_NP = [[1,1,1,1,1,1],[1,1,1,1,1,1],[1,1,1,1,1,1]];
 	MAX_HP = [[0,0,0],[0,0,0],[0,0,0]];
 	MIN_HP = [[0,0,0],[0,0,0],[0,0,0]];
@@ -1661,20 +1726,20 @@ function calcFull(noview){
 			}
 		}
 		//console.log("a:"+a+",aa:"+ACTIONS[a][0]+",w:"+wave+",ac:"+ACTION_CURRENT);
-		// duplicate previous action's data
 		if(pos >= 0 && pos <= 2 && PARTY[ACTION_ORDER[a-1][pos]]<0){ // this is a servant action, but the slot is actually empty
 			removeAction(a);
 			a--;
 			continue;
 		}
-		
+		// duplicate previous action's data
 		ACTION_BUFFS.push(JSON.parse(JSON.stringify(ACTION_BUFFS[a-1])));
 		ACTION_DEBUFFS.push(JSON.parse(JSON.stringify(ACTION_DEBUFFS[a-1])));
 		ACTION_NP.push(ACTION_NP[a-1].slice());
 		ACTION_ORDER.push(ACTION_ORDER[a-1].slice());
+		ACTION_ALIVE.push(ACTION_ALIVE[a-1].slice());
 		ACTION_SKILLS.push(JSON.parse(JSON.stringify(ACTION_SKILLS[a-1])));
 		if(a == ACTION_CURRENT){
-			console.log("PUSHING CURRENT WAVE");
+			//console.log("PUSHING CURRENT WAVE");
 			WAVE_CURRENT=wave;
 		}
 		// calculate new values:
@@ -1682,7 +1747,9 @@ function calcFull(noview){
 		{
 			// servant's real pos in PARTY[]
 			var real_pos = ACTION_ORDER[a][pos];
-			
+			if(!ACTION_ALIVE[a][real_pos]){// if the servant is dead, ignore this action
+				continue;
+			}
 			if(action >=0 && action <= 2) 			// 		servant skill
 			{
 				if(ACTION_SKILLS[a][real_pos][action] == 0 || (calcTotalBuff(a,real_pos,"stun") > 0)){// skill cannot be used (already used or stunned)
@@ -1812,18 +1879,19 @@ function calcFull(noview){
 								continue;
 							}
 							var defDownMod = calcTotalDebuff(a,wave,e,"def_down");
-							var dmgMods = [PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
-							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,      npDmgMod,    powerMod, dmgPlus,    0,        0,       1];
+							var cardDefDownMod = calcTotalDebuff(a,wave,e,cardType+"_def_down");
+							//var dmgMods = [PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod+cardDefDownMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+							//  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,      npDmgMod,    powerMod, dmgPlus,    0,        0,       1];
 							  //console.log(dmgMods);
 							var baseDamage = getHitNPDamage(
 							/*base_atk,              np_dmg_base,                       type,           cardMod, srv_class,     enemy_class,*/
-							  PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
+							  PARTY_ATTACK[real_pos],np.dmg[PARTY_NP[real_pos]],np.type,cardMod+cardDefDownMod, servant.class, NUM_CLASS[ENEMIES_CLASS[wave][e]],
 							/*srv_attr,     enemy_attr,                     atkMod, defMod,    npDamageMod, powerMod, dmgPlusAdd, superMod, isSuper, rng*/
 							  servant.attr, NUM_ATTR[ENEMIES_ATTR[wave][e]],atkMod, defDownMod,npDmgMod,    powerMod, dmgPlus,    0,        0,       1);
 							//console.log(baseDamage);
 							//                              type,            np_rate,           card_up, np_gain,   enemyClass,                       overkill
-							var baseHitRefund = getHitNPGen(np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
-							var refundMods = [np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
+							var baseHitRefund = getHitNPGen(np.type, servant.np_perhit, cardMod+cardDefDownMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false);
+							//var refundMods = [np.type, servant.np_perhit, cardMod, npGainMod, NUM_CLASS[ENEMIES_CLASS[wave][e]],false];
 							  //console.log(refundMods);
 							//console.log(baseHitRefund);
 							// deal each hit
@@ -1964,16 +2032,35 @@ function calcFull(noview){
 						if(buffs[i][1]!=-1 && buffs[i][1]!=63){//effect is not infinte turns
 							buffs[i][1]--;
 							if(buffs[i][1]==0){//this was the last turn, remove effect
+								var amt = buffs[i][0];
 								buffs.splice(i,1);
 								i--;
 								if(buff == "delayed_stun"){ // now stun
 									applyBuff(a,real_pos,"stun",1,1,-1,"Delayed Stun");
+								}
+								if(buff == "delayed_atk"){ // now apply attack buff
+									applyBuff(a,real_pos,"atk",amt,1,-1,"Delayed Attack");
 								}
 							}
 						}
 					}
 					if(buffs.length == 0){//if buff no longer applies to servant at all, remove it
 						delete ACTION_BUFFS[a][real_pos][buff];
+					}
+				}
+			}
+			// move dead servants off of front line
+			for(var p=0;p<3;p++){
+				var real_pos = ACTION_ORDER[a][p];
+				if(!ACTION_ALIVE[a][real_pos]){//they are dead
+					for(var r=3;r<6;r++){ // look for a replacement
+						var real_pos_r = ACTION_ORDER[a][r];
+						if(ACTION_ALIVE[a][real_pos_r]){// replacement is alive
+							// swap them out
+							ACTION_ORDER[a][p]=real_pos_r;
+							ACTION_ORDER[a][r]=real_pos;
+							break;
+						}
 					}
 				}
 			}
