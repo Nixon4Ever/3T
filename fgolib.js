@@ -7,6 +7,7 @@
 // supereffective
 // ruler,htthreat
 // single target nps
+// ce selection
 
 // current version of script
 var VERSION = 1;
@@ -51,6 +52,7 @@ var SKILL_ICONS = {
 	debuff_down:"icons/skills/DebuffResDown.png",
 	delay:"icons/skills/Clockup.png",
 	hp_regen:"icons/skills/Healarrow.png",
+	fifth_arts:"icons/skills/FifthFormArts.png",
 }
 var BUFF_ICONS = {
 	atk: "icons/effects/Attackup.png",
@@ -63,6 +65,7 @@ var BUFF_ICONS = {
 	np_gain: "icons/effects/Npchargeup.png",
 	np_regen: "icons/effects/Npgainturn.png",
 	np_dmg: "icons/effects/Nppowerup.png",
+	np_oc: "icons/effects/Nppowerup.png",
 	crit: "icons/effects/Critdmgup.png",
 	dragon_dmg:"icons/effects/Powerup.png",
 	ruler_dmg:"icons/effects/Powerup.png",
@@ -127,11 +130,13 @@ var EFFECTS = {
 	delayed_atk:"Delayed Attack",
 	human_dmg:"Human Damage",
 	ignore_invinc:"Ignore Invincible",
+	np_oc:"NP Overcharge",
 }
 var EFFECT_FLAT ={
 	dmg: true,
 	orderchange: true,
 	shuffle: true,
+	np_oc:true,
 	atk: false,
 	buffchance: false,
 	debuffchance: false,
@@ -569,6 +574,22 @@ var SERVANTS = [
 	skill2: {name:"Tengu's Play (Summer) EX",   icon:"evade",  target_real:"self",   target:["self"],  effect:["quick"], turns: [3], values:[[20,21,22,23,24,25,26,27,28,30]]},
 	skill3: {name:"Heaven-Sent Child of Kurama A+",  icon:"star_gather",  target_real:"self",    target:["self"],     effect:["debuff_immune"], turns: [1], values:[[1,1,1,1,1,1,1,1,1,1]]}
 },
+{
+	name:"Miyamoto Musashi (Berserker)", jp:true, atk: 12712,class:"berserker",attr:"man",rarity:5,q:3,a:1,b:1,qh:4,ah:4,np_perhit:.51,pic:"icons/servants/Musashi_Berserker.png",
+	np:{type:"np_arts", name:"Ganryuu-jima", hits:[10,20,30,40], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["buster",12],["quick",4],["dmg",125]],
+	skill1: {name:"Accel Turn B",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill2: {name:"Fifth Serving B",   icon:"fifth_arts",  target_real:"self",   target:["self"],  effect:["np_gain"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill3: {name:"Demonic Thundering Eye EX",  icon:"ignore_invinc",  target_real:"self",    target:["self","self","aoe"],     effect:["ignore_invinc","atk","def_down"], turns: [3,3,3], values:[[1,1,1,1,1,1,1,1,1,1],[20,21,22,23,24,25,26,27,28,30],[10,12,14,16,18,20,22,24,26,30]]}
+},
+{
+	name:"Miyamoto Musashi (Berserker)", jp:true, atk: 12712,class:"berserker",attr:"man",rarity:5,q:3,a:1,b:1,qh:4,ah:4,np_perhit:.51,pic:"icons/servants/Musashi_Berserker.png",
+	np:{type:"np_arts", name:"Ganryuu-jima", hits:[10,20,30,40], dmg:[450,600,675,712.5,750], target_dmg: "aoe", target:[],before:[],oc:[], effect:[], turns:[],values:[]},
+	skills: [["buster",12],["quick",4],["dmg",125]],
+	skill1: {name:"Accel Turn B",   icon:"evade",  target_real:"none",    target:[],     effect:[], turns: [], values:[]},
+	skill2: {name:"Fifth Serving B",   icon:"fifth_arts",  target_real:"self",   target:["self"],  effect:["np_gain"], turns: [3], values:[[30,32,34,36,38,40,42,44,46,50]]},
+	skill3: {name:"Demonic Thundering Eye EX",  icon:"ignore_invinc",  target_real:"self",    target:["self","self","aoe"],     effect:["ignore_invinc","atk","def_down"], turns: [3,3,3], values:[[1,1,1,1,1,1,1,1,1,1],[20,21,22,23,24,25,26,27,28,30],[10,12,14,16,18,20,22,24,26,30]]}
+},
 ];
 var CES = [
 {name: "Kaleidoscope", rarity: 5, effect:["np_gauge"], values:[[80,100]], atk:[500,2000],
@@ -581,8 +602,14 @@ pic: "icons/ces/Black_grail.png"},
 pic: "icons/ces/CE900.png"},
 {name: "Return Match", rarity: 5, effect:["power"], values:[[100,200]], atk:[500,2000],
 pic: "icons/ces/CE899.png"},
-{name: "Vessel of the Saint", rarity: 5, effect:["debuff_immune","np_gain"], times:[3,-1], values:[[1,1],[15,20]], atk:[250,1000],
+{name: "Vessel of the Saint", rarity: 5, effect:["debuff_immune","np_gain"], times:[[3,3],[-1,-1]], values:[[1,1],[15,20]], atk:[250,1000],
 pic: "icons/ces/Vessel_of_the_Saint.png"},
+{name: "Painting Summer", rarity: 5, effect:["arts","np_gain","np_gauge"], values:[[8,10],[8,10],[30,50]], atk:[250,1000],
+pic: "icons/ces/CE871.png"},
+{name: "Knights of Marines", rarity: 5, effect:["quick","np_gauge"], values:[[10,15],[50,60]], atk:[500,2000],
+pic: "icons/ces/KnightsofMarines.png"},
+{name: "The One who Desires Salvation", rarity: 5, effect:["np_oc"], values:[[2,2]], times:[[3,4]], atk:[250,1000],
+pic: "icons/ces/CE1129.png"},
 ];
 function packNum(num1,num2){
 	return Math.min(Math.max(num1,0),7)*8+Math.min(Math.max(num2,0),7);
@@ -1756,7 +1783,7 @@ function calcFull(noview){
 		var ce = PARTY_CES[p];
 		if(ce < 0 || ce > CES.length){continue;} // skip if no ce given
 		for(var i=0;i<CES[ce].effect.length;i++){
-			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[i][PARTY_CE_LEVEL[p]==0?0:1],(CES[ce].turns == undefined?-1:CES[ce].turns[i]),(CES[ce].times == undefined?-1:CES[ce].times[i]),CES[ce].name);
+			applyBuff(0,p,CES[ce].effect[i],CES[ce].values[i][PARTY_CE_LEVEL[p]==0?0:1],(CES[ce].turns == undefined?-1:CES[ce].turns[i][PARTY_CE_LEVEL[p]==0?0:1]),(CES[ce].times == undefined?-1:CES[ce].times[i][PARTY_CE_LEVEL[p]==0?0:1]),CES[ce].name);
 		}
 	}
 	var wave=0;
@@ -1916,6 +1943,9 @@ function calcFull(noview){
 				// calculate oc level
 				var oc = Math.floor((ACTION_NP[a][real_pos]-100)/100);
 				oc += lastNP-1;
+				oc += calcTotalBuff(a,real_pos,"np_oc");
+				if(oc>4){oc=4;}
+				
 				ACTION_NP[a][real_pos]=0;
 				WAVE_NP[wave][real_pos]=0;
 				var min_damage = [0,0,0];
@@ -2064,7 +2094,7 @@ function calcFull(noview){
 					}
 					// tick down effects that buffed NP
 					for(buff in ACTION_BUFFS[a][real_pos]){
-						if(buff == "np_dmg"){
+						if(buff == "np_dmg" || buff == "np_oc"){
 							var buffs = ACTION_BUFFS[a][real_pos][buff];
 							for(var i=0;i<buffs.length;i++){
 								if(buffs[i][2]!=-1 && buffs[i][2]!=63){//effect has limited times

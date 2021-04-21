@@ -75,6 +75,10 @@ html{
 }
 .party_sel_div{
 	display: inline-block;
+	width: 150px;
+}
+.ce_sel{
+	width: 150px;
 }
 .ce_lvl{
 	position: absolute!important;
